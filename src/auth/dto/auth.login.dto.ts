@@ -1,8 +1,9 @@
 import { IsEmail, IsNotEmpty } from 'class-validator';
+import { messages } from '../../config/messages';
 
 export class AuthLoginDto {
-  @IsEmail({}, { message: 'email' })
+  @IsEmail({}, { message: messages.invalidEmail })
   email: string;
-  @IsNotEmpty({ message: 'password' }) //@TODO: set the password validation (number of characters and other conditions)
+  @IsNotEmpty({ message: messages.invalidPassword }) //@TODO: set the password validation (number of characters and other conditions)
   password: string;
 }
