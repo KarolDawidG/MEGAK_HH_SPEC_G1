@@ -5,27 +5,36 @@ import { UserInterface, roleEnum } from '../interfaces/UserInterface';
   name: 'users',
 })
 export class UserEntity implements UserInterface {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn('uuid', { name: 'ID' })
   id: string;
 
-  @Column({ unique: true, type: 'varchar', length: 255 })
+  @Column({ name: 'EMAIL', unique: true, type: 'varchar', length: 255 })
   email: string;
 
-  @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
+  @Column({
+    name: 'CREATED_AT',
+    type: 'datetime',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
   createdAt: string;
 
-  @Column({ type: 'datetime', nullable: true, default: null })
+  @Column({
+    name: 'REGISTERED_AT',
+    type: 'datetime',
+    nullable: true,
+    default: null,
+  })
   registeredAt: string;
 
-  @Column({ type: 'varchar' }) // @TODO set column length and other options if we agree
+  @Column({ name: 'PASSWORD_HASH', type: 'varchar' }) // @TODO set column length and other options if we agree
   pwdHash: string;
 
-  @Column({ type: 'boolean', default: false })
+  @Column({ name: 'IS_ACTIVE', type: 'boolean', default: false })
   isActive: boolean;
 
-  @Column({ type: 'tinyint', default: 0 })
-  userRole: roleEnum;
+  @Column({ name: 'ROLE', type: 'tinyint', default: 0 })
+  role: roleEnum;
 
-  @Column({ type: 'varchar' }) // @TODO set column length and other options if we agree
+  @Column({ name: 'TOKEN', type: 'varchar' }) // @TODO set column length and other options if we agree
   token: string;
 }

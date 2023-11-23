@@ -9,7 +9,7 @@ export interface UserInterface {
   pwdHash: string;
   email: string;
   isActive: boolean;
-  userRole: roleEnum;
+  role: roleEnum;
   createdAt: string;
   registeredAt: string;
   token: string;
