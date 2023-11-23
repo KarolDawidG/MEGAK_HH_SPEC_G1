@@ -1,5 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
-import { UserInterface, userRoleEnum } from '../interfaces/UserInterface';
+import { UserInterface, roleEnum } from '../interfaces/UserInterface';
 
 @Entity({
   name: 'users',
@@ -11,11 +11,11 @@ export class UserEntity implements UserInterface {
   @Column({ unique: true, type: 'varchar', length: 255 })
   email: string;
 
-  @Column({ type: 'varchar' }) // @TODO set column length and other options if we agree
-  userName: string;
-
   @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: string;
+
+  @Column({ type: 'datetime', nullable: true, default: null })
+  registeredAt: string;
 
   @Column({ type: 'varchar' }) // @TODO set column length and other options if we agree
   pwdHash: string;
@@ -24,11 +24,8 @@ export class UserEntity implements UserInterface {
   isActive: boolean;
 
   @Column({ type: 'tinyint', default: 0 })
-  userRole: userRoleEnum;
+  userRole: roleEnum;
 
   @Column({ type: 'varchar' }) // @TODO set column length and other options if we agree
-  currentToken: string;
-
-  @Column({ type: 'varchar' }) // @TODO set column length and other options if we agree
-  registerToken: string;
+  token: string;
 }

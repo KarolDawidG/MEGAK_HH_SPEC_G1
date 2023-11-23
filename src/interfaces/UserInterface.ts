@@ -1,4 +1,4 @@
-export enum userRoleEnum {
+export enum roleEnum {
   student = 0,
   hr = 1,
   admin = 2,
@@ -6,12 +6,11 @@ export enum userRoleEnum {
 
 export interface UserInterface {
   id: string;
-  userName: string;
   pwdHash: string;
   email: string;
   isActive: boolean;
-  userRole: userRoleEnum;
+  userRole: roleEnum;
   createdAt: string;
-  currentToken: string;
-  registerToken: string;
+  registeredAt: string;
+  token: string;
 }
