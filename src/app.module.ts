@@ -7,6 +7,9 @@ import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { StudentModule } from './student/student.module';
 import { HrProfileModule } from './hrProfile/hrProfile.module';
+import { ProjectModule } from './project/project.module';
+import { ProjectsEvaluationModule } from './projects-evaluation/projects-evaluation.module';
+import { ConversationModule } from './conversation/conversation.module';
 
 @Module({
   imports: [
@@ -26,6 +29,9 @@ import { HrProfileModule } from './hrProfile/hrProfile.module';
     AuthModule,
     StudentModule,
     HrProfileModule,
+    ProjectModule,
+    ProjectsEvaluationModule,
+    ConversationModule,
   ],
   controllers: [AppController],
   providers: [AppService],
