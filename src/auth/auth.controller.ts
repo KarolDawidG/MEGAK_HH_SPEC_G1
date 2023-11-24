@@ -33,4 +33,13 @@ export class AuthController {
   ): Promise<Omit<UserInterface, 'pwdHash'>> {
     return this.authService.login(loginDto, res);
   }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Get('logout')
+  async logout(
+    @UserObj() user: UserEntity,
+    @Res() res: Response,
+  ): Promise<any> {
+    return this.authService.logout(user, res);
+  }
 }

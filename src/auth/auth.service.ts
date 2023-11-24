@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from '../user/user.entity';
 import { Repository } from 'typeorm';
@@ -70,6 +74,23 @@ export class AuthService {
         .json(user);
     } catch {
       throw new UnauthorizedException(messages.invalidLoginData);
+    }
+  }
+
+  async logout(user: UserEntity, res: Response): Promise<any> {
+    try {
+      await this.userRepository.findOne({
+        where: { id: user.id, token: null },
+      });
+      return res
+        .clearCookie('jwt', {
+          secure: false, // if you use https then change it to TRUE !!!!
+          domain: 'localhost',
+          httpOnly: true,
+        })
+        .json({ message: messages.loggedOut });
+    } catch {
+      throw new InternalServerErrorException();
     }
   }
 }
