@@ -65,9 +65,17 @@ class StudentEntity implements StudentInterface {
   @Column({ name: 'COURSES', type: 'text' })
   courses: string;
 
-  @Column({ name: 'CREATED_AT', type: 'datetime' })
+  @Column({
+    name: 'CREATED_AT',
+    type: 'datetime',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
   createdAt: string;
 
-  @Column({ name: 'UPDATED_AT', type: 'datetime' })
+  @Column({
+    name: 'UPDATED_AT',
+    type: 'datetime',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
   updatedAt: string;
 }
