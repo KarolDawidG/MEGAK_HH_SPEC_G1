@@ -6,6 +6,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { MailModule } from './mail/mail.module';
+import { StudentModule } from './student/student.module';
+import { HrProfileModule } from './hrProfile/hrProfile.module';
+import { ProjectModule } from './project/project.module';
+import { ProjectsEvaluationModule } from './projects-evaluation/projects-evaluation.module';
+import { ConversationModule } from './conversation/conversation.module';
+
 
 @Module({
   imports: [
@@ -24,6 +30,11 @@ import { MailModule } from './mail/mail.module';
     UserModule,
     AuthModule,
     MailModule,
+    StudentModule,
+    HrProfileModule,
+    ProjectModule,
+    ProjectsEvaluationModule,
+    ConversationModule,
   ],
   controllers: [AppController],
   providers: [AppService],
