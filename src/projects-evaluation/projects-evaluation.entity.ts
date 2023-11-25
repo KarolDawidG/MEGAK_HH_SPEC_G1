@@ -1,10 +1,12 @@
 import { ProjectsEvaluationInterface } from 'src/interfaces/ProjectsEvaluation';
-import { Column, PrimaryGeneratedColumn } from 'typeorm';
+import { UserEntity } from 'src/user/user.entity';
+import { Column, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 
-class ProjectsEvaluationEntity implements ProjectsEvaluationInterface {
+export class ProjectsEvaluationEntity implements ProjectsEvaluationInterface {
   @PrimaryGeneratedColumn('uuid', { name: 'ID' })
   id: string;
 
+  @OneToOne(() => UserEntity, (user) => user.id)
   @Column({ name: 'USER_ID', type: 'varchar', length: 36, unique: true })
   userId: string;
 

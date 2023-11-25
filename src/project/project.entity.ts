@@ -1,13 +1,15 @@
-import { Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import {
   ProjectInterface,
   ProjectTypeEnum,
 } from 'src/interfaces/ProjectInterface';
+import { UserEntity } from 'src/user/user.entity';
 
-class Project implements ProjectInterface {
+export class Project implements ProjectInterface {
   @PrimaryGeneratedColumn('uuid', { name: 'ID' })
   id: string;
 
+  @OneToOne(() => UserEntity, (user) => user.id)
   @Column({ name: 'USER_ID', type: 'varchar', length: 36 })
   userId: string;
 

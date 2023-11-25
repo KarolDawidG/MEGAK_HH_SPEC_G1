@@ -1,18 +1,20 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToOne } from 'typeorm';
 import {
   StudentInterface,
   contractTypeEnum,
   studentStatus,
   workTypeEnum,
 } from 'src/interfaces/StudentInterface';
+import { UserEntity } from 'src/user/user.entity';
 
 @Entity({
   name: 'students',
 })
-class StudentEntity implements StudentInterface {
+export class StudentEntity implements StudentInterface {
   @PrimaryGeneratedColumn('uuid', { name: 'ID' })
   id: string;
 
+  @OneToOne(() => UserEntity, (user) => user.id)
   @Column({ name: 'USER_ID', length: 36, type: 'varchar', unique: true })
   userId: string;
 
@@ -40,10 +42,10 @@ class StudentEntity implements StudentInterface {
   @Column({ name: 'TARGET_WORK_CITY', type: 'varchar', length: 100 })
   targetWorkCity: string;
 
-  @Column({ name: 'CONTRACT_TYPE', type: 'tinyint' })
+  @Column({ name: 'CONTRACT_TYPE', type: 'tinyint', default: 0 })
   expectedContractType: contractTypeEnum;
 
-  @Column({ name: 'EXPECTED_SALARY', type: 'double', precision: 2 })
+  @Column({ name: 'EXPECTED_SALARY', type: 'double', precision: 10, scale: 2 })
   expectedSalary: number;
 
   @Column({ name: 'CAN_TAKE_APPRENTICESHIP', type: 'boolean', default: false })
@@ -51,7 +53,7 @@ class StudentEntity implements StudentInterface {
 
   @Column({
     name: 'MONTHS_OF_COMMERCIAL_EXPERIENCE',
-    type: 'number',
+    type: 'int',
     default: 0,
   })
   monthsOfCommercialExperience: number;

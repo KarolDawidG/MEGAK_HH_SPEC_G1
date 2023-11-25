@@ -1,10 +1,12 @@
-import { Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { HRProfileInterface } from 'src/interfaces/HrProfileInterface';
+import { UserEntity } from 'src/user/user.entity';
 
-class HrProfileEntity implements HRProfileInterface {
+export class HrProfileEntity implements HRProfileInterface {
   @PrimaryGeneratedColumn('uuid', { name: 'ID' })
   id: string;
 
+  @OneToOne(() => UserEntity, (user) => user.id)
   @Column({ name: 'USER_ID', type: 'varchar', length: 36 })
   userId: string;
 
