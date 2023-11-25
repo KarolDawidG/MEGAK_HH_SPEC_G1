@@ -1,11 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToOne } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 import {
   StudentInterface,
   contractTypeEnum,
   studentStatus,
   workTypeEnum,
 } from 'src/interfaces/StudentInterface';
-import { UserEntity } from 'src/user/user.entity';
 
 @Entity({
   name: 'students',
@@ -14,7 +13,6 @@ export class StudentEntity implements StudentInterface {
   @PrimaryGeneratedColumn('uuid', { name: 'ID' })
   id: string;
 
-  @OneToOne(() => UserEntity, (user) => user.id)
   @Column({ name: 'USER_ID', length: 36, type: 'varchar', unique: true })
   userId: string;
 
