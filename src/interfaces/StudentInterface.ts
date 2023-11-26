@@ -26,7 +26,7 @@ export interface StudentInterface {
   firstName: string;
   lastName: string;
   phoneNumber: string;
-  githubName: string;
+  githubName: string | null;
   bio: string;
   expectedWorkType: workTypeEnum;
   targetWorkCity: string;
