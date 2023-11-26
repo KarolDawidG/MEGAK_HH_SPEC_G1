@@ -5,6 +5,7 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+
 import { HRProfileInterface } from 'src/interfaces/HrProfileInterface';
 import { UserEntity } from 'src/user/user.entity';
 

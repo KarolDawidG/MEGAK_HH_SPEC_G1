@@ -5,6 +5,7 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+
 import {
   ConversationInterface,
   ConversationStatusEnum,
@@ -16,6 +17,7 @@ import { StudentEntity } from 'src/student/student.entity';
   name: 'conversations',
 })
 export class ConversationEntity implements ConversationInterface {
+  
   @PrimaryGeneratedColumn('uuid', { name: 'ID' })
   id: string;
 

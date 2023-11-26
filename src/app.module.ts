@@ -5,6 +5,7 @@ import { config } from './config/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
+import { MailModule } from './mail/mail.module';
 import { StudentModule } from './student/student.module';
 import { HrProfileModule } from './hrProfile/hrProfile.module';
 import { ProjectModule } from './project/project.module';
@@ -27,6 +28,7 @@ import { ConversationModule } from './conversation/conversation.module';
     }),
     UserModule,
     AuthModule,
+    MailModule,
     StudentModule,
     HrProfileModule,
     ProjectModule,
