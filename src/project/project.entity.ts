@@ -1,7 +1,7 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import {
   ProjectInterface,
-  ProjectTypeEnum,
+  projectTypeEnum,
 } from 'src/interfaces/ProjectInterface';
 
 @Entity({
@@ -18,7 +18,7 @@ export class ProjectEntity implements ProjectInterface {
   url: string;
 
   @Column({ name: 'TYPE', type: 'tinyint' })
-  type: ProjectTypeEnum;
+  type: projectTypeEnum;
 
   @Column({
     name: 'CREATED_AT',

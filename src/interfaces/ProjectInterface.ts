@@ -1,4 +1,4 @@
-export enum ProjectTypeEnum {
+export enum projectTypeEnum {
   bonusProject = 0,
   portfolio = 1,
   teamProject = 2,
@@ -8,7 +8,7 @@ export interface ProjectInterface {
   id: string;
   userId: string;
   url: string;
-  type: ProjectTypeEnum;
+  type: projectTypeEnum;
   createdAt: string;
   updatedAt: string;
 }

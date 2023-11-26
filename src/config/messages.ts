@@ -11,4 +11,16 @@ export const messages = {
   newPasswordSubject: 'Aplikacja MegaK - Zmieniono hasło',
   newPasswordHtml: `Informujemy, że nowe hasło do aplikacji zostało ustawione pomyślnie. Możesz się zalogować korzystając z nowego hasła.`,
   newPasswordInvalidBody: 'Link do zmiany hasła jest już nieaktualny.',
+  csvImportEmailValidationError: 'Niepoprawny format adresu email.',
+  csvImportEmailExistError: 'Ten email istnieje już w bazie danych.',
+  csvImportCompletionDegreeValidationError:
+    'Niepoprawny format oceny stopnia przejścia kursu.',
+  csvImportEngagementDegreeValidationError:
+    'Niepoprawny format oceny stopnia aktywności i zaangażowania w kursie.',
+  csvImportProjectDegreeValidationError:
+    'Niepoprawny format oceny zadania zaliczeniowego w kursie.',
+  csvImportTeamProjectDegreeValidationError:
+    'Niepoprawny format oceny pracy w zespole w projekcie bonusowym.',
+  accessDenied: 'Nie masz uprawnień administratora.',
+  newStudentSubject: 'Aplikacja MegaK - Zostałeś dodany do listy studentów',
 };
