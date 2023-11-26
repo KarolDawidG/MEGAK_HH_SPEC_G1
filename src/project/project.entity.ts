@@ -1,12 +1,26 @@
-import { Column, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import {
   ProjectInterface,
   ProjectTypeEnum,
 } from 'src/interfaces/ProjectInterface';
+import { UserEntity } from 'src/user/user.entity';
 
+@Entity({
+  name: 'projects',
+})
 export class Project implements ProjectInterface {
   @PrimaryGeneratedColumn('uuid', { name: 'ID' })
   id: string;
+
+  @ManyToOne(() => UserEntity, (user) => user.id)
+  @JoinColumn({ name: 'USER_ID' })
+  user: UserEntity;
 
   @Column({ name: 'USER_ID', type: 'varchar', length: 36 })
   userId: string;
