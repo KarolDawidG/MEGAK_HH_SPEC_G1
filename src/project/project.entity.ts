@@ -1,10 +1,13 @@
-import { Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import {
   ProjectInterface,
   ProjectTypeEnum,
 } from 'src/interfaces/ProjectInterface';
 
-export class Project implements ProjectInterface {
+@Entity({
+  name: 'projects',
+})
+export class ProjectEntity implements ProjectInterface {
   @PrimaryGeneratedColumn('uuid', { name: 'ID' })
   id: string;
 

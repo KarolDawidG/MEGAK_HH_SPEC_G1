@@ -1,6 +1,9 @@
-import { ProjectsEvaluationInterface } from 'src/interfaces/ProjectsEvaluation';
-import { Column, PrimaryGeneratedColumn } from 'typeorm';
+import { ProjectsEvaluationInterface } from 'src/interfaces/ProjectsEvaluationInterface';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
+@Entity({
+  name: 'projects_evaluations',
+})
 export class ProjectsEvaluationEntity implements ProjectsEvaluationInterface {
   @PrimaryGeneratedColumn('uuid', { name: 'ID' })
   id: string;
@@ -9,7 +12,7 @@ export class ProjectsEvaluationEntity implements ProjectsEvaluationInterface {
   userId: string;
 
   @Column({ name: 'COURSE_COMPLETION', type: 'boolean' })
-  coursCompletion: boolean;
+  courseCompletion: boolean;
 
   @Column({ name: 'COURSE_ENGAGEMENT', type: 'tinyint' })
   courseEngagement: number;

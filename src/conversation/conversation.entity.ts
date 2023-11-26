@@ -1,10 +1,13 @@
-import { Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import {
   ConversationInterface,
   ConversationStatusEnum,
 } from 'src/interfaces/ConversationInterface';
 
-export class Conversation implements ConversationInterface {
+@Entity({
+  name: 'conversations',
+})
+export class ConversationEntity implements ConversationInterface {
   @PrimaryGeneratedColumn('uuid', { name: 'id' })
   id: string;
 
@@ -12,7 +15,7 @@ export class Conversation implements ConversationInterface {
   hrProfileId: string;
 
   @Column({ name: 'STUDENT_ID', type: 'varchar', length: 36 })
-  studnetId: string;
+  studentId: string;
 
   @Column({ name: 'STATUS', type: 'tinyint' })
   status: ConversationStatusEnum;

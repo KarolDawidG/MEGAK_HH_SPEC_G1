@@ -1,7 +1,10 @@
-import { Column, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { HRProfileInterface } from 'src/interfaces/HrProfileInterface';
 import { UserEntity } from 'src/user/user.entity';
 
+@Entity({
+  name: 'hr_profiles',
+})
 export class HrProfileEntity implements HRProfileInterface {
   @PrimaryGeneratedColumn('uuid', { name: 'ID' })
   id: string;
