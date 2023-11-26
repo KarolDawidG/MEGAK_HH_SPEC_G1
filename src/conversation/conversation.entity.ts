@@ -15,7 +15,7 @@ import { StudentEntity } from 'src/student/student.entity';
 @Entity({
   name: 'CONVERSATIONS',
 })
-export class Conversation implements ConversationInterface {
+export class ConversationEntity implements ConversationInterface {
   @PrimaryGeneratedColumn('uuid', { name: 'id' })
   id: string;
 
