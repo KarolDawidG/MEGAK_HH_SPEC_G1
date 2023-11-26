@@ -47,6 +47,19 @@ export class StudentEntity implements StudentInterface {
   })
   githubName: string | null;
 
+  @Column({
+    name: 'PORTFOLIO_URLS',
+    type: 'simple-array',
+    nullable: true,
+  })
+  portfolioUrls: string[];
+
+  @Column({
+    name: 'PROJECT_URLS',
+    type: 'simple-array',
+  })
+  projectUrls: string[];
+
   @Column({ name: 'BIO', type: 'varchar', length: 5000 })
   bio: string;
 
