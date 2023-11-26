@@ -8,7 +8,6 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
-
 @Entity({
   name: 'projects_evaluations',
 })
