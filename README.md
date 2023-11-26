@@ -39,3 +39,14 @@ Example json:<br/>
 {<br/>
 	"path":"D:/KURS JS/students.csv"<br/>
 }<br/>
+
+### POST /user/add-hr
+Adding new HR user.<br/>
+Example json:<br/>
+{<br/>
+	"email": "test@gmail.com",<br/>
+	"firstName": "Name",<br/>
+	"lastName": "Surname",<br/>
+	"company": "LuxCompany",<br/>
+	"maxReservedStudents": "84"<br/>
+}<br/>
