@@ -32,3 +32,10 @@ Example json:<br/>
 	"id": "5844ce49-13e4-4940-92bb-7e16c873cd60", // comes from the link<br/>
 	"token": "c572ef7f-39f7-4ee2-af29-49c559c44a14" // comes from the link<br/>
 }<br/>
+
+### POST /user/import
+Import students list from local .csv file.<br/>
+Example json:<br/>
+{<br/>
+	"path":"D:/KURS JS/students.csv"<br/>
+}<br/>
