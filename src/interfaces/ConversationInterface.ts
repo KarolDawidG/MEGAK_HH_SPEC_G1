@@ -7,7 +7,7 @@ export enum ConversationStatusEnum {
 export interface ConversationInterface {
   id: string;
   hrProfileId: string;
-  studnetId: string;
+  studentId: string;
   status: ConversationStatusEnum;
   createdAt: string;
   updatedAt: string;

@@ -12,7 +12,6 @@ import { ProjectModule } from './project/project.module';
 import { ProjectsEvaluationModule } from './projects-evaluation/projects-evaluation.module';
 import { ConversationModule } from './conversation/conversation.module';
 
-
 @Module({
   imports: [
     TypeOrmModule.forRoot({
