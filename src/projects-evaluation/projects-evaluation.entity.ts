@@ -22,16 +22,16 @@ export class ProjectsEvaluationEntity implements ProjectsEvaluationInterface {
   @Column({ name: 'USER_ID', type: 'varchar', length: 36, unique: true })
   userId: string;
 
-  @Column({ name: 'COURSE_COMPLETION', type: 'boolean' })
-  courseCompletion: boolean;
+  @Column({ name: 'COURSE_COMPLETION', type: 'tinyint', unsigned: true })
+  courseCompletion: number;
 
-  @Column({ name: 'COURSE_ENGAGEMENT', type: 'tinyint' })
+  @Column({ name: 'COURSE_ENGAGEMENT', type: 'tinyint', unsigned: true })
   courseEngagement: number;
 
-  @Column({ name: 'PROJECT_DEGREE', type: 'tinyint' })
+  @Column({ name: 'PROJECT_DEGREE', type: 'tinyint', unsigned: true })
   projectDegree: number;
 
-  @Column({ name: 'TEAM_PROEJCT_DEGREE', type: 'tinyint' })
+  @Column({ name: 'TEAM_PROEJCT_DEGREE', type: 'tinyint', unsigned: true })
   teamProjectDegree: number;
 
   @Column({
