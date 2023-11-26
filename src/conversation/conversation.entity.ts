@@ -16,7 +16,7 @@ import { StudentEntity } from 'src/student/student.entity';
   name: 'CONVERSATIONS',
 })
 export class ConversationEntity implements ConversationInterface {
-  @PrimaryGeneratedColumn('uuid', { name: 'id' })
+  @PrimaryGeneratedColumn('uuid', { name: 'ID' })
   id: string;
 
   @ManyToOne(() => HrProfileEntity, (hr) => hr.id)

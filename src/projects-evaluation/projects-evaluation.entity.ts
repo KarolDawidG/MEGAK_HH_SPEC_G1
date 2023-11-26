@@ -1,4 +1,4 @@
-import { ProjectsEvaluationInterface } from 'src/interfaces/ProjectsEvaluation';
+import { ProjectsEvaluationInterface } from 'src/interfaces/ProjectsEvaluationInterface';
 import { UserEntity } from 'src/user/user.entity';
 import {
   Column,
