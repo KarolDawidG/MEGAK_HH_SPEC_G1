@@ -13,7 +13,7 @@ import { HrProfileEntity } from 'src/hrProfile/hrProfile.entity';
 import { StudentEntity } from 'src/student/student.entity';
 
 @Entity({
-  name: 'CONVERSATIONS',
+  name: 'conversations',
 })
 export class ConversationEntity implements ConversationInterface {
   @PrimaryGeneratedColumn('uuid', { name: 'ID' })

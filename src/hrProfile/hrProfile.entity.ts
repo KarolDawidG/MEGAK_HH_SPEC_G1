@@ -9,7 +9,7 @@ import { HRProfileInterface } from 'src/interfaces/HrProfileInterface';
 import { UserEntity } from 'src/user/user.entity';
 
 @Entity({
-  name: 'HR_PROFILES',
+  name: 'hr_profiles',
 })
 export class HrProfileEntity implements HRProfileInterface {
   @PrimaryGeneratedColumn('uuid', { name: 'ID' })
