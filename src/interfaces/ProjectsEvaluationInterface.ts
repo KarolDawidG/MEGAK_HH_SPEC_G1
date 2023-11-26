@@ -1,7 +1,7 @@
 export interface ProjectsEvaluationInterface {
   id: string;
   userId: string;
-  coursCompletion: boolean;
+  courseCompletion: boolean;
   courseEngagement: number;
   projectDegree: number;
   teamProjectDegree: number;

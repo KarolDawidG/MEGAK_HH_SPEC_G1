@@ -9,7 +9,7 @@ import {
 } from 'typeorm';
 
 @Entity({
-  name: 'PROJECTS_EVALUATIONS',
+  name: 'projects_evaluations',
 })
 export class ProjectsEvaluationEntity implements ProjectsEvaluationInterface {
   @PrimaryGeneratedColumn('uuid', { name: 'ID' })
@@ -23,7 +23,7 @@ export class ProjectsEvaluationEntity implements ProjectsEvaluationInterface {
   userId: string;
 
   @Column({ name: 'COURSE_COMPLETION', type: 'boolean' })
-  coursCompletion: boolean;
+  courseCompletion: boolean;
 
   @Column({ name: 'COURSE_ENGAGEMENT', type: 'tinyint' })
   courseEngagement: number;
