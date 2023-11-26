@@ -16,6 +16,8 @@ import { StudentsImportResponse } from '../interfaces/StudentsImportResponse';
 import { UserObj } from '../decorators/user-obj.decorator';
 import { UserEntity } from './user.entity';
 import { roleEnum } from '../interfaces/UserInterface';
+import { UserAddHrDto } from './dto/user.add-hr';
+import { AddHrResponse } from '../interfaces/AddHrResponse';
 
 @Controller('user')
 export class UserController {
@@ -59,5 +61,21 @@ export class UserController {
     }
     const emailList = await this.userService.getEmailsOfAllUsers();
     return await this.userService.studentsImport(body.path, emailList);
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Post('add-hr')
+  async addHr(
+    @Body() body: UserAddHrDto,
+    @UserObj() user: UserEntity,
+  ): Promise<AddHrResponse> {
+    if (user.role !== roleEnum.admin) {
+      throw new ForbiddenException(messages.accessDenied);
+    }
+    const supposedUser = await this.userService.findOne(body.email);
+    if (supposedUser) {
+      throw new BadRequestException(messages.addUserEmailExist);
+    }
+    return await this.userService.addHr(body);
   }
 }

@@ -23,6 +23,10 @@ import { ProjectsEvaluationService } from '../projects-evaluation/projects-evalu
 import { ProjectService } from '../project/project.service';
 import { projectTypeEnum } from '../interfaces/ProjectInterface';
 import { studentCreatedEmailTemplate } from '../templates/email/studentCreated';
+import { HrProfileService } from '../hrProfile/hrProfile.service';
+import { UserAddHrDto } from './dto/user.add-hr';
+import { AddHrResponse } from '../interfaces/AddHrResponse';
+import { hrCreatedEmailTemplate } from '../templates/email/hrCreated';
 
 @Injectable()
 export class UserService {
@@ -35,6 +39,8 @@ export class UserService {
     private projectsEvaluationService: ProjectsEvaluationService,
     @Inject(ProjectService)
     private projectService: ProjectService,
+    @Inject(HrProfileService)
+    private hrProfileService: HrProfileService,
   ) {}
 
   async findOne(email: string): Promise<UserEntity> {
@@ -89,7 +95,6 @@ export class UserService {
   async studentsImport(filePath, emailList): Promise<StudentsImportResponse> {
     try {
       const fileStream = fs.createReadStream(filePath);
-
       const parsedData: any[] = await new Promise((resolve, reject) => {
         fileStream.on('error', (error) => {
           reject(error);
@@ -104,7 +109,6 @@ export class UserService {
           },
         });
       });
-
       const approved: StudentImportFormatInterface[] = [];
       const rejected: string[] = [];
       parsedData.map((student) => {
@@ -137,7 +141,6 @@ export class UserService {
           });
         }
       });
-
       for (const student of approved) {
         const token = uuid();
         const user = await this.userRepository.save({
@@ -171,13 +174,39 @@ export class UserService {
           studentCreatedEmailTemplate(user.token, user.id),
         );
       }
-
       return {
         approved,
         rejected,
       };
     } catch (error) {
       throw new InternalServerErrorException(error);
+    }
+  }
+
+  async addHr(userHrDto: UserAddHrDto): Promise<AddHrResponse> {
+    try {
+      const token = uuid();
+      const user = await this.userRepository.save({
+        email: userHrDto.email,
+        token,
+        isActive: false,
+        role: roleEnum.hr,
+      });
+      const hrProfile = await this.hrProfileService.create(
+        user.id,
+        userHrDto.company,
+        userHrDto.firstName,
+        userHrDto.lastName,
+        userHrDto.maxReservedStudents,
+      );
+      await this.mailService.sendMail(
+        user.email,
+        messages.newHrSubject,
+        hrCreatedEmailTemplate(user.token, user.id),
+      );
+      return { user, hrProfile };
+    } catch {
+      throw new InternalServerErrorException();
     }
   }
 }

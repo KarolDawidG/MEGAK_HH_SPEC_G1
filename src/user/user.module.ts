@@ -6,6 +6,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from './user.entity';
 import { ProjectsEvaluationModule } from '../projects-evaluation/projects-evaluation.module';
 import { ProjectModule } from '../project/project.module';
+import { HrProfileModule } from '../hrProfile/hrProfile.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { ProjectModule } from '../project/project.module';
     forwardRef(() => MailModule),
     forwardRef(() => ProjectsEvaluationModule),
     forwardRef(() => ProjectModule),
+    forwardRef(() => HrProfileModule),
   ],
   controllers: [UserController],
   providers: [UserService],

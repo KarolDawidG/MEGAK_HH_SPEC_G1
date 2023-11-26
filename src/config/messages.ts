@@ -23,4 +23,6 @@ export const messages = {
     'Niepoprawny format oceny pracy w zespole w projekcie bonusowym.',
   accessDenied: 'Nie masz uprawnień administratora.',
   newStudentSubject: 'Aplikacja MegaK - Zostałeś dodany do listy studentów',
+  newHrSubject: `Aplikacja MegaK - Zostałeś dodany do listy HR'owców`,
+  addUserEmailExist: 'Użytkownik o podanym adresie email już istnieje.',
 };
