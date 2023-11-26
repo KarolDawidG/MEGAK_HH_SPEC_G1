@@ -14,7 +14,7 @@ import { UserEntity } from 'src/user/user.entity';
 @Entity({
   name: 'projects',
 })
-export class Project implements ProjectInterface {
+export class ProjectEntity implements ProjectInterface {
   @PrimaryGeneratedColumn('uuid', { name: 'ID' })
   id: string;
 
