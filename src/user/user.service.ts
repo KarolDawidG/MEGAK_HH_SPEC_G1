@@ -28,6 +28,10 @@ import { UserAddHrDto } from './dto/user.add-hr.dto';
 import { AddHrResponse } from '../interfaces/AddHrResponse';
 import { hrCreatedEmailTemplate } from '../templates/email/hrCreated';
 import { adminCreatedEmailTemplate } from '../templates/email/adminCreated';
+import { registrationSuccessEmailTemplate } from '../templates/email/registrationSuccess';
+import { changePasswordEmailTemplate } from '../templates/email/changePassword';
+import { newPasswordEmailTemplate } from '../templates/email/newPassword';
+import { StudentService } from '../student/student.service';
 
 @Injectable()
 export class UserService {
@@ -42,6 +46,8 @@ export class UserService {
     private projectService: ProjectService,
     @Inject(HrProfileService)
     private hrProfileService: HrProfileService,
+    @Inject(StudentService)
+    private studentService: StudentService,
   ) {}
 
   async findOne(email: string): Promise<UserEntity> {
@@ -68,7 +74,7 @@ export class UserService {
       await this.mailService.sendMail(
         email,
         messages.changePasswordSubject,
-        messages.changePasswordHtml + id + '/' + token,
+        changePasswordEmailTemplate(token, id),
       );
     } catch {
       throw new InternalServerErrorException();
@@ -86,7 +92,7 @@ export class UserService {
       await this.mailService.sendMail(
         email,
         messages.newPasswordSubject,
-        messages.newPasswordHtml,
+        newPasswordEmailTemplate(),
       );
     } catch {
       throw new InternalServerErrorException();
@@ -226,6 +232,28 @@ export class UserService {
         adminCreatedEmailTemplate(user.token, user.id),
       );
       return user;
+    } catch {
+      throw new InternalServerErrorException();
+    }
+  }
+
+  async register(user: UserEntity, password: string): Promise<void> {
+    try {
+      const pwdHash = hashPwd(password);
+      await this.userRepository.update(user.id, {
+        pwdHash,
+        token: '',
+        isActive: true,
+        registeredAt: () => 'CURRENT_TIMESTAMP',
+      });
+      if (user.role === roleEnum.student) {
+        await this.studentService.create(user.id);
+      }
+      await this.mailService.sendMail(
+        user.email,
+        messages.userRegisteredSubject,
+        registrationSuccessEmailTemplate(),
+      );
     } catch {
       throw new InternalServerErrorException();
     }

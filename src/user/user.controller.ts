@@ -95,4 +95,19 @@ export class UserController {
     }
     return await this.userService.addAdmin(body.email);
   }
+
+  @Post('register')
+  async register(@Body() body: UserNewPasswordDto): Promise<void> {
+    const user = await this.userService.findOne(body.email);
+    if (!user) {
+      throw new BadRequestException(messages.emailNotFound);
+    }
+    if (user.isActive) {
+      throw new BadRequestException(messages.userIsActiveError);
+    }
+    if (user.token !== body.token || user.id !== body.id) {
+      throw new BadRequestException(messages.registrationInvalidBody);
+    }
+    return await this.userService.register(user, body.password);
+  }
 }

@@ -7,6 +7,7 @@ import { UserEntity } from './user.entity';
 import { ProjectsEvaluationModule } from '../projects-evaluation/projects-evaluation.module';
 import { ProjectModule } from '../project/project.module';
 import { HrProfileModule } from '../hrProfile/hrProfile.module';
+import { StudentModule } from '../student/student.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { HrProfileModule } from '../hrProfile/hrProfile.module';
     forwardRef(() => ProjectsEvaluationModule),
     forwardRef(() => ProjectModule),
     forwardRef(() => HrProfileModule),
+    forwardRef(() => StudentModule),
   ],
   controllers: [UserController],
   providers: [UserService],

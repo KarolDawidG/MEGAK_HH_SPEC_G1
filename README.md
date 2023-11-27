@@ -59,3 +59,13 @@ Example json:<br/>
 {<br/>
 	"email": "test@gmail.com"<br/>
 }<br/>
+
+### POST /user/register
+Register (activate) user.
+Example json:<br/>
+{<br/>
+"email": "test@gmail.com", // provided by the user<br/>
+"password": "1234", // provided by the user<br/>
+"id": "5844ce49-13e4-4940-92bb-7e16c873cd60", // comes from the link<br/>
+"token": "c572ef7f-39f7-4ee2-af29-49c559c44a14" // comes from the link<br/>
+}<br/>
