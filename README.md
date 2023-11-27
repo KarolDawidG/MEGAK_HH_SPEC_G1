@@ -39,6 +39,8 @@ Example json:<br/>
 {<br/>
 	"path":"D:/KURS JS/students.csv"<br/>
 }<br/>
+Example .csv file:<br/>
+https://www.dropbox.com/scl/fi/t2yjimwfibyhz7i6b0i9v/students.csv?rlkey=9jzoctqf5cmf6rbvyk79she0j&dl=0<br/>
 
 ### POST /user/add-hr
 Adding new HR user.<br/>
