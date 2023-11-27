@@ -52,3 +52,10 @@ Example json:<br/>
 	"company": "LuxCompany",<br/>
 	"maxReservedStudents": "84"<br/>
 }<br/>
+
+### POST /user/add-admin
+Adding new admin user.<br/>
+Example json:<br/>
+{<br/>
+	"email": "test@gmail.com"<br/>
+}<br/>
