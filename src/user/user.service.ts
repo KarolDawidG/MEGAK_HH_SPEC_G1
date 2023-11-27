@@ -24,9 +24,10 @@ import { ProjectService } from '../project/project.service';
 import { projectTypeEnum } from '../interfaces/ProjectInterface';
 import { studentCreatedEmailTemplate } from '../templates/email/studentCreated';
 import { HrProfileService } from '../hrProfile/hrProfile.service';
-import { UserAddHrDto } from './dto/user.add-hr';
+import { UserAddHrDto } from './dto/user.add-hr.dto';
 import { AddHrResponse } from '../interfaces/AddHrResponse';
 import { hrCreatedEmailTemplate } from '../templates/email/hrCreated';
+import { adminCreatedEmailTemplate } from '../templates/email/adminCreated';
 
 @Injectable()
 export class UserService {
@@ -205,6 +206,26 @@ export class UserService {
         hrCreatedEmailTemplate(user.token, user.id),
       );
       return { user, hrProfile };
+    } catch {
+      throw new InternalServerErrorException();
+    }
+  }
+
+  async addAdmin(email: string): Promise<UserEntity> {
+    try {
+      const token = uuid();
+      const user = await this.userRepository.save({
+        email,
+        token,
+        isActive: false,
+        role: roleEnum.admin,
+      });
+      await this.mailService.sendMail(
+        user.email,
+        messages.newAdminSubject,
+        adminCreatedEmailTemplate(user.token, user.id),
+      );
+      return user;
     } catch {
       throw new InternalServerErrorException();
     }

@@ -7,17 +7,18 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { UserChangePasswordDto } from './dto/user.change-password';
+import { UserChangePasswordDto } from './dto/user.change-password.dto';
 import { messages } from '../config/messages';
-import { UserNewPasswordDto } from './dto/user.new-password';
+import { UserNewPasswordDto } from './dto/user.new-password.dto';
 import { AuthGuard } from '@nestjs/passport';
-import { UserImportDto } from './dto/user.import';
+import { UserImportDto } from './dto/user.import.dto';
 import { StudentsImportResponse } from '../interfaces/StudentsImportResponse';
 import { UserObj } from '../decorators/user-obj.decorator';
 import { UserEntity } from './user.entity';
 import { roleEnum } from '../interfaces/UserInterface';
-import { UserAddHrDto } from './dto/user.add-hr';
+import { UserAddHrDto } from './dto/user.add-hr.dto';
 import { AddHrResponse } from '../interfaces/AddHrResponse';
+import { UserAddAdminDto } from './dto/user.add-admin.dto';
 
 @Controller('user')
 export class UserController {
@@ -77,5 +78,21 @@ export class UserController {
       throw new BadRequestException(messages.addUserEmailExist);
     }
     return await this.userService.addHr(body);
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Post('add-admin')
+  async addAdmin(
+    @Body() body: UserAddAdminDto,
+    @UserObj() user: UserEntity,
+  ): Promise<UserEntity> {
+    if (user.role !== roleEnum.admin) {
+      throw new ForbiddenException(messages.accessDenied);
+    }
+    const supposedUser = await this.userService.findOne(body.email);
+    if (supposedUser) {
+      throw new BadRequestException(messages.addUserEmailExist);
+    }
+    return await this.userService.addAdmin(body.email);
   }
 }

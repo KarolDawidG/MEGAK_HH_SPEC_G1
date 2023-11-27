@@ -24,5 +24,6 @@ export const messages = {
   accessDenied: 'Nie masz uprawnień administratora.',
   newStudentSubject: 'Aplikacja MegaK - Zostałeś dodany do listy studentów',
   newHrSubject: `Aplikacja MegaK - Zostałeś dodany do listy HR'owców`,
+  newAdminSubject: 'Aplikacja MegaK - Zostałeś dodany jako administrator',
   addUserEmailExist: 'Użytkownik o podanym adresie email już istnieje.',
 };
