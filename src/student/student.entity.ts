@@ -20,7 +20,7 @@ export class StudentEntity implements StudentInterface {
   @PrimaryGeneratedColumn('uuid', { name: 'ID' })
   id: string;
 
-  @OneToOne(() => UserEntity, (user) => user.id)
+  @OneToOne(() => UserEntity, (user) => user.student)
   @JoinColumn({ name: 'USER_ID' })
   user: UserEntity;
 
