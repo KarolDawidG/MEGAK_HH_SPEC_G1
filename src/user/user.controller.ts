@@ -26,7 +26,7 @@ export class UserController {
 
   @Post('change-password')
   async changePassword(@Body() body: UserChangePasswordDto): Promise<void> {
-    const user = await this.userService.findOne(body.email);
+    const user = await this.userService.findByEmail(body.email);
     if (!user) {
       throw new BadRequestException(messages.emailNotFound);
     }
@@ -38,9 +38,9 @@ export class UserController {
 
   @Post('new-password')
   async newPassword(@Body() body: UserNewPasswordDto): Promise<void> {
-    const user = await this.userService.findOne(body.email);
+    const user = await this.userService.findById(body.id);
     if (!user) {
-      throw new BadRequestException(messages.emailNotFound);
+      throw new BadRequestException(messages.userIdNotFound);
     }
     if (!user.isActive) {
       throw new BadRequestException(messages.userIsNotActive);
@@ -73,7 +73,7 @@ export class UserController {
     if (user.role !== roleEnum.admin) {
       throw new ForbiddenException(messages.accessDenied);
     }
-    const supposedUser = await this.userService.findOne(body.email);
+    const supposedUser = await this.userService.findByEmail(body.email);
     if (supposedUser) {
       throw new BadRequestException(messages.addUserEmailExist);
     }
@@ -89,7 +89,7 @@ export class UserController {
     if (user.role !== roleEnum.admin) {
       throw new ForbiddenException(messages.accessDenied);
     }
-    const supposedUser = await this.userService.findOne(body.email);
+    const supposedUser = await this.userService.findByEmail(body.email);
     if (supposedUser) {
       throw new BadRequestException(messages.addUserEmailExist);
     }
@@ -98,9 +98,9 @@ export class UserController {
 
   @Post('register')
   async register(@Body() body: UserNewPasswordDto): Promise<void> {
-    const user = await this.userService.findOne(body.email);
+    const user = await this.userService.findById(body.id);
     if (!user) {
-      throw new BadRequestException(messages.emailNotFound);
+      throw new BadRequestException(messages.userIdNotFound);
     }
     if (user.isActive) {
       throw new BadRequestException(messages.userIsActiveError);

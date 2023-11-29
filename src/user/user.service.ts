@@ -50,9 +50,17 @@ export class UserService {
     private studentService: StudentService,
   ) {}
 
-  async findOne(email: string): Promise<UserEntity> {
+  async findByEmail(email: string): Promise<UserEntity> {
     try {
       return await this.userRepository.findOne({ where: { email } });
+    } catch {
+      throw new InternalServerErrorException();
+    }
+  }
+
+  async findById(id: string): Promise<UserEntity> {
+    try {
+      return await this.userRepository.findOne({ where: { id } });
     } catch {
       throw new InternalServerErrorException();
     }
