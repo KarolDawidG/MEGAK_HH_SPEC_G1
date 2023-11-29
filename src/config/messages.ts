@@ -5,6 +5,7 @@ export const messages = {
     'Podane dane logowania są nieprawidłowe. Sprawdź poprawność adresu email i hasła.',
   loggedOut: 'Zostałeś pomyślnie wylogowany z aplikacji.',
   emailNotFound: 'Nie znaleziono użytkownika o podanym adresie e-mail.',
+  userIdNotFound: 'Nie znaleziono użytkownika o podanym id.',
   userIsNotActive: 'Nie można zresetować hasła dla nieaktywnego użytkownika!',
   userIsActiveError: 'Użytkownik jest już zarejestrowany!',
   changePasswordSubject: 'Aplikacja MegaK - Zmień hasło',
