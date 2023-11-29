@@ -15,6 +15,7 @@ import {
  * @param {[number, number]} [es=null] - Expected Salary, Takes array of two values, lower border at first and upper border on second index
  * @param {boolean, number} [cta=null] - Can Take Apprenticeship, empty = false otherwise true
  * @param {number} [moce=0] - Months of minimum commercial experiecne, takes number of months
+ * @param {string} [srch=null] - Search String
  * @param {number} [page] - Number of page
  * @param {number} [pitems] - Number of elements per page
  */
@@ -37,6 +38,8 @@ export interface StudentListQueryRequestInterface {
   cta?: boolean;
   // MonthsOfCommercialExperience
   moce?: number;
+  // Search String
+  srch?: string;
   // Page
   page: number;
   // ElementsPerPage
