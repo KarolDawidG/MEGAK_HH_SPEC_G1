@@ -13,6 +13,9 @@ export class StudentService {
   ) {}
 
   async findAll(filterParams: StudentListQueryRequestInterface) {
+    const limit = (filterParams.pitems <= 90 && filterParams.pitems) || 15;
+    const offset = filterParams.page * limit - limit ?? 1;
+
     const query = await this.studentRepository
       .createQueryBuilder('student')
       .leftJoinAndSelect('student.user', 'user')
@@ -86,11 +89,6 @@ export class StudentService {
         val: filterParams.moce,
       });
 
-    return await query
-      .limit(filterParams.pitems || 15)
-      .offset(
-        filterParams.page * filterParams.pitems - filterParams.pitems ?? 1,
-      )
-      .getRawMany();
+    return await query.limit(limit).offset(offset).getRawMany();
   }
 }
