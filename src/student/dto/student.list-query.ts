@@ -1,5 +1,11 @@
 import { Transform } from 'class-transformer';
-import { IsArray, IsBoolean, IsNumber, IsOptional } from 'class-validator';
+import {
+  IsArray,
+  IsBoolean,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import {
   workTypeEnum,
   contractTypeEnum,
@@ -50,6 +56,10 @@ export class StudentListQuery implements StudentListQueryRequestInterface {
   @IsOptional()
   @IsNumber()
   moce?: number;
+
+  @IsOptional()
+  @IsString()
+  srch?: string;
 
   @IsOptional()
   @IsNumber()

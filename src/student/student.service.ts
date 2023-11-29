@@ -89,6 +89,11 @@ export class StudentService {
         val: filterParams.moce,
       });
 
+    if (filterParams?.srch)
+      query.andWhere('student.targetWorkCity LIKE :val', {
+        val: `%${filterParams.srch}%`,
+      });
+
     return await query.limit(limit).offset(offset).getRawMany();
   }
 }
