@@ -46,7 +46,7 @@ Example json:<br/>
 "path":"D:/KURS JS/students.csv"<br/>
 }<br/>
 
-### GET /student/list?
+### GET /student/list?page=<pageNumber>&pitems=<NumberOfElementsPerPage>
 
 Avalaible query params:
 
