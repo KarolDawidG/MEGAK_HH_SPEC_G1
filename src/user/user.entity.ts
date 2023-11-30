@@ -1,5 +1,6 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import {Entity, Column, PrimaryGeneratedColumn, OneToOne} from 'typeorm';
 import { UserInterface, roleEnum } from '../interfaces/UserInterface';
+import {StudentEntity} from "../student/student.entity";
 
 @Entity({
   name: 'users',
@@ -37,4 +38,7 @@ export class UserEntity implements UserInterface {
 
   @Column({ name: 'TOKEN', type: 'varchar' }) // @TODO set column length and other options if we agree
   token: string;
+
+  @OneToOne(() => StudentEntity, (student) => student.user, {onUpdate:"CASCADE", cascade: true })
+  student: StudentEntity;
 }

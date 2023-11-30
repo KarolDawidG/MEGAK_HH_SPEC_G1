@@ -20,14 +20,17 @@ export class StudentEntity implements StudentInterface {
   @PrimaryGeneratedColumn('uuid', { name: 'ID' })
   id: string;
 
-  @OneToOne(() => UserEntity, (user) => user.id)
+  @OneToOne(() => UserEntity, (user) => user.student, {onUpdate: "CASCADE"})
+  @JoinColumn({ name: 'USER_ID' })
+  user: UserEntity;
+  /*@OneToOne(() => UserEntity, (user) => user.id)
   @JoinColumn({ name: 'USER_ID' })
   user: UserEntity;
 
   @Column({ name: 'USER_ID', length: 36, type: 'varchar', unique: true })
-  userId: string;
+  userId: string; */
 
-  @Column({ name: 'STATUS', type: 'tinyint', default: 0 })
+  @Column({ name: 'STATUS', type: "enum", enum: studentStatus, default: studentStatus.available })
   status: studentStatus;
 
   @Column({ name: 'FIRST_NAME', type: 'varchar', length: 50 })
@@ -50,13 +53,13 @@ export class StudentEntity implements StudentInterface {
   @Column({ name: 'BIO', type: 'varchar', length: 5000 })
   bio: string;
 
-  @Column({ name: 'EXPECTED_WORK_TYPE', type: 'tinyint', default: 0 })
+  @Column({ name: 'EXPECTED_WORK_TYPE', type: "enum", enum: workTypeEnum, default: workTypeEnum.noPreferences })
   expectedWorkType: workTypeEnum;
 
   @Column({ name: 'TARGET_WORK_CITY', type: 'varchar', length: 100 })
   targetWorkCity: string;
 
-  @Column({ name: 'CONTRACT_TYPE', type: 'tinyint', default: 0 })
+  @Column({ name: 'CONTRACT_TYPE', type: "enum", enum: contractTypeEnum, default: contractTypeEnum.noPreferences })
   expectedContractType: contractTypeEnum;
 
   @Column({
@@ -96,7 +99,7 @@ export class StudentEntity implements StudentInterface {
 
   @Column({
     name: 'UPDATED_AT',
-    type: 'datetime',
+    type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP',
   })
   updatedAt: string;

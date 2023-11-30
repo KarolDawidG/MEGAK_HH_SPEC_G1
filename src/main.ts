@@ -13,7 +13,7 @@ const bootstrap = async (): Promise<void> => {
       forbidNonWhitelisted: true,
       transform: true,
       transformOptions: {
-        enableImplicitConversion: true,
+          enableImplicitConversion: true,
       },
     }),
   );
