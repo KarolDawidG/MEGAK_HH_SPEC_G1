@@ -1,18 +1,15 @@
-import {forwardRef, Inject, Injectable, NotAcceptableException, NotFoundException} from '@nestjs/common';
+import {Injectable, NotAcceptableException, NotFoundException} from '@nestjs/common';
 import {StudentEntity} from "./student.entity";
 import {StudentProfileResponse, UpdatedStudentResponse} from "../interfaces/StudentInterface";
 import {InjectRepository} from "@nestjs/typeorm";
-import {Not, Repository} from "typeorm";
+import { Repository} from "typeorm";
 import {ProjectEntity} from "../project/project.entity";
 import {UpdateStudentDetailsDto} from "./dto/update-student-details.dto";
-import {AxiosError} from "axios";
-import {catchError, lastValueFrom} from "rxjs";
 import {HttpService} from "@nestjs/axios";
 import {UserEntity} from "../user/user.entity";
 import {UpdateProjectUrlDto} from "../project/dto/update-project-url.dto";
 import {ProjectTypeEnum} from "../interfaces/ProjectInterface";
 import {GithubNameValidator} from "../utils/githubNameValidator";
-
 
 @Injectable()
 export class StudentService {
@@ -24,8 +21,7 @@ export class StudentService {
         private userRepository: Repository<UserEntity>,
         @InjectRepository(ProjectEntity)
         private projectRepository: Repository<ProjectEntity>,
-        private githubService: GithubNameValidator,
-        private readonly httpService: HttpService) {
+        private githubService: GithubNameValidator,) {
     }
 
     async getUserByStudentId(studentId: string): Promise<string> {

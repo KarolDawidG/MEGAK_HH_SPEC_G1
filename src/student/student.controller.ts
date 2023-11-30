@@ -22,7 +22,7 @@ export class StudentController {
     }
 
     @Get('/student-profile/:id')
-   // @UseGuards(AuthGuard('jwt'))
+    @UseGuards(AuthGuard('jwt'))
     async findStudentProfile(
         @Param(
             'id',
@@ -33,11 +33,11 @@ export class StudentController {
     }
 
     @Patch('/student-profile/:id')
-   // @UseGuards(AuthGuard('jwt'))
+    @UseGuards(AuthGuard('jwt'))
     async updateStudentProfile(
         @Param (
             'id',
-            //ParseUUIDPipe
+            ParseUUIDPipe
         ) studentId: string,
         @Body() studentProfileDetails: UpdateStudentDetailsDto
     ): Promise<UpdatedStudentResponse> {
