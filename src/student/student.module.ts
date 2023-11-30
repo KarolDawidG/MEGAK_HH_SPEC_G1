@@ -1,6 +1,7 @@
-import {forwardRef, Module} from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { StudentEntity } from './student.entity';
+import { StudentService } from './student.service';
 import { StudentController } from './student.controller';
 import { StudentService } from './student.service';
 import {UserModule} from "../user/user.module";
@@ -10,6 +11,9 @@ import {ProjectEntity} from "../project/project.entity";
 import {GithubNameValidator} from "../utils/githubNameValidator";
 
 @Module({
+  imports: [TypeOrmModule.forFeature([StudentEntity])],
+  providers: [StudentService],
+  exports: [StudentService],
   imports: [
       TypeOrmModule.forFeature([StudentEntity]),
       TypeOrmModule.forFeature([UserEntity]),

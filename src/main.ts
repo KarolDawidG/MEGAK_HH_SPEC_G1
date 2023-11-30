@@ -21,6 +21,7 @@ const bootstrap = async (): Promise<void> => {
   app.enableCors({
     methods: 'GET,PATCH,POST,DELETE',
     credentials: true,
+    origin: config.crossOrigin,
   });
   await app.listen(3001);
 };
