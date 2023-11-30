@@ -71,6 +71,7 @@ export class AuthService {
           domain: 'localhost',
           httpOnly: true,
         })
+        .status(200)
         .json(user);
     } catch {
       throw new UnauthorizedException(messages.invalidLoginData);

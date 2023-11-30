@@ -14,9 +14,9 @@ export enum contractTypeEnum {
 }
 
 export enum studentStatus {
-  inactive = 0,
-  active = 1,
-  blocked = 2,
+  available = 0,
+  duringConversation = 1,
+  engaged = 2,
 }
 
 export interface StudentInterface {

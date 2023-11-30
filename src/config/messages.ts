@@ -5,10 +5,28 @@ export const messages = {
     'Podane dane logowania są nieprawidłowe. Sprawdź poprawność adresu email i hasła.',
   loggedOut: 'Zostałeś pomyślnie wylogowany z aplikacji.',
   emailNotFound: 'Nie znaleziono użytkownika o podanym adresie e-mail.',
+  userIdNotFound: 'Nie znaleziono użytkownika o podanym id.',
   userIsNotActive: 'Nie można zresetować hasła dla nieaktywnego użytkownika!',
+  userIsActiveError: 'Użytkownik jest już zarejestrowany!',
   changePasswordSubject: 'Aplikacja MegaK - Zmień hasło',
-  changePasswordHtml: `Aby ustawić nowe hasło do naszej aplikacji kliknij w poniższy link: <br/> https://jakiśadres/new-password/`, //@TODO: change URL
   newPasswordSubject: 'Aplikacja MegaK - Zmieniono hasło',
-  newPasswordHtml: `Informujemy, że nowe hasło do aplikacji zostało ustawione pomyślnie. Możesz się zalogować korzystając z nowego hasła.`,
   newPasswordInvalidBody: 'Link do zmiany hasła jest już nieaktualny.',
+  registrationInvalidBody:
+    'Link do rejestracji użytkownika jest już nieaktualny.',
+  csvImportEmailValidationError: 'Niepoprawny format adresu email.',
+  csvImportEmailExistError: 'Ten email istnieje już w bazie danych.',
+  csvImportCompletionDegreeValidationError:
+    'Niepoprawny format oceny stopnia przejścia kursu.',
+  csvImportEngagementDegreeValidationError:
+    'Niepoprawny format oceny stopnia aktywności i zaangażowania w kursie.',
+  csvImportProjectDegreeValidationError:
+    'Niepoprawny format oceny zadania zaliczeniowego w kursie.',
+  csvImportTeamProjectDegreeValidationError:
+    'Niepoprawny format oceny pracy w zespole w projekcie bonusowym.',
+  accessDenied: 'Nie masz uprawnień administratora.',
+  newStudentSubject: 'Aplikacja MegaK - Zostałeś dodany do listy studentów',
+  newHrSubject: `Aplikacja MegaK - Zostałeś dodany do listy HR'owców`,
+  newAdminSubject: 'Aplikacja MegaK - Zostałeś dodany jako administrator',
+  addUserEmailExist: 'Użytkownik o podanym adresie email już istnieje.',
+  userRegisteredSubject: 'Aplikacja MegaK - Konto aktywowane',
 };
