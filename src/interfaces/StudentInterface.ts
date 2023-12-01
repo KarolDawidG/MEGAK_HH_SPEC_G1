@@ -1,16 +1,16 @@
 export enum workTypeEnum {
-  noPreferences = 'Bez znaczenia',
-  onSite = 'Na miejscu',
-  relocation = 'Gotowość do przeprowadzki',
-  remote = 'Wyłącznie zdalnie',
-  hybrid = 'Hybrydowo',
+  noPreferences = 0,
+  onSite = 1,
+  relocation = 2,
+  remote = 3,
+  hybrid = 4,
 }
 
 export enum contractTypeEnum {
-  noPreferences = 'Brak preferencji',
-  UoP = 'Tylko UoP',
-  B2B = 'Możliwe B2B',
-  UZorUoD = 'Możliwe UZ/UOD',
+  noPreferences = 0,
+  UoP = 1,
+  B2B = 2,
+  UZorUoD = 3,
 }
 
 export enum studentStatus {
@@ -38,7 +38,7 @@ export interface StudentInterface {
   workExperience: string;
   courses: string;
   createdAt: string;
-  updatedAt: string;
+  updatedAt: () => string;
 }
 
 

@@ -20,15 +20,17 @@ export class StudentEntity implements StudentInterface {
   @PrimaryGeneratedColumn('uuid', { name: 'ID' })
   id: string;
 
-  @OneToOne(() => UserEntity, (user) => user.student, {onUpdate: "CASCADE"})
+  @OneToOne(() => UserEntity)
   @JoinColumn({ name: 'USER_ID' })
   user: UserEntity;
+
   /*@OneToOne(() => UserEntity, (user) => user.id)
   @JoinColumn({ name: 'USER_ID' })
   user: UserEntity;
 
   @Column({ name: 'USER_ID', length: 36, type: 'varchar', unique: true })
-  userId: string; */
+  userId: string;
+  */
 
   @Column({ name: 'STATUS', type: "enum", enum: studentStatus, default: studentStatus.available })
   status: studentStatus;
@@ -102,5 +104,5 @@ export class StudentEntity implements StudentInterface {
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP',
   })
-  updatedAt: string;
+  updatedAt: () => string;
 }

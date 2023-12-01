@@ -1,4 +1,4 @@
-import {ProjectTypeEnum} from "../../interfaces/ProjectInterface";
+import {projectTypeEnum} from "../../interfaces/ProjectInterface";
 import {IsArray, IsDateString, IsEnum, IsOptional} from "class-validator";
 import {Transform} from "class-transformer";
 
@@ -9,10 +9,10 @@ export class UpdateProjectUrlDto {
     url: string;
 
     @IsOptional()
-    @IsEnum(ProjectTypeEnum)
-    type: ProjectTypeEnum;
+    @IsEnum(projectTypeEnum)
+    type: projectTypeEnum;
 
     @IsOptional()
     @IsDateString()
-    updatedAt: string;
+    updatedAt: () => string;
 }

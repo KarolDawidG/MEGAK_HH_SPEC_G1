@@ -39,6 +39,6 @@ export class UserEntity implements UserInterface {
   @Column({ name: 'TOKEN', type: 'varchar' }) // @TODO set column length and other options if we agree
   token: string;
 
-  @OneToOne(() => StudentEntity, (student) => student.user, {onUpdate:"CASCADE", cascade: true })
+  @OneToOne(() => StudentEntity)
   student: StudentEntity;
 }

@@ -16,7 +16,9 @@ export class GithubNameValidator {
         private readonly httpService: HttpService) {
     }
 
+
     async validateGithubName (id: string, githubName: string): Promise<githubNameValidatorResponse> {
+        if(githubName){
         const {data} = await lastValueFrom(
             this.httpService.get(`https://api.github.com/users/${githubName}`).pipe(
                 catchError((error: AxiosError) => {
@@ -37,5 +39,5 @@ export class GithubNameValidator {
             isGithubUserUnique: uniqueGithubUser.length < 1,
         }
     }
-
+    }
 }

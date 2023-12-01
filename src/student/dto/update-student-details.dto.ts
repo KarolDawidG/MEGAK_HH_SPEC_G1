@@ -15,6 +15,7 @@ import {
 } from "class-validator";
 //import {Unique} from "typeorm";
 import {Transform} from "class-transformer";
+import {Not} from "typeorm";
 
 export class UpdateStudentDetailsDto implements Partial<StudentInterface>{
     @IsOptional()
@@ -39,10 +40,10 @@ export class UpdateStudentDetailsDto implements Partial<StudentInterface>{
     lastName: string;
 
     @IsOptional()
-    @ValidateIf(obj=>obj.githubName==='value')
+    //@ValidateIf(obj=>obj.githubName==='value')
     @IsNotEmpty()
     @IsString()
-    githubName: string | null;
+    githubName: string;
 
     @Transform(({ value }) => value.split(','))
     @IsOptional()
@@ -102,6 +103,6 @@ export class UpdateStudentDetailsDto implements Partial<StudentInterface>{
 
     @IsOptional()
     @IsDateString()
-    updatedAt: string;
+    updatedAt: () => string;
 }
 
