@@ -19,7 +19,7 @@ import {Not} from "typeorm";
 
 export class UpdateStudentDetailsDto implements Partial<StudentInterface>{
     @IsOptional()
-    @ValidateIf(obj=>obj.email==='value')
+    //@ValidateIf(obj=>obj.email==='value')
     @IsEmail()
     @IsNotEmpty()
     email: string | null;

@@ -22,7 +22,7 @@ export class GithubNameValidator {
         const {data} = await lastValueFrom(
             this.httpService.get(`https://api.github.com/users/${githubName}`).pipe(
                 catchError((error: AxiosError) => {
-                    console.log(error);
+                    console.log(`GithubValidatorError: user [ ${githubName} ]`, error.response.statusText, error.response.status, error.code);
                     throw new NotFoundException(`Użytkownik Github z loginem: ${githubName} nie istnieje`);
                 }))
         );

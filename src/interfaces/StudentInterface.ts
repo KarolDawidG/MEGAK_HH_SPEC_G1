@@ -70,5 +70,5 @@ export interface githubNameValidatorResponse {
 
 export type UpdatedStudentResponse = {
   isSuccess: boolean;
-
+  message: string;
 }

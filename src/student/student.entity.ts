@@ -46,6 +46,7 @@ export class StudentEntity implements StudentInterface {
 
   @Column({
     name: 'GITHUB_USERNAME',
+    unique: true,
     type: 'varchar',
     length: 39,
     nullable: true,

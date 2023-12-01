@@ -1,8 +1,15 @@
-import {Injectable, InternalServerErrorException, NotFoundException} from '@nestjs/common';
+import {
+    HttpCode,
+    HttpException, HttpStatus, Inject,
+    Injectable,
+    InternalServerErrorException,
+    NotAcceptableException,
+    NotFoundException
+} from '@nestjs/common';
 import {StudentEntity} from "./student.entity";
 import {StudentProfileResponse, studentStatus, UpdatedStudentResponse} from "../interfaces/StudentInterface";
 import {InjectRepository} from "@nestjs/typeorm";
-import {Repository} from "typeorm";
+import {Not, Repository, UpdateResult} from "typeorm";
 import {ProjectEntity} from "../project/project.entity";
 import {UpdateStudentDetailsDto} from "./dto/update-student-details.dto";
 import {UserEntity} from "../user/user.entity";
@@ -97,10 +104,11 @@ export class StudentService {
         }
     };
 
-    //TODO: walidacja na unikalny mail
+
+    //@TODO dodanie do update możliwości aktualizacji statusu studenta dostępny-->zatrudniony (0-->2)
     async updateOne(studentId: string, studentProfileDetails: UpdateStudentDetailsDto): Promise<UpdatedStudentResponse> {
         const student = await this.studentProfileRepository.findOne({where: {id: studentId}})
-        const userId = await this.getUserByStudentId(studentId);
+
         const dataUpdatedAt = () => 'CURRENT_TIMESTAMP';
 
         const {
@@ -124,35 +132,46 @@ export class StudentService {
         }
 
         if (student) {
+            const userId = await this.getUserByStudentId(studentId);
+            const uniqueUserMail = await this.userRepository.find({
+                where: {email, id: Not(userId)}
+            })
             const githubValidator = await this.githubService.validateGithubName(studentId, githubName)
 
+            if (!(email===undefined) && uniqueUserMail.length > 0 ){
+                throw new NotAcceptableException(`Użytkownik z adresem e-mail: ${email} już istnieje w bazie`)
+            }
 
-            //@TODO walidacja, zeby update nie wykonywal sie zawsze
-                    const update1 = await this.studentProfileRepository.createQueryBuilder()
-                        .update('students')
-                        .set({
-                            githubName,
-                            ...restOfDetails,
-                            updatedAt: dataUpdatedAt,
-                        })
-                        .where('id = :studentId', {studentId})
-                        .execute()
+            const update1 = (!Object.values(restOfDetails).every(detail => detail === undefined))
+                ?
+                await this.studentProfileRepository.createQueryBuilder()
+                    .update('students')
+                    .set({
+                        githubName,
+                        ...restOfDetails,
+                        updatedAt: dataUpdatedAt,
+                    })
+                    .where('id = :studentId', {studentId})
+                    .execute()
+                :
+                console.log('no [students] rows affected')
+                //console.log(update1)
 
-
-
-            if (email) {
-                const update2 = await this.userRepository.createQueryBuilder()
+            const update2 = (email && uniqueUserMail.length===0)
+                ?
+                await this.userRepository.createQueryBuilder()
                     .update('users')
                     .set({
-                        email,
-                        //updatedAt: () => 'CURRENT_TIMESTAMP',
+                        email,   //updatedAt: () => 'CURRENT_TIMESTAMP',
                     })
                     .where('id = :userId', {userId})
                     .execute()
-            }
+                :
+                console.log('no [users] rows affected');
+                //console.log(update2)
 
-            const urlsUpdate = this.projectRepository
-                .createQueryBuilder().update('projects')
+            const urlsUpdate = this.projectRepository.createQueryBuilder()
+                .update('projects')
             if (studentProfileDetails.bonusProjectUrl && studentProfileDetails.portfolioUrl) {
                 urlsUpdate
                     .set(setBonusProjectUrl)
@@ -170,18 +189,27 @@ export class StudentService {
                 urlsUpdate
                     .set(setPortfolioUrl)
                     .where('projects.type = :type', {type: projectTypeEnum.portfolio})
-            } else return;
+            } else {
+                console.log('no [projects] rows affected');
+                return {
+                    isSuccess: !!(update1 as UpdateResult || update2 as UpdateResult),
+                    message: (update1 as UpdateResult || update2 as UpdateResult) ? 'All affected records' +
+                        ' have been successfully updated' : 'no [students/users/projects] rows affected'
+                }
+            }
             urlsUpdate.andWhere('projects.user_id = :id', {id: userId})
+
             const update3 = await urlsUpdate.execute()
-            //}
-            // }
-        } else {
+            //console.log(update3)
+        }
+        if (!student) {
             throw new NotFoundException('Kursant z podanym id nie istnieje')
         }
 
-
         return {
-            isSuccess: true
-        };
+            isSuccess: true,
+            message: 'All affected records have been successfully updated'
+        }
+
     }
 }
