@@ -28,7 +28,6 @@ export class StudentService {
         private githubService: GithubNameValidator,) {
     }
 
-
     async create(userId): Promise<StudentEntity> {
         try {
             return await this.studentProfileRepository.save({
@@ -102,8 +101,6 @@ export class StudentService {
         }
     };
 
-
-    //@TODO dodanie do update możliwości aktualizacji statusu studenta dostępny-->zatrudniony (0-->2)
     async updateOne(studentId: string, studentProfileDetails: UpdateStudentDetailsDto): Promise<UpdatedStudentResponse> {
         const student = await this.studentProfileRepository.findOne({where: {id: studentId}})
 
@@ -140,7 +137,7 @@ export class StudentService {
                 throw new NotAcceptableException(`Użytkownik z adresem e-mail: ${email} już istnieje w bazie`)
             }
 
-            const update1 = (!Object.values(restOfDetails).every(detail => detail === undefined))
+            const update1 = (!Object.values({...restOfDetails, githubName}).every(detail => detail === undefined)) || githubName
                 ?
                 await this.studentProfileRepository.createQueryBuilder()
                     .update('students')

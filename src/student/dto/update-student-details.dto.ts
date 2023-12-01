@@ -1,4 +1,4 @@
-import {contractTypeEnum, StudentInterface, workTypeEnum} from "../../interfaces/StudentInterface";
+import {contractTypeEnum, StudentInterface, studentStatus, workTypeEnum} from "../../interfaces/StudentInterface";
 
 import {
     IsArray,
@@ -100,6 +100,11 @@ export class UpdateStudentDetailsDto implements Partial<StudentInterface>{
     @IsOptional()
     @IsString()
     courses?: string | null;
+
+    @IsOptional()
+    @IsNotEmpty()
+    @IsEnum(studentStatus)
+    status?: studentStatus;
 
     @IsOptional()
     @IsDateString()

@@ -16,7 +16,6 @@ export class GithubNameValidator {
         private readonly httpService: HttpService) {
     }
 
-
     async validateGithubName (id: string, githubName: string): Promise<githubNameValidatorResponse> {
         if(githubName){
         const {data} = await lastValueFrom(
