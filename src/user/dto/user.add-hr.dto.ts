@@ -12,15 +12,12 @@ export class UserAddHrDto {
   email: string;
   @IsString()
   @IsNotEmpty()
-  firstName: string;
-  @IsString()
-  @IsNotEmpty()
-  lastName: string;
+  name: string;
   @IsString()
   @IsNotEmpty()
   company: string;
   @IsNumber()
   @Min(1)
-  @Max(199)
+  @Max(999)
   maxReservedStudents: number;
 }

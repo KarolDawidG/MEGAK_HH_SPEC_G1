@@ -23,11 +23,8 @@ export class HrProfileEntity implements HRProfileInterface {
   @Column({ name: 'USER_ID', type: 'varchar', length: 36 })
   userId: string;
 
-  @Column({ name: 'FIRST_NAME', type: 'varchar', length: 50 })
-  firstName: string;
-
-  @Column({ name: 'LAST_NAME', type: 'varchar', length: 50 })
-  lastName: string;
+  @Column({ name: 'NAME', type: 'varchar', length: 100 })
+  name: string;
 
   @Column({ name: 'MAX_RESERVED_STUDENTS', type: 'smallint', unsigned: true })
   maxReservedStudents: number;

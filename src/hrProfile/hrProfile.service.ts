@@ -13,15 +13,13 @@ export class HrProfileService {
   async create(
     userId,
     companyName,
-    firstName,
-    lastName,
+    name,
     maxReservedStudents,
   ): Promise<HrProfileEntity> {
     return await this.hrProfileRepository.save({
       userId,
       companyName,
-      firstName,
-      lastName,
+      name,
       maxReservedStudents,
     });
   }

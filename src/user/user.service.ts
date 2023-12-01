@@ -210,8 +210,7 @@ export class UserService {
       const hrProfile = await this.hrProfileService.create(
         user.id,
         userHrDto.company,
-        userHrDto.firstName,
-        userHrDto.lastName,
+        userHrDto.name,
         userHrDto.maxReservedStudents,
       );
       await this.mailService.sendMail(
