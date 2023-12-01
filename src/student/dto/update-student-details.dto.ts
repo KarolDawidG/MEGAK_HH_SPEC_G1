@@ -11,11 +11,11 @@ import {
     IsOptional,
     IsPhoneNumber,
     IsString,
-    Min, ValidateIf
+    Min,
+    //ValidateIf
 } from "class-validator";
 //import {Unique} from "typeorm";
 import {Transform} from "class-transformer";
-import {Not} from "typeorm";
 
 export class UpdateStudentDetailsDto implements Partial<StudentInterface>{
     @IsOptional()
@@ -26,7 +26,7 @@ export class UpdateStudentDetailsDto implements Partial<StudentInterface>{
 
     @IsOptional()
     @IsPhoneNumber()
-        //@IsMobilePhone() ??
+    //@IsMobilePhone()
     phoneNumber?: string | null;
 
     @IsOptional()
