@@ -66,7 +66,7 @@ export class StudentListQuery implements StudentListQueryRequestInterface {
   @IsNumber()
   @IsNumber({ allowNaN: false })
   @Min(1)
-  page: number;
+  page?: number;
 
   @IsOptional()
   @IsNumber()

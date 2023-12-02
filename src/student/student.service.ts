@@ -17,7 +17,7 @@ export class StudentService {
     filterParams: StudentListQueryRequestInterface,
   ): Promise<[StudentListResponse[], number]> {
     const limit = (filterParams.pitems <= 90 && filterParams.pitems) || 15;
-    const offset = filterParams.page * limit - limit ?? 1;
+    const offset = (filterParams.page ?? 1) * limit - limit ?? 1;
 
     const query = await this.studentRepository
       .createQueryBuilder('student')

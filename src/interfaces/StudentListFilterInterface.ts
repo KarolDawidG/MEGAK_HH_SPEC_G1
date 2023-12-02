@@ -41,7 +41,7 @@ export interface StudentListQueryRequestInterface {
   // Search String
   srch?: string;
   // Page
-  page: number;
+  page?: number;
   // ElementsPerPage
   pitems?: number;
 }

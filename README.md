@@ -46,19 +46,44 @@ Example json:<br/>
 "path":"D:/KURS JS/students.csv"<br/>
 }<br/>
 
-### GET /student/list?page=<pageNumber>&pitems=<NumberOfElementsPerPage>
+## Student List
 
-Avalaible query params:
+`GET /student/list?page=<pageNumber>`
 
-- @param {number[]} [cc=null] - Course Completion degree, takes Array of numbers
-- @param {number[]} [ce=null] - Coures Engagement degree, takes Array of numbers
-- @param {number[]} [pd=null] - Project Degree, takes Array of numbers
-- @param {number[]} [tpd=null] - Team Project Degree, takes Array of numbers
-- @param {number[]} [ewt=null] - Work Type, Takes Array of the following: 0 - No Preferences, 1 - On Site, 2 - Relocation, 3 - Remote, 4 - Hybrid
-- @param {number[]} [ect=null] - Contract Type, Takes Array of the following: 0 - No Preferences, 1 - UoP, 2 - B2B, 3 - UZorUoD
-- @param {[number, number]} [es=null] - Expected Salary, Takes array of two values, lower border at first and upper border on second index
-- @param {boolean, number} [cta=null] - Can Take Apprenticeship, empty = false otherwise true
-- @param {number} [moce=0] - Months of minimum commercial experiecne, takes number of months
-- @param {string} [srch=null] - Search String
-- @param {number} [page] - Number of page
-- @param {number} [pitems] - Number of elements per page
+Page number cannot be lower than 1.
+Avalaible query params (Should be separated with & in address, empty params will be ignored):
+
+- cc - Course Completion degree, takes Array of numbers
+- ce - Coures Engagement degree, takes Array of numbers
+- pd - Project Degree, takes Array of numbers
+- tpd - Team Project Degree, takes Array of numbers
+- ewt - Work Type, Takes Array of the following: 0 - No Preferences, 1 - On Site, 2 - Relocation, 3 - Remote, 4 - Hybrid
+- ect - Contract Type, Takes Array of the following: 0 - No Preferences, 1 - UoP, 2 - B2B, 3 - UZorUoD
+- es - Expected Salary, Takes array of two values, lower border at first and upper border on second index
+- cta - Can Take Apprenticeship, empty = false otherwise true
+- moce - Months of minimum commercial experiecne, takes number of months
+- srch - Search String (Search only city name)
+- page - Number of page
+- pitems - Number of elements per page (Default 15)
+
+Returns:
+
+```
+[
+  studentsList[]: {
+    firstName: string;
+    lastName: string;
+    "expectedWorkType": number,
+    "targetWorkCity": string,
+    "expectedContractType": number,
+    "expectedSalary": number,
+    "canTakeApprenticeship": 0 | 1 (boolean/number),
+    "monthsOfCommercialExperience": number,
+    "projectDegree": number,
+    "teamProjectDegree": number,
+    "courseCompletion": number,
+    "courseEngagemnet": number
+  },
+  number - Total DB records count
+]
+```
