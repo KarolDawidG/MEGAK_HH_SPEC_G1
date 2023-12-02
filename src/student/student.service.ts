@@ -1,10 +1,11 @@
-import { Injectable } from '@nestjs/common';
 import { StudentEntity } from './student.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { StudentListQueryRequestInterface } from '../interfaces/StudentListFilterInterface';
 import { roleEnum } from 'src/interfaces/UserInterface';
 import { StudentListResponse } from 'src/interfaces/StudentListResponse';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { studentStatus } from '../interfaces/StudentInterface';
 
 @Injectable()
 export class StudentService {
@@ -12,6 +13,7 @@ export class StudentService {
     @InjectRepository(StudentEntity)
     private studentRepository: Repository<StudentEntity>,
   ) {}
+
 
   async findAll(
     filterParams: StudentListQueryRequestInterface,
@@ -101,5 +103,16 @@ export class StudentService {
       await query.limit(limit).offset(offset).getRawMany(),
       await query.getCount(),
     ];
+
+  async create(userId): Promise<StudentEntity> {
+    try {
+      return await this.studentRepository.save({
+        userId,
+        status: studentStatus.available,
+      });
+    } catch {
+      throw new InternalServerErrorException();
+    }
+
   }
 }

@@ -8,7 +8,7 @@ import {
 
 import {
   ProjectInterface,
-  ProjectTypeEnum,
+  projectTypeEnum,
 } from 'src/interfaces/ProjectInterface';
 import { UserEntity } from 'src/user/user.entity';
 
@@ -30,7 +30,7 @@ export class ProjectEntity implements ProjectInterface {
   url: string;
 
   @Column({ name: 'TYPE', type: 'tinyint' })
-  type: ProjectTypeEnum;
+  type: projectTypeEnum;
 
   @Column({
     name: 'CREATED_AT',
