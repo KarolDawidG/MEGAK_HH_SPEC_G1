@@ -43,5 +43,5 @@ export interface StudentListQueryRequestInterface {
   // Page
   page: number;
   // ElementsPerPage
-  pitems: number;
+  pitems?: number;
 }

@@ -21,19 +21,19 @@ export class StudentService {
       .leftJoinAndSelect('student.user', 'user')
       .leftJoinAndSelect('user.projectEvaluation', 'evaluation')
       .select([
-        'student.firstName',
-        'student.lastName',
-        'student.expectedWorkType',
-        'student.targetWorkCity',
-        'student.expectedContractType',
-        'student.expectedSalary',
-        'student.canTakeApprenticeship',
-        'student.monthsOfCommercialExperience',
-        'user.role',
-        'evaluation.projectDegree',
-        'evaluation.teamProjectDegree',
-        'evaluation.courseCompletion',
-        'evaluation.courseEngagement',
+        'student.firstName AS firstName',
+        'student.lastName AS lastName',
+        'student.expectedWorkType AS expectedWorkType',
+        'student.targetWorkCity AS targetWorkCity',
+        'student.expectedContractType AS expectedContractType',
+        'student.expectedSalary AS expectedSalary',
+        'student.canTakeApprenticeship AS canTakeApprenticeship',
+        'student.monthsOfCommercialExperience AS monthsOfCommercialExperience',
+        // 'user.role AS role', // Uncomment to debug role type
+        'evaluation.projectDegree AS projectDegree',
+        'evaluation.teamProjectDegree AS teamProjectDegree',
+        'evaluation.courseCompletion AS courseCompletion',
+        'evaluation.courseEngagement AS courseEngagemnet',
       ])
       .where(`user.role = ${roleEnum.student}`)
       .andWhere('user.isActive = 1');

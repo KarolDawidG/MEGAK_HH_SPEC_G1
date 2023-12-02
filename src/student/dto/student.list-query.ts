@@ -5,6 +5,7 @@ import {
   IsNumber,
   IsOptional,
   IsString,
+  Min,
 } from 'class-validator';
 import {
   workTypeEnum,
@@ -63,9 +64,11 @@ export class StudentListQuery implements StudentListQueryRequestInterface {
 
   @IsOptional()
   @IsNumber()
+  @IsNumber({ allowNaN: false })
+  @Min(1)
   page: number;
 
   @IsOptional()
   @IsNumber()
-  pitems: number;
+  pitems?: number;
 }

@@ -11,4 +11,5 @@ export const messages = {
   newPasswordSubject: 'Aplikacja MegaK - Zmieniono hasło',
   newPasswordHtml: `Informujemy, że nowe hasło do aplikacji zostało ustawione pomyślnie. Możesz się zalogować korzystając z nowego hasła.`,
   newPasswordInvalidBody: 'Link do zmiany hasła jest już nieaktualny.',
+  emptySearchResult: `Nie znaleziono rekordów o zadanych parametrach wyszukiwania`,
 };
