@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { StudentListQueryRequestInterface } from '../interfaces/StudentListFilterInterface';
 import { roleEnum } from 'src/interfaces/UserInterface';
+import { StudentListResponse } from 'src/interfaces/StudentListResponse';
 
 @Injectable()
 export class StudentService {
@@ -12,7 +13,9 @@ export class StudentService {
     private studentRepository: Repository<StudentEntity>,
   ) {}
 
-  async findAll(filterParams: StudentListQueryRequestInterface) {
+  async findAll(
+    filterParams: StudentListQueryRequestInterface,
+  ): Promise<[StudentListResponse[], number]> {
     const limit = (filterParams.pitems <= 90 && filterParams.pitems) || 15;
     const offset = filterParams.page * limit - limit ?? 1;
 
@@ -94,6 +97,9 @@ export class StudentService {
         val: `%${filterParams.srch}%`,
       });
 
-    return await query.limit(limit).offset(offset).getRawMany();
+    return [
+      await query.limit(limit).offset(offset).getRawMany(),
+      await query.getCount(),
+    ];
   }
 }

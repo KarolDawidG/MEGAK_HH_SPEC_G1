@@ -21,9 +21,8 @@ export class StudentController {
   )
   async getList(
     @Query() filterOptions: StudentListQuery,
-  ): Promise<StudentList[]> {
-    const searchResult: StudentList[] =
-      await this.studentService.findAll(filterOptions);
+  ): Promise<[StudentList[], number]> {
+    const searchResult = await this.studentService.findAll(filterOptions);
 
     if (!searchResult.length) {
       throw new NotFoundException(messages.emptySearchResult);
