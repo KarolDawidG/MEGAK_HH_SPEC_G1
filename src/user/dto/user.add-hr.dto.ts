@@ -12,7 +12,7 @@ export class UserAddHrDto {
   email: string;
   @IsString()
   @IsNotEmpty()
-  name: string;
+  fullName: string;
   @IsString()
   @IsNotEmpty()
   company: string;
