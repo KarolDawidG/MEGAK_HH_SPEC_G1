@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToOne } from 'typeorm';
+import {Entity, Column, PrimaryGeneratedColumn, OneToOne} from 'typeorm';
 import { UserInterface, roleEnum } from '../interfaces/UserInterface';
 import { StudentEntity } from 'src/student/student.entity';
 import { ProjectsEvaluationEntity } from 'src/projects-evaluation/projects-evaluation.entity';
