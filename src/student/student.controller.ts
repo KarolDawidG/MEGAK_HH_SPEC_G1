@@ -3,6 +3,8 @@ import {
     Controller,
     forwardRef,
     Get,
+    NotFoundException,
+    Query,
     Inject,
     Param,
     ParseUUIDPipe,
@@ -11,6 +13,9 @@ import {
 } from '@nestjs/common';
 import {AuthGuard} from "@nestjs/passport";
 import {StudentService} from "./student.service";
+import { StudentListQuery } from './dto/student.list-query';
+import { StudentList } from './dto/student.list';
+import { messages } from 'src/config/messages';
 import {StudentProfileResponse, UpdatedStudentResponse} from "../interfaces/StudentInterface";
 import {UpdateStudentDetailsDto} from "./dto/update-student-details.dto";
 
@@ -19,6 +24,23 @@ export class StudentController {
     constructor(
         @Inject(forwardRef(() => StudentService))
         private readonly studentService: StudentService) {
+    }
+
+    @UseGuards(AuthGuard('jwt'))
+    @Get('/')
+    // @UsePipes(
+    //   new ValidationPipe({ whitelist: true, forbidNonWhitelisted: false }), // @TODO: Seems to deosn't work
+    // )
+    async getList(
+        @Query() filterOptions: StudentListQuery,
+    ): Promise<[StudentList[], number]> {
+        const searchResult = await this.studentService.findAll(filterOptions);
+
+        if (!searchResult.length) {
+            throw new NotFoundException(messages.emptySearchResult);
+        }
+
+        return searchResult;
     }
 
     @Get('/student-profile/:id')
@@ -45,4 +67,3 @@ export class StudentController {
     }
 
 }
-

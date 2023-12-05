@@ -15,7 +15,7 @@ export class ProjectsEvaluationEntity implements ProjectsEvaluationInterface {
   @PrimaryGeneratedColumn('uuid', { name: 'ID' })
   id: string;
 
-  @OneToOne(() => UserEntity)
+  @OneToOne(() => UserEntity, (user) => user.projectEvaluation)
   @JoinColumn({ name: 'USER_ID' })
   user: UserEntity;
 
