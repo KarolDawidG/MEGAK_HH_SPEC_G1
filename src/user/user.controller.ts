@@ -61,7 +61,8 @@ export class UserController {
       throw new ForbiddenException(messages.accessDenied);
     }
     const emailList = await this.userService.getEmailsOfAllUsers();
-    return await this.userService.studentsImport(body.path, emailList);
+    console.log(body.jsonData);
+    return await this.userService.studentsImport(body.jsonData, emailList);
   }
 
   @UseGuards(AuthGuard('jwt'))

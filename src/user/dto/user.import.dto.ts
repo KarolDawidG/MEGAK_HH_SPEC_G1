@@ -1,6 +1,6 @@
-import { IsString } from 'class-validator';
+import { IsJSON } from 'class-validator';
 
 export class UserImportDto {
-  @IsString()
-  path: string;
+  @IsJSON()
+  jsonData: string;
 }

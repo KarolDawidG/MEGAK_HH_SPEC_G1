@@ -38,5 +38,37 @@ export interface StudentInterface {
   workExperience: string;
   courses: string;
   createdAt: string;
-  updatedAt: string;
+  updatedAt: () => string;
+}
+
+
+export type StudentDetails = {
+  firstName: string;
+  lastName: string;
+  phoneNumber: string;
+  githubName: string | null;
+  bio: string;
+  expectedWorkType: workTypeEnum;
+  targetWorkCity: string;
+  expectedContractType: contractTypeEnum;
+  expectedSalary: number | null;
+  canTakeApprenticeship: boolean;
+  monthsOfCommercialExperience: number;
+  education: string;
+  workExperience: string;
+  courses: string;
+}
+
+export interface StudentProfileResponse{
+  studentDetails: StudentDetails;
+}
+
+export interface githubNameValidatorResponse {
+  isGithubUser: boolean,
+  isGithubUserUnique: boolean,
+}
+
+export type UpdatedStudentResponse = {
+  isSuccess: boolean;
+  message: string;
 }

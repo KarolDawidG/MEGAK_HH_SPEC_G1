@@ -10,7 +10,7 @@ const bootstrap = async (): Promise<void> => {
     new ValidationPipe({
       //disableErrorMessages: true,
       whitelist: true,
-      forbidNonWhitelisted: true,
+      forbidNonWhitelisted: false,
       transform: true,
       transformOptions: {
         enableImplicitConversion: true,

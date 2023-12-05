@@ -11,6 +11,7 @@ export const messages = {
   changePasswordSubject: 'Aplikacja MegaK - Zmień hasło',
   newPasswordSubject: 'Aplikacja MegaK - Zmieniono hasło',
   newPasswordInvalidBody: 'Link do zmiany hasła jest już nieaktualny.',
+  emptySearchResult: `Nie znaleziono rekordów o zadanych parametrach wyszukiwania`,
   registrationInvalidBody:
     'Link do rejestracji użytkownika jest już nieaktualny.',
   csvImportEmailValidationError: 'Niepoprawny format adresu email.',

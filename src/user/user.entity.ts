@@ -1,5 +1,7 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import {Entity, Column, PrimaryGeneratedColumn, OneToOne} from 'typeorm';
 import { UserInterface, roleEnum } from '../interfaces/UserInterface';
+import { StudentEntity } from 'src/student/student.entity';
+import { ProjectsEvaluationEntity } from 'src/projects-evaluation/projects-evaluation.entity';
 
 @Entity({
   name: 'users',
@@ -37,4 +39,10 @@ export class UserEntity implements UserInterface {
 
   @Column({ name: 'TOKEN', type: 'varchar' }) // @TODO set column length and other options if we agree
   token: string;
+
+  @OneToOne(() => StudentEntity, (student) => student.user)
+  student: StudentEntity;
+
+  @OneToOne(() => ProjectsEvaluationEntity, (project) => project.user)
+  projectEvaluation: ProjectsEvaluationEntity;
 }
