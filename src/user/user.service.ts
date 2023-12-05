@@ -206,12 +206,12 @@ export class UserService {
         token,
         isActive: false,
         role: roleEnum.hr,
+        pwdHash: '',
       });
       const hrProfile = await this.hrProfileService.create(
         user.id,
         userHrDto.company,
-        userHrDto.firstName,
-        userHrDto.lastName,
+        userHrDto.fullName,
         userHrDto.maxReservedStudents,
       );
       await this.mailService.sendMail(
@@ -233,6 +233,7 @@ export class UserService {
         token,
         isActive: false,
         role: roleEnum.admin,
+        pwdHash: '',
       });
       await this.mailService.sendMail(
         user.email,
