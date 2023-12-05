@@ -1,16 +1,14 @@
 import {
   Body,
   Controller,
-  forwardRef,
   Get,
   NotFoundException,
   Query,
-  Inject,
   Param,
   ParseUUIDPipe,
   Patch,
-  UseGuards,
-} from '@nestjs/common';
+  UseGuards, BadRequestException
+} from "@nestjs/common";
 import { AuthGuard } from '@nestjs/passport';
 import { StudentService } from './student.service';
 import { StudentListQuery } from './dto/student.list-query';
@@ -21,12 +19,13 @@ import {
   UpdatedStudentResponse,
 } from '../interfaces/StudentInterface';
 import { UpdateStudentDetailsDto } from './dto/update-student-details.dto';
+import { UserService } from '../user/user.service';
 
 @Controller('student')
 export class StudentController {
   constructor(
-    @Inject(forwardRef(() => StudentService))
     private readonly studentService: StudentService,
+    private readonly userService: UserService,
   ) {}
 
   @UseGuards(AuthGuard('jwt'))
@@ -51,15 +50,23 @@ export class StudentController {
   async findStudentProfile(
     @Param('id', ParseUUIDPipe) id: string,
   ): Promise<StudentProfileResponse> {
-    return this.studentService.findOne(id);
+    const user = await this.userService.findById(id);
+    if (!user) {
+      throw new BadRequestException(messages.userIdNotFound);
+    }
+    const userProfile = await this.studentService.findOne(user.id);
+    if (!userProfile.studentDetails) {
+      throw new BadRequestException(messages.studentIdNotFound);
+    }
+    return userProfile;
   }
 
-  @Patch('/student-profile/:id')
-  @UseGuards(AuthGuard('jwt'))
-  async updateStudentProfile(
-    @Param('id', ParseUUIDPipe) studentId: string,
-    @Body() studentProfileDetails: UpdateStudentDetailsDto,
-  ): Promise<UpdatedStudentResponse> {
-    return this.studentService.updateOne(studentId, studentProfileDetails);
-  }
+  // @Patch('/student-profile/:id')
+  // @UseGuards(AuthGuard('jwt'))
+  // async updateStudentProfile(
+  //   @Param('id', ParseUUIDPipe) studentId: string,
+  //   @Body() studentProfileDetails: UpdateStudentDetailsDto,
+  // ): Promise<UpdatedStudentResponse> {
+  //   return this.studentService.updateOne(studentId, studentProfileDetails);
+  // }
 }
