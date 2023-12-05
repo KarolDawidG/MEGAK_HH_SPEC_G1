@@ -33,11 +33,14 @@ Example json:<br/>
 }<br/>
 
 ### POST /user/import
-Import students list from local .csv file.<br/>
+Import students list<br/>
 Example json:<br/>
-{<br/>
-	"path":"D:/KURS JS/students.csv"<br/>
-}<br/>
+[<br/>
+{"email":"efylan0@xinhuanet.com","courseCompletion":"0","courseEngagement":"0","projectDegree":"0","teamProjectDegree":"2","bonusProjectUrls":"[https://github.com/gsdfgfsdg,https:/
+/github.com/gsdfgfsdg453466]"},<br/>{"email":"idesport1@toplist.cz","courseCompletion":"5","courseEngagement":"1","projectDegree":"4","teamProjectDegree":"0","bonusProjectUrls":"[https:/
+/github.com/fdfsgsdgdfsfdsg]"},<br/>{"email":"bcleminson2@cam.ac.uk","courseCompletion":"0","courseEngagement":"2","projectDegree":"5","teamProjectDegree":"3","bonusProjectUrls":"[https:
+//github.com/rtetewrtet/]"}<br/>]
+<br/>
 Example .csv file:<br/>
 https://www.dropbox.com/scl/fi/t2yjimwfibyhz7i6b0i9v/students.csv?rlkey=9jzoctqf5cmf6rbvyk79she0j&dl=0<br/>
 
@@ -46,8 +49,7 @@ Adding new HR user.<br/>
 Example json:<br/>
 {<br/>
 	"email": "test@gmail.com",<br/>
-	"firstName": "Name",<br/>
-	"lastName": "Surname",<br/>
+    "fullName": "Name Surname",<br/>
 	"company": "LuxCompany",<br/>
 	"maxReservedStudents": "84"<br/>
 }<br/>
