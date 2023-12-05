@@ -12,41 +12,41 @@ import {
   contractTypeEnum,
 } from 'src/interfaces/StudentInterface';
 import { StudentListQueryRequestInterface } from 'src/interfaces/StudentListFilterInterface';
-import { TransformToArray } from 'src/utils/TransformToArray';
+import { transformToArray } from 'src/utils/transformToArray';
 
 export class StudentListQuery implements StudentListQueryRequestInterface {
   @IsOptional()
-  @Transform(TransformToArray)
+  @Transform(transformToArray)
   @IsArray()
   cc?: number[];
 
   @IsOptional()
-  @Transform(TransformToArray)
+  @Transform(transformToArray)
   @IsArray()
   ce?: number[];
 
   @IsOptional()
-  @Transform(TransformToArray)
+  @Transform(transformToArray)
   @IsArray()
   pd?: number[];
 
   @IsOptional()
-  @Transform(TransformToArray)
+  @Transform(transformToArray)
   @IsArray()
   tpd?: number[];
 
   @IsOptional()
-  @Transform(TransformToArray)
+  @Transform(transformToArray)
   @IsArray()
   ewt?: workTypeEnum[];
 
   @IsOptional()
-  @Transform(TransformToArray)
+  @Transform(transformToArray)
   @IsArray()
   ect?: contractTypeEnum[];
 
   @IsOptional()
-  @Transform(TransformToArray)
+  @Transform(transformToArray)
   @IsArray()
   es?: [number, number];
 
