@@ -21,7 +21,7 @@ export enum studentStatus {
 
 export interface StudentInterface {
   id: string;
-  //userId: string;
+  userId: string;
   status: studentStatus;
   firstName: string;
   lastName: string;

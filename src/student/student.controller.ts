@@ -26,7 +26,7 @@ export class StudentController {
     async findStudentProfile(
         @Param(
             'id',
-        //    ParseUUIDPipe
+            ParseUUIDPipe
         ) id: string,
     ): Promise<StudentProfileResponse>{
         return this.studentService.findOne(id);

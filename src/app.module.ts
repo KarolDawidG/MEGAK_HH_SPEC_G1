@@ -20,7 +20,7 @@ import {HttpModule} from "@nestjs/axios";
       host: config.dbHost,
       port: 3306,
       username: config.dbUser,
-     // password: config.dbPassword,
+      password: config.dbPassword,
       database: config.dbDatabase,
       entities: ['dist/**/**.entity{.ts,.js}'],
       bigNumberStrings: false,
