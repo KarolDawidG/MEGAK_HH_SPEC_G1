@@ -52,11 +52,11 @@ export class StudentController {
   ): Promise<StudentProfileResponse> {
     const user = await this.userService.findById(id);
     if (!user) {
-      throw new BadRequestException(messages.userIdNotFound);
+      throw new NotFoundException(messages.userIdNotFound);
     }
     const userProfile = await this.studentService.findOne(user.id);
     if (!userProfile.studentDetails) {
-      throw new BadRequestException(messages.studentIdNotFound);
+      throw new NotFoundException(messages.studentIdNotFound);
     }
     return userProfile;
   }
