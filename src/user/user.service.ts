@@ -88,6 +88,32 @@ export class UserService {
     }
   }
 
+  async changeSelfPassword(
+    id: string,
+    email: string,
+    pwdHash: string,
+    password: string,
+    newPassword: string,
+    repNewPassword: string,
+  ) {
+    try {
+      const passwordHash = hashPwd(password);
+      const newPassHash = hashPwd(newPassword);
+      const repNewPasswordHash = hashPwd(repNewPassword);
+
+      if (
+        pwdHash !== passwordHash || // Current Password === Current Password Passed By User
+        newPassHash !== repNewPasswordHash || // New Password === Repeated New Password
+        newPassHash === pwdHash // New Password is different than Old one
+      ) {
+        throw new InternalServerErrorException();
+      }
+      await this.newPassword(id, email, newPassword);
+    } catch {
+      throw new InternalServerErrorException();
+    }
+  }
+
   async newPassword(
     id: string,
     email: string,

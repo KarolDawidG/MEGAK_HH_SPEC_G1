@@ -19,6 +19,7 @@ import { roleEnum } from '../interfaces/UserInterface';
 import { UserAddHrDto } from './dto/user.add-hr.dto';
 import { AddHrResponse } from '../interfaces/AddHrResponse';
 import { UserAddAdminDto } from './dto/user.add-admin.dto';
+import { UserChangeSelfPasswordDto } from './dto/user.change-self-password.dto';
 
 @Controller('user')
 export class UserController {
@@ -34,6 +35,26 @@ export class UserController {
       throw new BadRequestException(messages.userIsNotActive);
     }
     await this.userService.changePassword(user.email, user.id);
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Post('change-self-password')
+  async changeSelfPassword(
+    @Body() body: UserChangeSelfPasswordDto,
+    @UserObj() user: UserEntity,
+  ): Promise<void> {
+    if (!user) {
+      throw new BadRequestException(messages.accessDenied); // Change to better fit later
+    }
+
+    await this.userService.changeSelfPassword(
+      user.id,
+      user.email,
+      user.pwdHash,
+      body.currentPassword,
+      body.newPassword,
+      body.repeatNewPassword,
+    );
   }
 
   @Post('new-password')
