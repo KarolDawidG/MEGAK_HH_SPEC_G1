@@ -31,15 +31,13 @@ export class StudentController {
 
   @UseGuards(AuthGuard('jwt'))
   @Get('list')
-  // @UsePipes(
-  //   new ValidationPipe({ whitelist: true, forbidNonWhitelisted: false }), // @TODO: Seems to deosn't work
-  // )
   async getList(
     @Query() filterOptions: StudentListQuery,
   ): Promise<[StudentList[], number]> {
     const searchResult = await this.studentService.findAll(filterOptions);
 
-    if (!searchResult.length) {
+    console.log(searchResult.length);
+    if (!searchResult[0].length) {
       throw new NotFoundException(messages.emptySearchResult);
     }
 

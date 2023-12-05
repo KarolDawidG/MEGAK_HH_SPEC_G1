@@ -134,8 +134,8 @@ export class StudentService {
         await query.limit(limit).offset(offset).getRawMany(),
         await query.getCount(),
       ];
-    } catch (e) {
-      throw new InternalServerErrorException(e);
+    } catch {
+      throw new InternalServerErrorException();
     }
   }
 
