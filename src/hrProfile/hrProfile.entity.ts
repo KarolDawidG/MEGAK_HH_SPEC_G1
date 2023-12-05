@@ -16,18 +16,15 @@ export class HrProfileEntity implements HRProfileInterface {
   @PrimaryGeneratedColumn('uuid', { name: 'ID' })
   id: string;
 
-  @OneToOne(() => UserEntity, (user) => user.id)
+  @OneToOne(() => UserEntity, (user) => user.student)
   @JoinColumn({ name: 'USER_ID' })
   user: UserEntity;
 
   @Column({ name: 'USER_ID', type: 'varchar', length: 36 })
   userId: string;
 
-  @Column({ name: 'FIRST_NAME', type: 'varchar', length: 50 })
-  firstName: string;
-
-  @Column({ name: 'LAST_NAME', type: 'varchar', length: 50 })
-  lastName: string;
+  @Column({ name: 'FULL_NAME', type: 'varchar', length: 100 })
+  fullName: string;
 
   @Column({ name: 'MAX_RESERVED_STUDENTS', type: 'smallint', unsigned: true })
   maxReservedStudents: number;

@@ -1,8 +1,7 @@
 export interface HRProfileInterface {
   id: string;
   userId: string;
-  firstName: string;
-  lastName: string;
+  fullName: string;
   maxReservedStudents: number;
   companyName: string;
   createdAt: string;

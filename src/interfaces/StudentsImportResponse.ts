@@ -1,13 +1,15 @@
+import { StudentsImportJsonInterface } from './StudentsImportJsonInterface';
+
 export interface StudentImportFormatInterface {
   email: string;
   courseCompletion: number;
   courseEngagement: number;
   projectDegree: number;
   teamProjectDegree: number;
-  bonusProjectUrls: string;
+  bonusProjectUrls: string[];
 }
 
 export interface StudentsImportResponse {
   approved: StudentImportFormatInterface[];
-  rejected: string[];
+  rejected: StudentsImportJsonInterface[];
 }

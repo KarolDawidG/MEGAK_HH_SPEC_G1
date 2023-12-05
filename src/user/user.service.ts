@@ -10,8 +10,6 @@ import { v4 as uuid } from 'uuid';
 import { MailService } from '../mail/mail.service';
 import { messages } from '../config/messages';
 import { hashPwd } from '../utils/hash-pwd';
-import * as papa from 'papaparse';
-import * as fs from 'fs';
 import { isEmailValid } from '../utils/isEmailValid';
 import { isDegreeValid } from '../utils/isDegreeValid';
 import {
@@ -32,6 +30,7 @@ import { registrationSuccessEmailTemplate } from '../templates/email/registratio
 import { changePasswordEmailTemplate } from '../templates/email/changePassword';
 import { newPasswordEmailTemplate } from '../templates/email/newPassword';
 import { StudentService } from '../student/student.service';
+import { StudentsImportJsonInterface } from '../interfaces/StudentsImportJsonInterface';
 
 @Injectable()
 export class UserService {
@@ -107,52 +106,62 @@ export class UserService {
     }
   }
 
-  async studentsImport(filePath, emailList): Promise<StudentsImportResponse> {
+  async studentsImport(jsonData, emailList): Promise<StudentsImportResponse> {
     try {
-      const fileStream = fs.createReadStream(filePath);
-      const parsedData: any[] = await new Promise((resolve, reject) => {
-        fileStream.on('error', (error) => {
-          reject(error);
-        });
-
-        papa.parse(fileStream, {
-          complete: (results) => {
-            resolve(results.data);
-          },
-          error: (error) => {
-            reject(error);
-          },
-        });
-      });
+      // const fileStream = fs.createReadStream(filePath);
+      // const parsedData: any[] = await new Promise((resolve, reject) => {
+      //   fileStream.on('error', (error) => {
+      //     reject(error);
+      //   });
+      //
+      //   papa.parse(fileStream, {
+      //     complete: (results) => {
+      //       resolve(results.data);
+      //     },
+      //     error: (error) => {
+      //       reject(error);
+      //     },
+      //   });
+      // });
+      const parsedData: StudentsImportJsonInterface[] = JSON.parse(jsonData);
       const approved: StudentImportFormatInterface[] = [];
-      const rejected: string[] = [];
+      const rejected: StudentsImportJsonInterface[] = [];
       parsedData.map((student) => {
-        if (!isEmailValid(student[0])) {
-          student.unshift(messages.csvImportEmailValidationError);
+        if (!isEmailValid(student.email)) {
+          //student.unshift(messages.csvImportEmailValidationError);
+          student.message = messages.csvImportEmailValidationError;
           rejected.push(student);
-        } else if (emailList.includes(student[0])) {
-          student.unshift(messages.csvImportEmailExistError);
+        } else if (emailList.includes(student.email)) {
+          //student.unshift(messages.csvImportEmailExistError);
+          student.message = messages.csvImportEmailExistError;
           rejected.push(student);
-        } else if (!isDegreeValid(Number(student[1]))) {
-          student.unshift(messages.csvImportCompletionDegreeValidationError);
+        } else if (!isDegreeValid(Number(student.courseCompletion))) {
+          //student.unshift(messages.csvImportCompletionDegreeValidationError);
+          student.message = messages.csvImportCompletionDegreeValidationError;
           rejected.push(student);
-        } else if (!isDegreeValid(Number(student[2]))) {
-          student.unshift(messages.csvImportEngagementDegreeValidationError);
+        } else if (!isDegreeValid(Number(student.courseEngagement))) {
+          //student.unshift(messages.csvImportEngagementDegreeValidationError);
+          student.message = messages.csvImportEngagementDegreeValidationError;
           rejected.push(student);
-        } else if (!isDegreeValid(Number(student[3]))) {
-          student.unshift(messages.csvImportProjectDegreeValidationError);
+        } else if (!isDegreeValid(Number(student.projectDegree))) {
+          //student.unshift(messages.csvImportProjectDegreeValidationError);
+          student.message = messages.csvImportProjectDegreeValidationError;
           rejected.push(student);
-        } else if (!isDegreeValid(Number(student[4]))) {
-          student.unshift(messages.csvImportTeamProjectDegreeValidationError);
+        } else if (!isDegreeValid(Number(student.teamProjectDegree))) {
+          //student.unshift(messages.csvImportTeamProjectDegreeValidationError);
+          student.message = messages.csvImportTeamProjectDegreeValidationError;
           rejected.push(student);
         } else {
           approved.push({
-            email: student[0],
-            courseCompletion: Number(student[1]),
-            courseEngagement: Number(student[2]),
-            projectDegree: Number(student[3]),
-            teamProjectDegree: Number(student[4]),
-            bonusProjectUrls: student[5],
+            email: student.email,
+            courseCompletion: Number(student.courseCompletion),
+            courseEngagement: Number(student.courseEngagement),
+            projectDegree: Number(student.projectDegree),
+            teamProjectDegree: Number(student.teamProjectDegree),
+            bonusProjectUrls: student.bonusProjectUrls
+              .replace(`/[\"\[\]]/g`, '')
+              .split(',')
+              .map((item) => item.trim()),
           });
         }
       });
@@ -171,18 +180,16 @@ export class UserService {
           student.projectDegree,
           student.teamProjectDegree,
         );
-        const projectUrls = student.bonusProjectUrls
-          .replace(`/[\"\[\]]/g`, '')
-          .split(',');
-        for (const url of projectUrls) {
+        const projectUrls = student.bonusProjectUrls;
+        projectUrls.map(async (url) => {
           if (url.includes('github.com')) {
             await this.projectService.create(
               user.id,
-              url,
+              url.replace(/[\[\]]/g, ''),
               projectTypeEnum.portfolio,
             );
           }
-        }
+        });
         await this.mailService.sendMail(
           user.email,
           messages.newStudentSubject,
@@ -194,7 +201,8 @@ export class UserService {
         rejected,
       };
     } catch (error) {
-      throw new InternalServerErrorException(error);
+      console.log(error);
+      throw new InternalServerErrorException(error.messages);
     }
   }
 
@@ -206,12 +214,12 @@ export class UserService {
         token,
         isActive: false,
         role: roleEnum.hr,
+        pwdHash: '',
       });
       const hrProfile = await this.hrProfileService.create(
         user.id,
         userHrDto.company,
-        userHrDto.firstName,
-        userHrDto.lastName,
+        userHrDto.fullName,
         userHrDto.maxReservedStudents,
       );
       await this.mailService.sendMail(
@@ -233,6 +241,7 @@ export class UserService {
         token,
         isActive: false,
         role: roleEnum.admin,
+        pwdHash: '',
       });
       await this.mailService.sendMail(
         user.email,

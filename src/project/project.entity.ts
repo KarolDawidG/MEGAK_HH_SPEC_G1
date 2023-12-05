@@ -19,7 +19,7 @@ export class ProjectEntity implements ProjectInterface {
   @PrimaryGeneratedColumn('uuid', { name: 'ID' })
   id: string;
 
-  @ManyToOne(() => UserEntity, (user) => user.id)
+  @ManyToOne(() => UserEntity, (user) => user.student)
   @JoinColumn({ name: 'USER_ID' })
   user: UserEntity;
 
