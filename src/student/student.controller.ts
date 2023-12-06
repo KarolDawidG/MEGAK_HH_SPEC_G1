@@ -15,11 +15,9 @@ import {StudentService} from "./student.service";
 import {StudentListQuery} from './dto/student.list-query';
 import {StudentList} from './dto/student.list';
 import {messages} from 'src/config/messages';
-import {StudentInterface, StudentProfileResponse, UpdatedStudentResponse} from "../interfaces/StudentInterface";
+import {StudentProfileResponse, UpdatedStudentResponse} from "../interfaces/StudentInterface";
 import {UpdateStudentDetailsDto} from "./dto/update-student-details.dto";
 import {UserService} from "../user/user.service";
-import {StudentEntity} from "./student.entity";
-import {UserEntity} from "../user/user.entity";
 import {roleEnum} from "../interfaces/UserInterface";
 
 @Controller('student')

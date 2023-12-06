@@ -1,12 +1,12 @@
 import {
-    HttpStatus,
     Injectable,
-    InternalServerErrorException, NotAcceptableException,
+    InternalServerErrorException,
+    NotAcceptableException,
 } from '@nestjs/common';
 import {StudentEntity} from "./student.entity";
 import {StudentProfileResponse, studentStatus, UpdatedStudentResponse} from "../interfaces/StudentInterface";
 import {InjectRepository} from "@nestjs/typeorm";
-import {Not, Repository, UpdateResult} from "typeorm";
+import {Repository, UpdateResult} from "typeorm";
 import {ProjectEntity} from "../project/project.entity";
 import {UpdateStudentDetailsDto} from "./dto/update-student-details.dto";
 import {UserEntity} from "../user/user.entity";
