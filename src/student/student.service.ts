@@ -2,7 +2,6 @@ import {
   Injectable,
   InternalServerErrorException,
   NotAcceptableException,
-  NotFoundException,
 } from '@nestjs/common';
 import {StudentEntity} from "./student.entity";
 import {

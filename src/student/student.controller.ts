@@ -73,13 +73,13 @@ export class StudentController {
     ): Promise<UpdatedStudentResponse> {
         const user = await this.userService.findById(id);
         if (!user) {
-            throw new NotAcceptableException(messages.userIdNotFound);
+            throw new NotFoundException(messages.userIdNotFound);
         }
         if (!user.email) {
             throw new BadRequestException(messages.emailNotFound);
         }
         if (!user.isActive) {
-            throw new BadRequestException(messages.notActiveUserError);
+            throw new NotAcceptableException(messages.notActiveUserError);
         }
         if(!(user.role===roleEnum.student)){
             throw new NotAcceptableException(messages.notAcceptableRoleError);
