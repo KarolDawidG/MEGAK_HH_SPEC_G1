@@ -5,9 +5,9 @@ import { StudentController } from './student.controller';
 import { StudentService } from './student.service';
 import {UserModule} from "../user/user.module";
 import {HttpModule} from "@nestjs/axios";
-import {UserEntity} from "../user/user.entity";
 import {ProjectEntity} from "../project/project.entity";
 import {GithubNameValidator} from "../utils/githubNameValidator";
+import {UserEntity} from "../user/user.entity";
 
 @Module({
   exports: [StudentService],

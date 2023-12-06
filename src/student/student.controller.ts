@@ -1,29 +1,32 @@
 import {
     Body,
     Controller,
-    forwardRef,
     Get,
     NotFoundException,
     Query,
-    Inject,
     Param,
     ParseUUIDPipe,
     Patch,
     UseGuards,
+    BadRequestException, NotAcceptableException,
 } from '@nestjs/common';
 import {AuthGuard} from "@nestjs/passport";
 import {StudentService} from "./student.service";
-import { StudentListQuery } from './dto/student.list-query';
-import { StudentList } from './dto/student.list';
-import { messages } from 'src/config/messages';
-import {StudentProfileResponse, UpdatedStudentResponse} from "../interfaces/StudentInterface";
+import {StudentListQuery} from './dto/student.list-query';
+import {StudentList} from './dto/student.list';
+import {messages} from 'src/config/messages';
+import {StudentInterface, StudentProfileResponse, UpdatedStudentResponse} from "../interfaces/StudentInterface";
 import {UpdateStudentDetailsDto} from "./dto/update-student-details.dto";
+import {UserService} from "../user/user.service";
+import {StudentEntity} from "./student.entity";
+import {UserEntity} from "../user/user.entity";
+import {roleEnum} from "../interfaces/UserInterface";
 
 @Controller('student')
 export class StudentController {
     constructor(
-        @Inject(forwardRef(() => StudentService))
-        private readonly studentService: StudentService) {
+        private readonly studentService: StudentService,
+        private readonly userService: UserService,) {
     }
 
     @UseGuards(AuthGuard('jwt'))
@@ -50,20 +53,51 @@ export class StudentController {
             'id',
             ParseUUIDPipe
         ) id: string,
-    ): Promise<StudentProfileResponse>{
-        return this.studentService.findOne(id);
+    ): Promise<StudentProfileResponse> {
+        const user = await this.userService.findById(id);
+        if (!user) {
+            throw new NotFoundException(messages.userIdNotFound);
+        }
+        if (!user.isActive) {
+            throw new BadRequestException(messages.userIsNotActive);
+        }
+        const userProfile = await this.studentService.findOne(user.id);
+        if (!userProfile.studentDetails) {
+            throw new NotFoundException(messages.studentIdNotFound);
+        }
+        return userProfile;
     }
+
 
     @Patch('/student-profile/:id')
     @UseGuards(AuthGuard('jwt'))
     async updateStudentProfile(
-        @Param (
+        @Param(
             'id',
-            ParseUUIDPipe
-        ) studentId: string,
+           ParseUUIDPipe
+        ) id: string,
         @Body() studentProfileDetails: UpdateStudentDetailsDto
     ): Promise<UpdatedStudentResponse> {
-        return this.studentService.updateOne(studentId, studentProfileDetails);
+        const user = await this.userService.findById(id);
+        if (!user) {
+            throw new NotFoundException(messages.userIdNotFound);
+        }
+        if (!user.email) {
+            throw new BadRequestException(messages.emailNotFound);
+        }
+        if (!user.isActive) {
+            throw new BadRequestException(messages.notActiveUserError);
+        }
+        if(!(user.role===roleEnum.student)){
+            throw new NotAcceptableException(messages.notAcceptableRoleError);
+        }
+
+        const student = await this.studentService.findStudentById(user.id);
+        if (!student) {
+            throw new NotFoundException(messages.studentIdNotFound);
+        }
+
+        return this.studentService.updateOne(student, studentProfileDetails);
     }
 
 }

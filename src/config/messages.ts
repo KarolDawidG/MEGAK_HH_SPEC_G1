@@ -6,6 +6,7 @@ export const messages = {
   loggedOut: 'Zostałeś pomyślnie wylogowany z aplikacji.',
   emailNotFound: 'Nie znaleziono użytkownika o podanym adresie e-mail.',
   userIdNotFound: 'Nie znaleziono użytkownika o podanym id.',
+  studentIdNotFound: 'Kursant z podanym id nie istnieje.',
   userIsNotActive: 'Nie można zresetować hasła dla nieaktywnego użytkownika!',
   userIsActiveError: 'Użytkownik jest już zarejestrowany!',
   changePasswordSubject: 'Aplikacja MegaK - Zmień hasło',
@@ -30,4 +31,7 @@ export const messages = {
   newAdminSubject: 'Aplikacja MegaK - Zostałeś dodany jako administrator',
   addUserEmailExist: 'Użytkownik o podanym adresie email już istnieje.',
   userRegisteredSubject: 'Aplikacja MegaK - Konto aktywowane',
+  updatedUserEmailExist: 'Użytkownik o podanym adresie email już istnieje.',
+  notActiveUserError: 'Użytkownik z podanym id jest nieaktywny!',
+  notAcceptableRoleError: 'Użytkownik z podanym id ma przypisaną rolę, która nie pozwala na podgląd tej strony',
 };

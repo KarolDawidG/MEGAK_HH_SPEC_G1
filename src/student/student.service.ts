@@ -1,8 +1,7 @@
 import {
+    HttpStatus,
     Injectable,
-    InternalServerErrorException,
-    NotAcceptableException,
-    NotFoundException
+    InternalServerErrorException, NotAcceptableException,
 } from '@nestjs/common';
 import {StudentEntity} from "./student.entity";
 import {StudentProfileResponse, studentStatus, UpdatedStudentResponse} from "../interfaces/StudentInterface";
@@ -13,10 +12,11 @@ import {UpdateStudentDetailsDto} from "./dto/update-student-details.dto";
 import {UserEntity} from "../user/user.entity";
 import {UpdateProjectUrlDto} from "../project/dto/update-project-url.dto";
 import {projectTypeEnum} from "../interfaces/ProjectInterface";
-import {GithubNameValidator} from "../utils/githubNameValidator";zzz
-import { StudentListQueryRequestInterface } from '../interfaces/StudentListFilterInterface';
-import { roleEnum } from 'src/interfaces/UserInterface';
-import { StudentListResponse } from 'src/interfaces/StudentListResponse';
+import {GithubNameValidator} from "../utils/githubNameValidator";
+import {StudentListQueryRequestInterface} from '../interfaces/StudentListFilterInterface';
+import {roleEnum} from 'src/interfaces/UserInterface';
+import {StudentListResponse} from 'src/interfaces/StudentListResponse';
+import {messages} from "../config/messages";
 
 
 @Injectable()
@@ -29,7 +29,8 @@ export class StudentService {
         private userRepository: Repository<UserEntity>,
         @InjectRepository(ProjectEntity)
         private projectRepository: Repository<ProjectEntity>,
-        private githubService: GithubNameValidator,) {
+        private githubService: GithubNameValidator,
+    ) {
     }
 
     async create(userId): Promise<StudentEntity> {
@@ -135,104 +136,87 @@ export class StudentService {
 
     }
 
-    async getUserByStudentId(studentId: string): Promise<string> {
-        const userId = await this.studentRepository
-            .createQueryBuilder('student')
-            .leftJoin('student.user', 'user')
-            .select('user.id', 'userId')
-            .where('student.id = :id', {id: studentId})
-            .getRawOne()
-        const user_id = userId.userId;
-
-        const foundUser = await this.userRepository.findOne({where: {id: user_id}});
-        console.log(foundUser)
-        return foundUser.id
+    async findOne(userId: string): Promise<StudentProfileResponse> {
+        try {
+            const student = await this.studentRepository
+                .createQueryBuilder('student')
+                .leftJoin('student.user', 'user')
+                //.leftJoin('user.student','projects')
+                .select([
+                    'user.email',
+                    'student.phoneNumber',
+                    'student.firstName',
+                    'student.lastName',
+                    'student.githubName',
+                    'student.bio',
+                    'student.expectedWorkType',
+                    'student.targetWorkCity',
+                    'student.expectedContractType',
+                    'student.expectedSalary',
+                    'student.canTakeApprenticeship',
+                    'student.monthsOfCommercialExperience',
+                    'student.education',
+                    'student.workExperience',
+                    'student.courses',
+                ])
+                .where('student.user_id = :userId', {userId})
+                .addSelect((subQuery) => {
+                    return subQuery
+                        .select('projects.url', 'bonusProjectUrl')
+                        .from(ProjectEntity, 'projects')
+                        .where('projects.user_id = :userId', {userId})
+                        .andWhere('projects.type="0"');
+                }, 'bonusProjectUrl')
+                .addSelect((subQuery) => {
+                    return subQuery
+                        .select('projects.url', 'portfolioUrl')
+                        .from(ProjectEntity, 'projects')
+                        .where('projects.user_id = :userId', {userId})
+                        .andWhere('projects.type="1"');
+                }, 'portfolioUrl')
+                .getRawOne();
+            console.log(student);
+            return {
+                studentDetails: student,
+            };
+        } catch {
+            throw new InternalServerErrorException();
+        }
     }
 
-    async findOne(id: string): Promise<StudentProfileResponse> {
-        const userId = await this.getUserByStudentId(id);
-
-        const student = await this.studentRepository
-            .createQueryBuilder('student')
-            .leftJoin('student.user', 'user')
-            //.leftJoin('student.projects','projects')
-            .select([
-                'user.email',
-                'student.phoneNumber',
-                'student.firstName',
-                'student.lastName',
-                'student.githubName',
-                'student.bio',
-                'student.expectedWorkType',
-                'student.targetWorkCity',
-                'student.expectedContractType',
-                'student.expectedSalary',
-                'student.canTakeApprenticeship',
-                'student.monthsOfCommercialExperience',
-                'student.education',
-                'student.workExperience',
-                'student.courses'])
-            .addSelect(subQuery => {
-                return subQuery
-                    .select("projects.url", 'bonusProjectUrl')
-                    .from(ProjectEntity, 'projects')
-                    .where('projects.user_id = :userId', {userId})
-                    .andWhere('projects.type="0"')
-            }, 'bonusProjectUrl')
-            .addSelect(subQuery => {
-                return subQuery
-                    .select("projects.url", 'portfolioUrl')
-                    .from(ProjectEntity, 'projects')
-                    .where('projects.user_id = :userId', {userId})
-                    .andWhere('projects.type="1"')
-            }, 'portfolioUrl')
-            .where('student.id = :id', {id})
-            .getRawOne();
-
-        if (!student) {
-            throw new NotFoundException('Kursant z podanym id nie istnieje')
+    async findStudentById(id: string): Promise<StudentEntity> {
+        try {
+            return await this.studentRepository.findOne({where: {userId: id}})
+        } catch {
+            throw new InternalServerErrorException();
         }
-        console.log(student)
-        return {
-            studentDetails: student,
-        }
-    };
+    }
 
-    async updateOne(studentId: string, studentProfileDetails: UpdateStudentDetailsDto): Promise<UpdatedStudentResponse> {
-        const student = await this.studentRepository.findOne({where: {id: studentId}})
+    async updateOne(student, studentProfileDetails: UpdateStudentDetailsDto): Promise<UpdatedStudentResponse> {
+        try {
+            const dataUpdatedAt = () => 'CURRENT_TIMESTAMP';
 
-        const dataUpdatedAt = () => 'CURRENT_TIMESTAMP';
+            const {
+                email,
+                bonusProjectUrl,
+                portfolioUrl,
+                githubName,
+                updatedAt,
+                ...restOfDetails
+            } = studentProfileDetails
 
-        const {
-            email,
-            bonusProjectUrl,
-            portfolioUrl,
-            githubName,
-            updatedAt,
-            ...restOfDetails
-        } = studentProfileDetails
-
-        const setBonusProjectUrl: UpdateProjectUrlDto = {
-            url: JSON.stringify(bonusProjectUrl),
-            type: projectTypeEnum.bonusProject,
-            updatedAt: dataUpdatedAt,
-        }
-        const setPortfolioUrl: UpdateProjectUrlDto = {
-            url: JSON.stringify(portfolioUrl),
-            type: projectTypeEnum.portfolio,
-            updatedAt: dataUpdatedAt,
-        }
-
-        if (student) {
-            const userId = await this.getUserByStudentId(studentId);
-            const uniqueUserMail = await this.userRepository.find({
-                where: {email, id: Not(userId)}
-            })
-            const githubValidator = await this.githubService.validateGithubName(studentId, githubName)
-
-            if (!(email===undefined) && uniqueUserMail.length > 0 ){
-                throw new NotAcceptableException(`Użytkownik z adresem e-mail: ${email} już istnieje w bazie`)
+            const setBonusProjectUrl: UpdateProjectUrlDto = {
+                url: JSON.stringify(bonusProjectUrl),
+                type: projectTypeEnum.bonusProject,
+                updatedAt: dataUpdatedAt,
             }
+            const setPortfolioUrl: UpdateProjectUrlDto = {
+                url: JSON.stringify(portfolioUrl),
+                type: projectTypeEnum.portfolio,
+                updatedAt: dataUpdatedAt,
+            }
+
+            const githubValidator = await this.githubService.validateGithubName(student.id, githubName)
 
             const update1 = (!Object.values({...restOfDetails, githubName}).every(detail => detail === undefined)) || githubName
                 ?
@@ -243,20 +227,20 @@ export class StudentService {
                         ...restOfDetails,
                         updatedAt: dataUpdatedAt,
                     })
-                    .where('id = :studentId', {studentId})
+                    .where('id = :id', {id: student.id})
                     .execute()
                 :
                 console.log('no [students] rows affected')
             //console.log(update1)
 
-            const update2 = (email && uniqueUserMail.length===0)
+            const update2 = (email)
                 ?
                 await this.userRepository.createQueryBuilder()
                     .update('users')
                     .set({
                         email,   //updatedAt: () => 'CURRENT_TIMESTAMP',
                     })
-                    .where('id = :userId', {userId})
+                    .where('id = :id', {id: student.userId})
                     .execute()
                 :
                 console.log('no [users] rows affected');
@@ -268,7 +252,7 @@ export class StudentService {
                 urlsUpdate
                     .set(setBonusProjectUrl)
                     .where('projects.type = :type', {type: projectTypeEnum.bonusProject})
-                    .andWhere('projects.user_id = :id', {id: userId})
+                    .andWhere('projects.user_id = :id', {id: student.userId})
                 await urlsUpdate.execute()
                 urlsUpdate
                     .set(setPortfolioUrl)
@@ -289,19 +273,22 @@ export class StudentService {
                         ' have been successfully updated' : 'no [students/users/projects] rows affected'
                 }
             }
-            urlsUpdate.andWhere('projects.user_id = :id', {id: userId})
+            urlsUpdate.andWhere('projects.user_id = :id', {id: student.userId})
 
             const update3 = await urlsUpdate.execute()
             //console.log(update3)
-        }
-        if (!student) {
-            throw new NotFoundException('Kursant z podanym id nie istnieje')
-        }
 
-        return {
-            isSuccess: true,
-            message: 'All affected records have been successfully updated'
+            return {
+                isSuccess: true,
+                message: 'All affected records have been successfully updated'
+            };
+        } catch (e) {
+            if (e.code === 'ER_DUP_ENTRY') {
+                throw new NotAcceptableException(messages.updatedUserEmailExist);
+            }
+            throw new InternalServerErrorException();
         }
 
     }
+
 }
