@@ -6,12 +6,10 @@ export class MailService {
   constructor(private readonly mailerService: MailerService) {}
 
   async sendMail(to: string, subject: string, html: string): Promise<any> {
-    console.log('Checkpoint A');
     await this.mailerService.sendMail({
       to,
       subject,
       html,
     });
-    console.log('Checkpoint B');
   }
 }
