@@ -64,7 +64,7 @@ export class AuthService {
       delete user.pwdHash;
 
       const token = this.createToken(await this.generateToken(user));
-      console.log(token); // REMOVE THIS
+
       return res
         .cookie('jwt', token.accessToken, {
           secure: false, // if you use https then change it to TRUE !!!!
