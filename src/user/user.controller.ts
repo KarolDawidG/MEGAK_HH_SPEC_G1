@@ -4,6 +4,7 @@ import {
   Controller,
   ForbiddenException,
   Post,
+  Res,
   UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
@@ -20,6 +21,7 @@ import { UserAddHrDto } from './dto/user.add-hr.dto';
 import { AddHrResponse } from '../interfaces/AddHrResponse';
 import { UserAddAdminDto } from './dto/user.add-admin.dto';
 import { UserChangeSelfPasswordDto } from './dto/user.change-self-password.dto';
+import { Response } from 'express';
 
 @Controller('user')
 export class UserController {
@@ -42,18 +44,18 @@ export class UserController {
   async changeSelfPassword(
     @Body() body: UserChangeSelfPasswordDto,
     @UserObj() user: UserEntity,
+    @Res() res: Response,
   ): Promise<void> {
     if (!user) {
       throw new BadRequestException(messages.accessDenied); // Change to better fit later
     }
 
     await this.userService.changeSelfPassword(
-      user.id,
-      user.email,
-      user.pwdHash,
+      user,
       body.currentPassword,
       body.newPassword,
       body.repeatNewPassword,
+      res,
     );
   }
 

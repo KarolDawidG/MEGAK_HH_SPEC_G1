@@ -31,6 +31,8 @@ import { changePasswordEmailTemplate } from '../templates/email/changePassword';
 import { newPasswordEmailTemplate } from '../templates/email/newPassword';
 import { StudentService } from '../student/student.service';
 import { StudentsImportJsonInterface } from '../interfaces/StudentsImportJsonInterface';
+import { AuthService } from 'src/auth/auth.service';
+import { Response } from 'express';
 
 @Injectable()
 export class UserService {
@@ -47,6 +49,8 @@ export class UserService {
     private hrProfileService: HrProfileService,
     @Inject(StudentService)
     private studentService: StudentService,
+    @Inject(AuthService)
+    private authService: AuthService,
   ) {}
 
   async findByEmail(email: string): Promise<UserEntity> {
@@ -89,12 +93,11 @@ export class UserService {
   }
 
   async changeSelfPassword(
-    id: string,
-    email: string,
-    pwdHash: string,
+    user: UserEntity,
     password: string,
     newPassword: string,
     repNewPassword: string,
+    res: Response,
   ) {
     try {
       const passwordHash = hashPwd(password);
@@ -102,13 +105,14 @@ export class UserService {
       const repNewPasswordHash = hashPwd(repNewPassword);
 
       if (
-        pwdHash !== passwordHash || // Current Password === Current Password Passed By User
+        user.pwdHash !== passwordHash || // Current Password === Current Password Passed By User
         newPassHash !== repNewPasswordHash || // New Password === Repeated New Password
-        newPassHash === pwdHash // New Password is different than Old one
+        newPassHash === user.pwdHash // New Password is different than Old one
       ) {
         throw new InternalServerErrorException();
       }
-      await this.newPassword(id, email, newPassword);
+      await this.newPassword(user.id, user.email, newPassword);
+      await this.authService.logout(user, res);
     } catch {
       throw new InternalServerErrorException();
     }
