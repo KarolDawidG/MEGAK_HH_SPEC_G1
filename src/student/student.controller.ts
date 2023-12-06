@@ -8,7 +8,8 @@ import {
     ParseUUIDPipe,
     Patch,
     UseGuards,
-    BadRequestException, NotAcceptableException,
+    BadRequestException,
+    NotAcceptableException,
 } from '@nestjs/common';
 import {AuthGuard} from "@nestjs/passport";
 import {StudentService} from "./student.service";
@@ -22,35 +23,32 @@ import {roleEnum} from "../interfaces/UserInterface";
 
 @Controller('student')
 export class StudentController {
-    constructor(
-        private readonly studentService: StudentService,
-        private readonly userService: UserService,) {
+  constructor(
+    private readonly studentService: StudentService,
+    private readonly userService: UserService,
+  ) {}
+
+  @UseGuards(AuthGuard('jwt'))
+  @Get('list')
+  // @UsePipes(
+  //   new ValidationPipe({ whitelist: true, forbidNonWhitelisted: false }), // @TODO: Seems to deosn't work
+  // )
+  async getList(
+    @Query() filterOptions: StudentListQuery,
+  ): Promise<[StudentList[], number]> {
+    const searchResult = await this.studentService.findAll(filterOptions);
+
+    if (!searchResult.length) {
+      throw new NotFoundException(messages.emptySearchResult);
     }
 
-    @UseGuards(AuthGuard('jwt'))
-    @Get('/')
-    // @UsePipes(
-    //   new ValidationPipe({ whitelist: true, forbidNonWhitelisted: false }), // @TODO: Seems to deosn't work
-    // )
-    async getList(
-        @Query() filterOptions: StudentListQuery,
-    ): Promise<[StudentList[], number]> {
-        const searchResult = await this.studentService.findAll(filterOptions);
-
-        if (!searchResult.length) {
-            throw new NotFoundException(messages.emptySearchResult);
-        }
-
-        return searchResult;
-    }
+    return searchResult;
+  }
 
     @Get('/student-profile/:id')
     @UseGuards(AuthGuard('jwt'))
     async findStudentProfile(
-        @Param(
-            'id',
-            ParseUUIDPipe
-        ) id: string,
+        @Param('id', ParseUUIDPipe) id: string,
     ): Promise<StudentProfileResponse> {
         const user = await this.userService.findById(id);
         if (!user) {
@@ -70,10 +68,7 @@ export class StudentController {
     @Patch('/student-profile/:id')
     @UseGuards(AuthGuard('jwt'))
     async updateStudentProfile(
-        @Param(
-            'id',
-           ParseUUIDPipe
-        ) id: string,
+        @Param('id', ParseUUIDPipe) id: string,
         @Body() studentProfileDetails: UpdateStudentDetailsDto
     ): Promise<UpdatedStudentResponse> {
         const user = await this.userService.findById(id);

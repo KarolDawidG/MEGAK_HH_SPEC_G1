@@ -41,7 +41,6 @@ export interface StudentInterface {
   updatedAt: () => string;
 }
 
-
 export type StudentDetails = {
   firstName: string;
   lastName: string;
@@ -57,7 +56,7 @@ export type StudentDetails = {
   education: string;
   workExperience: string;
   courses: string;
-}
+};
 
 export interface StudentProfileResponse{
   studentDetails: StudentDetails;
@@ -71,4 +70,4 @@ export interface githubNameValidatorResponse {
 export type UpdatedStudentResponse = {
   isSuccess: boolean;
   message: string;
-}
+};
