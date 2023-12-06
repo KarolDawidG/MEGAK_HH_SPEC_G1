@@ -189,7 +189,7 @@ export class StudentService {
     }
   }
 
-    async findStudentById(id: string): Promise<StudentEntity> {
+    async findStudentByUserId(id: string): Promise<StudentEntity> {
         try {
             return await this.studentRepository.findOne({where: {userId: id}})
         } catch {

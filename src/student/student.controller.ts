@@ -55,7 +55,7 @@ export class StudentController {
             throw new NotFoundException(messages.userIdNotFound);
         }
         if (!user.isActive) {
-            throw new BadRequestException(messages.userIsNotActive);
+            throw new NotAcceptableException(messages.userIsNotActive);
         }
         const userProfile = await this.studentService.findOne(user.id);
         if (!userProfile.studentDetails) {
@@ -73,7 +73,7 @@ export class StudentController {
     ): Promise<UpdatedStudentResponse> {
         const user = await this.userService.findById(id);
         if (!user) {
-            throw new NotFoundException(messages.userIdNotFound);
+            throw new NotAcceptableException(messages.userIdNotFound);
         }
         if (!user.email) {
             throw new BadRequestException(messages.emailNotFound);
@@ -85,7 +85,7 @@ export class StudentController {
             throw new NotAcceptableException(messages.notAcceptableRoleError);
         }
 
-        const student = await this.studentService.findStudentById(user.id);
+        const student = await this.studentService.findStudentByUserId(user.id);
         if (!student) {
             throw new NotFoundException(messages.studentIdNotFound);
         }
