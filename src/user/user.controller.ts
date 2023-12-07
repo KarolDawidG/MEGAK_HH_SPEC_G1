@@ -3,7 +3,9 @@ import {
   Body,
   Controller,
   ForbiddenException,
+  Patch,
   Post,
+  Res,
   UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
@@ -19,6 +21,9 @@ import { roleEnum } from '../interfaces/UserInterface';
 import { UserAddHrDto } from './dto/user.add-hr.dto';
 import { AddHrResponse } from '../interfaces/AddHrResponse';
 import { UserAddAdminDto } from './dto/user.add-admin.dto';
+import { UserChangeSelfPasswordDto } from './dto/user.change-self-password.dto';
+import { Response } from 'express';
+import { hashPwd } from '../utils/hash-pwd';
 
 @Controller('user')
 export class UserController {
@@ -34,6 +39,25 @@ export class UserController {
       throw new BadRequestException(messages.userIsNotActive);
     }
     await this.userService.changePassword(user.email, user.id);
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Patch('change-self-password')
+  async changeSelfPassword(
+    @Body() body: UserChangeSelfPasswordDto,
+    @UserObj() user: UserEntity,
+    @Res() res: Response,
+  ): Promise<void> {
+    const newPassHash = hashPwd(body.newPassword);
+    const repNewPasswordHash = hashPwd(body.repeatNewPassword);
+    if (newPassHash === user.pwdHash) {
+      throw new BadRequestException(messages.newPasswordMustBeDifferent);
+    }
+    if (newPassHash !== repNewPasswordHash) {
+      throw new BadRequestException(messages.passwordsMustBeTheSame);
+    }
+
+    await this.userService.changeSelfPassword(user, body.newPassword, res);
   }
 
   @Post('new-password')

@@ -31,6 +31,8 @@ import { changePasswordEmailTemplate } from '../templates/email/changePassword';
 import { newPasswordEmailTemplate } from '../templates/email/newPassword';
 import { StudentService } from '../student/student.service';
 import { StudentsImportJsonInterface } from '../interfaces/StudentsImportJsonInterface';
+import { AuthService } from 'src/auth/auth.service';
+import { Response } from 'express';
 
 @Injectable()
 export class UserService {
@@ -47,6 +49,8 @@ export class UserService {
     private hrProfileService: HrProfileService,
     @Inject(StudentService)
     private studentService: StudentService,
+    @Inject(AuthService)
+    private authService: AuthService,
   ) {}
 
   async findByEmail(email: string): Promise<UserEntity> {
@@ -83,6 +87,19 @@ export class UserService {
         messages.changePasswordSubject,
         changePasswordEmailTemplate(token, id),
       );
+    } catch {
+      throw new InternalServerErrorException();
+    }
+  }
+
+  async changeSelfPassword(
+    user: UserEntity,
+    newPassword: string,
+    res: Response,
+  ) {
+    try {
+      await this.newPassword(user.id, user.email, newPassword);
+      await this.authService.logout(user, res);
     } catch {
       throw new InternalServerErrorException();
     }
