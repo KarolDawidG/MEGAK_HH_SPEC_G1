@@ -94,23 +94,10 @@ export class UserService {
 
   async changeSelfPassword(
     user: UserEntity,
-    password: string,
     newPassword: string,
-    repNewPassword: string,
     res: Response,
   ) {
     try {
-      const passwordHash = hashPwd(password);
-      const newPassHash = hashPwd(newPassword);
-      const repNewPasswordHash = hashPwd(repNewPassword);
-
-      if (
-        user.pwdHash !== passwordHash || // Current Password === Current Password Passed By User
-        newPassHash !== repNewPasswordHash || // New Password === Repeated New Password
-        newPassHash === user.pwdHash // New Password is different than Old one
-      ) {
-        throw new InternalServerErrorException();
-      }
       await this.newPassword(user.id, user.email, newPassword);
       await this.authService.logout(user, res);
     } catch {

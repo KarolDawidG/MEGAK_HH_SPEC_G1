@@ -36,7 +36,6 @@ export class StudentController {
   ): Promise<[StudentList[], number]> {
     const searchResult = await this.studentService.findAll(filterOptions);
 
-    console.log(searchResult.length);
     if (!searchResult[0].length) {
       throw new NotFoundException(messages.emptySearchResult);
     }

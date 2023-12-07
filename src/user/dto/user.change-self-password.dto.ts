@@ -1,12 +1,11 @@
-import { IsString } from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
 
 export class UserChangeSelfPasswordDto {
   @IsString()
-  currentPassword: string;
-
-  @IsString()
+  @IsNotEmpty()
   newPassword: string;
 
   @IsString()
+  @IsNotEmpty()
   repeatNewPassword: string;
 }

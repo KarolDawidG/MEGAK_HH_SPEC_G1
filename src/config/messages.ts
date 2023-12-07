@@ -30,4 +30,6 @@ export const messages = {
   newAdminSubject: 'Aplikacja MegaK - Zostałeś dodany jako administrator',
   addUserEmailExist: 'Użytkownik o podanym adresie email już istnieje.',
   userRegisteredSubject: 'Aplikacja MegaK - Konto aktywowane',
+  newPasswordMustBeDifferent: 'Nowe hasło musi różnić się od poprzedniego',
+  passwordsMustBeTheSame: 'Podane hasła się różnią',
 };
