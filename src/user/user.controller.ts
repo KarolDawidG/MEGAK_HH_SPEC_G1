@@ -48,6 +48,7 @@ export class UserController {
     @UserObj() user: UserEntity,
     @Res() res: Response,
   ): Promise<void> {
+    const passHash = hashPwd(body.password);
     const newPassHash = hashPwd(body.newPassword);
     const repNewPasswordHash = hashPwd(body.repeatNewPassword);
     if (newPassHash === user.pwdHash) {
@@ -55,6 +56,9 @@ export class UserController {
     }
     if (newPassHash !== repNewPasswordHash) {
       throw new BadRequestException(messages.passwordsMustBeTheSame);
+    }
+    if (passHash !== user.pwdHash) {
+      throw new BadRequestException(messages.invalidPassword);
     }
 
     await this.userService.changeSelfPassword(user, body.newPassword, res);

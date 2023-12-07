@@ -37,6 +37,7 @@ Allows user to change password and send an e-mail with information about passwor
 Example json:
 ```
 {
+    "password": "1234",
 	"newPassword": "12345",
 	"repeatNewPassword": "12345"
 }
