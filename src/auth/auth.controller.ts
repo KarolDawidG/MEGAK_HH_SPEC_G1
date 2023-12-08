@@ -11,15 +11,15 @@ import { AuthService } from './auth.service';
 import { AuthLoginDto } from './dto/auth.login.dto';
 import { UserInterface } from '../interfaces/UserInterface';
 import { Response, Request } from 'express';
-import { AuthGuard } from '@nestjs/passport';
 import { UserObj } from '../decorators/user-obj.decorator';
 import { UserEntity } from '../user/user.entity';
+import { JwtAuthGuard } from '../guards/jwt.auth.guard';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(JwtAuthGuard)
   @Get('user')
   async user(@Req() request: Request, @UserObj() user: UserEntity) {
     delete user.pwdHash;
@@ -34,7 +34,7 @@ export class AuthController {
     return this.authService.login(loginDto, res);
   }
 
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(JwtAuthGuard)
   @Get('logout')
   async logout(
     @UserObj() user: UserEntity,

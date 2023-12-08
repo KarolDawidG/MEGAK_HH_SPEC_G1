@@ -11,7 +11,6 @@ import {
   Patch,
   UseGuards,
 } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
 import { StudentService } from './student.service';
 import { StudentListQuery } from './dto/student.list-query';
 import { StudentList } from './dto/student.list';
@@ -21,6 +20,7 @@ import {
   UpdatedStudentResponse,
 } from '../interfaces/StudentInterface';
 import { UpdateStudentDetailsDto } from './dto/update-student-details.dto';
+import { JwtAuthGuard } from '../guards/jwt.auth.guard';
 
 @Controller('student')
 export class StudentController {
@@ -29,7 +29,7 @@ export class StudentController {
     private readonly studentService: StudentService,
   ) {}
 
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(JwtAuthGuard)
   @Get('list')
   async getList(
     @Query() filterOptions: StudentListQuery,
@@ -44,7 +44,7 @@ export class StudentController {
   }
 
   @Get('/student-profile/:id')
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(JwtAuthGuard)
   async findStudentProfile(
     @Param('id', ParseUUIDPipe) id: string,
   ): Promise<StudentProfileResponse> {
@@ -52,7 +52,7 @@ export class StudentController {
   }
 
   @Patch('/student-profile/:id')
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(JwtAuthGuard)
   async updateStudentProfile(
     @Param('id', ParseUUIDPipe) studentId: string,
     @Body() studentProfileDetails: UpdateStudentDetailsDto,
