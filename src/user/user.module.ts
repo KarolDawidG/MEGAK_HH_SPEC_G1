@@ -8,6 +8,7 @@ import { ProjectsEvaluationModule } from '../projects-evaluation/projects-evalua
 import { ProjectModule } from '../project/project.module';
 import { HrProfileModule } from '../hrProfile/hrProfile.module';
 import { StudentModule } from '../student/student.module';
+import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { StudentModule } from '../student/student.module';
     forwardRef(() => ProjectModule),
     forwardRef(() => HrProfileModule),
     forwardRef(() => StudentModule),
+    forwardRef(() => AuthModule),
   ],
   controllers: [UserController],
   providers: [UserService],

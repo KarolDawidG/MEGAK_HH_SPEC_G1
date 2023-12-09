@@ -3,14 +3,15 @@ import {
   Body,
   Controller,
   ForbiddenException,
+  Patch,
   Post,
+  Res,
   UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserChangePasswordDto } from './dto/user.change-password.dto';
 import { messages } from '../config/messages';
 import { UserNewPasswordDto } from './dto/user.new-password.dto';
-import { AuthGuard } from '@nestjs/passport';
 import { UserImportDto } from './dto/user.import.dto';
 import { StudentsImportResponse } from '../interfaces/StudentsImportResponse';
 import { UserObj } from '../decorators/user-obj.decorator';
@@ -19,6 +20,10 @@ import { roleEnum } from '../interfaces/UserInterface';
 import { UserAddHrDto } from './dto/user.add-hr.dto';
 import { AddHrResponse } from '../interfaces/AddHrResponse';
 import { UserAddAdminDto } from './dto/user.add-admin.dto';
+import { UserChangeSelfPasswordDto } from './dto/user.change-self-password.dto';
+import { Response } from 'express';
+import { hashPwd } from '../utils/hash-pwd';
+import { JwtAuthGuard } from '../guards/jwt.auth.guard';
 
 @Controller('user')
 export class UserController {
@@ -36,6 +41,29 @@ export class UserController {
     await this.userService.changePassword(user.email, user.id);
   }
 
+  @UseGuards(JwtAuthGuard)
+  @Patch('change-self-password')
+  async changeSelfPassword(
+    @Body() body: UserChangeSelfPasswordDto,
+    @UserObj() user: UserEntity,
+    @Res() res: Response,
+  ): Promise<void> {
+    const passHash = hashPwd(body.password);
+    const newPassHash = hashPwd(body.newPassword);
+    const repNewPasswordHash = hashPwd(body.repeatNewPassword);
+    if (newPassHash === user.pwdHash) {
+      throw new BadRequestException(messages.newPasswordMustBeDifferent);
+    }
+    if (newPassHash !== repNewPasswordHash) {
+      throw new BadRequestException(messages.passwordsMustBeTheSame);
+    }
+    if (passHash !== user.pwdHash) {
+      throw new BadRequestException(messages.invalidPassword);
+    }
+
+    await this.userService.changeSelfPassword(user, body.newPassword, res);
+  }
+
   @Post('new-password')
   async newPassword(@Body() body: UserNewPasswordDto): Promise<void> {
     const user = await this.userService.findById(body.id);
@@ -51,7 +79,7 @@ export class UserController {
     await this.userService.newPassword(user.id, user.email, body.password);
   }
 
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(JwtAuthGuard)
   @Post('import')
   async import(
     @Body() body: UserImportDto,
@@ -65,7 +93,7 @@ export class UserController {
     return await this.userService.studentsImport(body.jsonData, emailList);
   }
 
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(JwtAuthGuard)
   @Post('add-hr')
   async addHr(
     @Body() body: UserAddHrDto,
@@ -81,7 +109,7 @@ export class UserController {
     return await this.userService.addHr(body);
   }
 
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(JwtAuthGuard)
   @Post('add-admin')
   async addAdmin(
     @Body() body: UserAddAdminDto,

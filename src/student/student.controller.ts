@@ -1,9 +1,11 @@
 import {
     Body,
     Controller,
+    forwardRef,
     Get,
     NotFoundException,
     Query,
+    Inject,
     Param,
     ParseUUIDPipe,
     Patch,
@@ -11,7 +13,7 @@ import {
     BadRequestException,
     NotAcceptableException,
 } from '@nestjs/common';
-import {AuthGuard} from "@nestjs/passport";
+//import {AuthGuard} from "@nestjs/passport";
 import {StudentService} from "./student.service";
 import {StudentListQuery} from './dto/student.list-query';
 import {StudentList} from './dto/student.list';
@@ -20,15 +22,18 @@ import {StudentProfileResponse, UpdatedStudentResponse} from "../interfaces/Stud
 import {UpdateStudentDetailsDto} from "./dto/update-student-details.dto";
 import {UserService} from "../user/user.service";
 import {roleEnum} from "../interfaces/UserInterface";
+import { JwtAuthGuard } from '../guards/jwt.auth.guard';
+
 
 @Controller('student')
 export class StudentController {
   constructor(
+    @Inject(forwardRef(() => StudentService))
     private readonly studentService: StudentService,
     private readonly userService: UserService,
   ) {}
 
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(JwtAuthGuard)
   @Get('list')
   // @UsePipes(
   //   new ValidationPipe({ whitelist: true, forbidNonWhitelisted: false }), // @TODO: Seems to deosn't work
@@ -38,7 +43,7 @@ export class StudentController {
   ): Promise<[StudentList[], number]> {
     const searchResult = await this.studentService.findAll(filterOptions);
 
-    if (!searchResult.length) {
+    if (!searchResult[0].length) {
       throw new NotFoundException(messages.emptySearchResult);
     }
 
@@ -46,7 +51,7 @@ export class StudentController {
   }
 
     @Get('/student-profile/:id')
-    @UseGuards(AuthGuard('jwt'))
+    @UseGuards(JwtAuthGuard)
     async findStudentProfile(
         @Param('id', ParseUUIDPipe) id: string,
     ): Promise<StudentProfileResponse> {
@@ -66,7 +71,7 @@ export class StudentController {
 
 
     @Patch('/student-profile/:id')
-    @UseGuards(AuthGuard('jwt'))
+    @UseGuards(JwtAuthGuard)
     async updateStudentProfile(
         @Param('id', ParseUUIDPipe) id: string,
         @Body() studentProfileDetails: UpdateStudentDetailsDto

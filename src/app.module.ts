@@ -11,7 +11,7 @@ import { HrProfileModule } from './hrProfile/hrProfile.module';
 import { ProjectModule } from './project/project.module';
 import { ProjectsEvaluationModule } from './projects-evaluation/projects-evaluation.module';
 import { ConversationModule } from './conversation/conversation.module';
-import {HttpModule} from "@nestjs/axios";
+import { HttpModule } from '@nestjs/axios';
 
 @Module({
   imports: [

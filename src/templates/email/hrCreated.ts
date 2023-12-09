@@ -6,6 +6,6 @@ export const hrCreatedEmailTemplate = (
 ): string => {
   return `
   Zostałeś(aś) dodany(a) do aplikacji MegaK jako Hr'owiec.<br/>
-  <a href="${config.crossOrigin}/${userid}/${token}" target="_blank">Kliknij tutaj</a> aby ukończyć rejestrację i aktywować swoje konto.
+  <a href="${config.crossOrigin}/activation/${userid}/${token}" target="_blank">Kliknij tutaj</a> aby ukończyć rejestrację i aktywować swoje konto.
   `;
 };

@@ -31,6 +31,8 @@ export const messages = {
   newAdminSubject: 'Aplikacja MegaK - Zostałeś dodany jako administrator',
   addUserEmailExist: 'Użytkownik o podanym adresie email już istnieje.',
   userRegisteredSubject: 'Aplikacja MegaK - Konto aktywowane',
+  newPasswordMustBeDifferent: 'Nowe hasło musi różnić się od poprzedniego',
+  passwordsMustBeTheSame: 'Podane hasła się różnią',
   updatedUserEmailExist: 'Użytkownik o podanym adresie email już istnieje.',
   notActiveUserError: 'Użytkownik z podanym id jest nieaktywny!',
   notAcceptableRoleError: 'Użytkownik z podanym id ma przypisaną rolę, która nie pozwala na podgląd tej strony',
