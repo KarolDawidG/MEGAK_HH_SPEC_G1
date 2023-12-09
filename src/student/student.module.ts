@@ -3,22 +3,19 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { StudentEntity } from './student.entity';
 import { StudentController } from './student.controller';
 import { StudentService } from './student.service';
-import { UserModule } from '../user/user.module';
-import { HttpModule } from '@nestjs/axios';
-import { UserEntity } from '../user/user.entity';
-import { ProjectEntity } from '../project/project.entity';
-import { GithubNameValidator } from '../utils/githubNameValidator';
+import {UserModule} from "../user/user.module";
+import {HttpModule} from "@nestjs/axios";
+import {GithubNameValidator} from "../utils/githubNameValidator";
+import {ProjectModule} from "../project/project.module";
 
 @Module({
-  exports: [StudentService],
   imports: [
-    TypeOrmModule.forFeature([StudentEntity]),
-    TypeOrmModule.forFeature([UserEntity]),
-    TypeOrmModule.forFeature([ProjectEntity]),
-    forwardRef(() => UserModule),
-    forwardRef(() => HttpModule),
-  ],
+      TypeOrmModule.forFeature([StudentEntity]),
+      forwardRef(() => UserModule),
+      forwardRef(() => HttpModule),
+      forwardRef(() => ProjectModule)],
   controllers: [StudentController],
   providers: [StudentService, GithubNameValidator],
+  exports: [StudentService],
 })
 export class StudentModule {}

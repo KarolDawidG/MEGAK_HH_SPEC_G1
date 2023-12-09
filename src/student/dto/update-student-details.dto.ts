@@ -1,8 +1,10 @@
 import {contractTypeEnum, StudentInterface, studentStatus, workTypeEnum} from "../../interfaces/StudentInterface";
 
 import {
+    ArrayNotEmpty,
+    Contains,
     IsArray,
-    IsBoolean, IsDateString,
+    IsBoolean,
     IsEmail,
     IsEnum,
     IsInt,
@@ -12,14 +14,12 @@ import {
     IsPhoneNumber,
     IsString,
     Min,
-    //ValidateIf
+//    ValidateIf
 } from "class-validator";
-//import {Unique} from "typeorm";
 import {Transform} from "class-transformer";
+import {PartialType} from "@nestjs/mapped-types";
 
-export class UpdateStudentDetailsDto implements Partial<StudentInterface>{
-    @IsOptional()
-    //@ValidateIf(obj=>obj.email==='value')
+export class CreateStudentDetailsDto implements Partial<StudentInterface>{
     @IsEmail()
     @IsNotEmpty()
     email: string | null;
@@ -29,18 +29,14 @@ export class UpdateStudentDetailsDto implements Partial<StudentInterface>{
     //@IsMobilePhone()
     phoneNumber?: string | null;
 
-    @IsOptional()
     @IsNotEmpty()
     @IsString()
     firstName: string;
 
-    @IsOptional()
     @IsNotEmpty()
     @IsString()
     lastName: string;
 
-    @IsOptional()
-    //@ValidateIf(obj=>obj.githubName==='value')
     @IsNotEmpty()
     @IsString()
     githubName: string;
@@ -51,25 +47,24 @@ export class UpdateStudentDetailsDto implements Partial<StudentInterface>{
     portfolioUrl?: string[] | null;
 
     @Transform(({ value }) => value.split(','))
-    @IsOptional()
-    @IsNotEmpty()
     @IsArray()
+    @ArrayNotEmpty()
+    @IsString({each: true})
+    @Contains('github.com',{each: true})
     bonusProjectUrl: string[];
 
     @IsOptional()
     @IsString()
     bio?: string | null;
 
-    @IsOptional()
     @IsNotEmpty()
+    //@ValidateIf((obj)=>(obj.expectedWorkType!==""))
     @IsEnum(workTypeEnum)
     expectedWorkType: workTypeEnum;
 
-    @IsOptional()
     @IsString()
     targetWorkCity?: string;
 
-    @IsOptional()
     @IsNotEmpty()
     @IsEnum(contractTypeEnum)
     expectedContractType: contractTypeEnum;
@@ -78,12 +73,10 @@ export class UpdateStudentDetailsDto implements Partial<StudentInterface>{
     @IsNumber()
     expectedSalary?: number | null;
 
-    @IsOptional()
     @IsNotEmpty()
     @IsBoolean()
     canTakeApprenticeship: boolean;
 
-    @IsOptional()
     @IsNotEmpty()
     @IsInt()
     @Min(0)
@@ -105,9 +98,6 @@ export class UpdateStudentDetailsDto implements Partial<StudentInterface>{
     @IsNotEmpty()
     @IsEnum(studentStatus)
     status?: studentStatus;
-
-    @IsOptional()
-    @IsDateString()
-    updatedAt: () => string;
 }
 
+export class UpdateStudentDetailsDto extends PartialType(CreateStudentDetailsDto){}

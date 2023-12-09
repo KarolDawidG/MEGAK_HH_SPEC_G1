@@ -16,27 +16,29 @@ export class GithubNameValidator {
         private readonly httpService: HttpService) {
     }
 
-    async validateGithubName (id: string, githubName: string): Promise<githubNameValidatorResponse> {
-        if(githubName){
-        const {data} = await lastValueFrom(
-            this.httpService.get(`https://api.github.com/users/${githubName}`).pipe(
-                catchError((error: AxiosError) => {
-                    console.log(`GithubValidatorError: user [ ${githubName} ]`, error.response.statusText, error.response.status, error.code);
-                    throw new NotFoundException(`Użytkownik Github z loginem: ${githubName} nie istnieje`);
-                }))
-        );
+    async validateGithubName(id: string, githubName: string): Promise<githubNameValidatorResponse> {
 
-        const uniqueGithubUser = await this.studentRepository.find({
-            where: {githubName, id: Not(id)}
-        })
-        if (uniqueGithubUser.length > 0) {
-            throw new NotAcceptableException(`Użytkownik Github z loginem: ${githubName} już istnieje w bazie`)
-        }
+        if (githubName) {
+            const {data} = await lastValueFrom(
+                this.httpService.get(`https://api.github.com/users/${githubName}`).pipe(
+                    catchError((error: AxiosError) => {
+                        console.log(`GithubValidatorError: user [ ${githubName} ]`, error.response.statusText, error.response.status, error.code);
+                        throw new NotFoundException(`Użytkownik Github z loginem: ${githubName} nie istnieje`);
+                    }))
+            );
 
-        return{
-            isGithubUser: !!data,
-            isGithubUserUnique: uniqueGithubUser.length < 1,
+            const uniqueGithubUser = await this.studentRepository.count({
+                where: {githubName, id: Not(id)}
+            });
+
+            if (uniqueGithubUser > 0) {
+                throw new NotAcceptableException(`Użytkownik Github z loginem: ${githubName} już istnieje w bazie`)
+            }
+
+            return {
+                isGithubUser: !!data,
+                isGithubUserUnique: uniqueGithubUser === 0,
+            };
         }
-    }
     }
 }

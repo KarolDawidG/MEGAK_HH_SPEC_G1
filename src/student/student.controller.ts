@@ -13,7 +13,6 @@ import {
     BadRequestException,
     NotAcceptableException,
 } from '@nestjs/common';
-//import {AuthGuard} from "@nestjs/passport";
 import {StudentService} from "./student.service";
 import {StudentListQuery} from './dto/student.list-query';
 import {StudentList} from './dto/student.list';
@@ -21,9 +20,11 @@ import {messages} from 'src/config/messages';
 import {StudentProfileResponse, UpdatedStudentResponse} from "../interfaces/StudentInterface";
 import {UpdateStudentDetailsDto} from "./dto/update-student-details.dto";
 import {UserService} from "../user/user.service";
+import {GithubNameValidator} from "../utils/githubNameValidator";
 import {roleEnum} from "../interfaces/UserInterface";
+import {UserObj} from "../decorators/user-obj.decorator";
+import {UserEntity} from "../user/user.entity";
 import { JwtAuthGuard } from '../guards/jwt.auth.guard';
-
 
 @Controller('student')
 export class StudentController {
@@ -31,6 +32,7 @@ export class StudentController {
     @Inject(forwardRef(() => StudentService))
     private readonly studentService: StudentService,
     private readonly userService: UserService,
+    private githubService: GithubNameValidator,
   ) {}
 
   @UseGuards(JwtAuthGuard)
@@ -47,8 +49,8 @@ export class StudentController {
       throw new NotFoundException(messages.emptySearchResult);
     }
 
-    return searchResult;
-  }
+        return searchResult;
+    }
 
     @Get('/student-profile/:id')
     @UseGuards(JwtAuthGuard)
@@ -62,6 +64,10 @@ export class StudentController {
         if (!user.isActive) {
             throw new NotAcceptableException(messages.userIsNotActive);
         }
+        if (!(user.role === roleEnum.student)) {
+            throw new NotAcceptableException(messages.notAcceptableRoleError);
+        }
+
         const userProfile = await this.studentService.findOne(user.id);
         if (!userProfile.studentDetails) {
             throw new NotFoundException(messages.studentIdNotFound);
@@ -70,29 +76,45 @@ export class StudentController {
     }
 
 
-    @Patch('/student-profile/:id')
+    //@Patch('/student-profile/:id')
+    @Patch('/student-profile')
     @UseGuards(JwtAuthGuard)
     async updateStudentProfile(
-        @Param('id', ParseUUIDPipe) id: string,
-        @Body() studentProfileDetails: UpdateStudentDetailsDto
+        @Body() studentProfileDetails: UpdateStudentDetailsDto,
+        @UserObj() userStudent: UserEntity ,
     ): Promise<UpdatedStudentResponse> {
-        const user = await this.userService.findById(id);
+        const user = await this.userService.findById(userStudent.id);
         if (!user) {
             throw new NotFoundException(messages.userIdNotFound);
         }
         if (!user.email) {
             throw new BadRequestException(messages.emailNotFound);
         }
+
         if (!user.isActive) {
             throw new NotAcceptableException(messages.notActiveUserError);
         }
-        if(!(user.role===roleEnum.student)){
+        if (!(user.role === roleEnum.student)) {
             throw new NotAcceptableException(messages.notAcceptableRoleError);
         }
 
         const student = await this.studentService.findStudentByUserId(user.id);
         if (!student) {
             throw new NotFoundException(messages.studentIdNotFound);
+        }
+
+        if (studentProfileDetails.githubName) {
+            const {isGithubUser, isGithubUserUnique} = await this.githubService.validateGithubName(student.id, studentProfileDetails.githubName);
+            if (!isGithubUserUnique || !isGithubUser) {
+                throw new Error
+            }
+        }
+
+        if (studentProfileDetails.email) {
+            const isEmailUnique = await this.userService.isUserEmailUnique(user.id, studentProfileDetails.email)
+            if (!isEmailUnique) {
+                throw new NotAcceptableException(messages.updatedUserEmailExist);
+            }
         }
 
         return this.studentService.updateOne(student, studentProfileDetails);
