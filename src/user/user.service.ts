@@ -1,12 +1,11 @@
 import {
-    forwardRef,
     Inject,
     Injectable,
-    InternalServerErrorException, NotAcceptableException, NotFoundException,
+    InternalServerErrorException,
 } from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
 import {UserEntity} from './user.entity';
-import {Not, Repository} from 'typeorm';
+import {Not, Repository, UpdateResult} from 'typeorm';
 import {v4 as uuid} from 'uuid';
 import {MailService} from '../mail/mail.service';
 import {messages} from '../config/messages';
@@ -303,7 +302,7 @@ export class UserService {
         }
     }
 
-    async updateUserEmail(id: string, email: string) {
+    async updateUserEmail(id: string, email: string): Promise<UpdateResult> {
         try {
             if (email) {
                 return await this.userRepository.createQueryBuilder()

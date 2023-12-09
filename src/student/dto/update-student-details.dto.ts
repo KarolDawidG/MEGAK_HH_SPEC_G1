@@ -14,7 +14,7 @@ import {
     IsPhoneNumber,
     IsString,
     Min,
-//    ValidateIf
+   // ValidateIf
 } from "class-validator";
 import {Transform} from "class-transformer";
 import {PartialType} from "@nestjs/mapped-types";
@@ -58,7 +58,7 @@ export class CreateStudentDetailsDto implements Partial<StudentInterface>{
     bio?: string | null;
 
     @IsNotEmpty()
-    //@ValidateIf((obj)=>(obj.expectedWorkType!==""))
+   // @ValidateIf(obj => Object.values(workTypeEnum).includes(obj.expectedWorkType))
     @IsEnum(workTypeEnum)
     expectedWorkType: workTypeEnum;
 

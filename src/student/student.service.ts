@@ -182,11 +182,7 @@ export class StudentService {
         }
     }
 
-    //@TODO zmienić typy kolumn z enumów na tinyint, bo:
-    // We strongly recommend that you do not use numbers as enumeration values, because it does not save on
-    // storage over the appropriate TINYINT or SMALLINT type, and it is easy to mix up the strings and the underlying number values (which might not be the same) if you quote the ENUM values incorrectly. If you do use a number as an enumeration value, always enclose it in quotation marks. If the quotation marks are omitted, the number is regarded as an index. See Handling of Enumeration Literals to see how even a quoted number could be mistakenly used as a numeric index value.
-
-    async updateOne(student, studentProfileDetails: UpdateStudentDetailsDto): Promise<UpdatedStudentResponse> {
+    async updateOne(student: StudentEntity, studentProfileDetails: UpdateStudentDetailsDto): Promise<UpdatedStudentResponse> {
 
         try {
             const {
