@@ -12,7 +12,6 @@ import { UserService } from './user.service';
 import { UserChangePasswordDto } from './dto/user.change-password.dto';
 import { messages } from '../config/messages';
 import { UserNewPasswordDto } from './dto/user.new-password.dto';
-import { UserImportDto } from './dto/user.import.dto';
 import { StudentsImportResponse } from '../interfaces/StudentsImportResponse';
 import { UserObj } from '../decorators/user-obj.decorator';
 import { UserEntity } from './user.entity';
@@ -24,6 +23,7 @@ import { UserChangeSelfPasswordDto } from './dto/user.change-self-password.dto';
 import { Response } from 'express';
 import { hashPwd } from '../utils/hash-pwd';
 import { JwtAuthGuard } from '../guards/jwt.auth.guard';
+import { UserValidator } from './dto/user.import-student.dto';
 
 @Controller('user')
 export class UserController {
@@ -82,15 +82,16 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   @Post('import')
   async import(
-    @Body() body: UserImportDto,
+    @Body() body: UserValidator[],
     @UserObj() user: UserEntity,
   ): Promise<StudentsImportResponse> {
     if (user.role !== roleEnum.admin) {
       throw new ForbiddenException(messages.accessDenied);
     }
     const emailList = await this.userService.getEmailsOfAllUsers();
-    console.log(body.jsonData);
-    return await this.userService.studentsImport(body.jsonData, emailList);
+
+    console.log(body);
+    return await this.userService.studentsImport(body, emailList);
   }
 
   @UseGuards(JwtAuthGuard)
