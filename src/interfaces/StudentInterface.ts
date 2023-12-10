@@ -58,13 +58,13 @@ export type StudentDetails = {
   courses: string;
 };
 
-export interface StudentProfileResponse{
+export interface StudentProfileResponse {
   studentDetails: StudentDetails;
 }
 
 export interface githubNameValidatorResponse {
-  isGithubUser: boolean,
-  isGithubUserUnique: boolean,
+  isGithubUser: boolean;
+  isGithubUserUnique: boolean;
 }
 
 export type UpdatedStudentResponse = {

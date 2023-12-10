@@ -1,103 +1,107 @@
-import {contractTypeEnum, StudentInterface, studentStatus, workTypeEnum} from "../../interfaces/StudentInterface";
+import {
+  contractTypeEnum,
+  StudentInterface,
+  studentStatus,
+  workTypeEnum,
+} from '../../interfaces/StudentInterface';
 
 import {
-    ArrayNotEmpty,
-    Contains,
-    IsArray,
-    IsBoolean,
-    IsEmail,
-    IsEnum,
-    IsInt,
-    IsNotEmpty,
-    IsNumber,
-    IsOptional,
-    IsPhoneNumber,
-    IsString,
-    Min,
-   // ValidateIf
-} from "class-validator";
-import {Transform} from "class-transformer";
-import {PartialType} from "@nestjs/mapped-types";
+  ArrayNotEmpty,
+  Contains,
+  IsArray,
+  IsBoolean,
+  IsEmail,
+  IsEnum,
+  IsInt,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsPhoneNumber,
+  IsString,
+  Min,
+} from 'class-validator';
+import { Transform } from 'class-transformer';
+import { PartialType } from '@nestjs/mapped-types';
 
-export class CreateStudentDetailsDto implements Partial<StudentInterface>{
-    @IsEmail()
-    @IsNotEmpty()
-    email: string | null;
+export class CreateStudentDetailsDto implements Partial<StudentInterface> {
+  @IsEmail()
+  @IsNotEmpty()
+  email: string | null;
 
-    @IsOptional()
-    @IsPhoneNumber()
-    //@IsMobilePhone()
-    phoneNumber?: string | null;
+  @IsOptional()
+  @IsPhoneNumber()
+  phoneNumber?: string | null;
 
-    @IsNotEmpty()
-    @IsString()
-    firstName: string;
+  @IsNotEmpty()
+  @IsString()
+  firstName: string;
 
-    @IsNotEmpty()
-    @IsString()
-    lastName: string;
+  @IsNotEmpty()
+  @IsString()
+  lastName: string;
 
-    @IsNotEmpty()
-    @IsString()
-    githubName: string;
+  @IsNotEmpty()
+  @IsString()
+  githubName: string;
 
-    @Transform(({ value }) => value.split(','))
-    @IsOptional()
-    @IsArray()
-    portfolioUrl?: string[] | null;
+  @Transform(({ value }) => value.split(','))
+  @IsOptional()
+  @IsArray()
+  portfolioUrl?: string[] | null;
 
-    @Transform(({ value }) => value.split(','))
-    @IsArray()
-    @ArrayNotEmpty()
-    @IsString({each: true})
-    @Contains('github.com',{each: true})
-    bonusProjectUrl: string[];
+  @Transform(({ value }) => value.split(','))
+  @IsArray()
+  @ArrayNotEmpty()
+  @IsString({ each: true })
+  @Contains('github.com', { each: true })
+  bonusProjectUrl: string[];
 
-    @IsOptional()
-    @IsString()
-    bio?: string | null;
+  @IsOptional()
+  @IsString()
+  bio?: string | null;
 
-    @IsNotEmpty()
-   // @ValidateIf(obj => Object.values(workTypeEnum).includes(obj.expectedWorkType))
-    @IsEnum(workTypeEnum)
-    expectedWorkType: workTypeEnum;
+  @IsNotEmpty()
+  @IsEnum(workTypeEnum)
+  expectedWorkType: workTypeEnum;
 
-    @IsString()
-    targetWorkCity?: string;
+  @IsString()
+  targetWorkCity?: string;
 
-    @IsNotEmpty()
-    @IsEnum(contractTypeEnum)
-    expectedContractType: contractTypeEnum;
+  @IsNotEmpty()
+  @IsEnum(contractTypeEnum)
+  expectedContractType: contractTypeEnum;
 
-    @IsOptional()
-    @IsNumber()
-    expectedSalary?: number | null;
+  @IsOptional()
+  @IsNumber()
+  expectedSalary?: number | null;
 
-    @IsNotEmpty()
-    @IsBoolean()
-    canTakeApprenticeship: boolean;
+  @IsNotEmpty()
+  @IsBoolean()
+  canTakeApprenticeship: boolean;
 
-    @IsNotEmpty()
-    @IsInt()
-    @Min(0)
-    monthsOfCommercialExperience: number;
+  @IsNotEmpty()
+  @IsInt()
+  @Min(0)
+  monthsOfCommercialExperience: number;
 
-    @IsOptional()
-    @IsString()
-    education?: string | null;
+  @IsOptional()
+  @IsString()
+  education?: string | null;
 
-    @IsOptional()
-    @IsString()
-    workExperience?: string | null
+  @IsOptional()
+  @IsString()
+  workExperience?: string | null;
 
-    @IsOptional()
-    @IsString()
-    courses?: string | null;
+  @IsOptional()
+  @IsString()
+  courses?: string | null;
 
-    @IsOptional()
-    @IsNotEmpty()
-    @IsEnum(studentStatus)
-    status?: studentStatus;
+  @IsOptional()
+  @IsNotEmpty()
+  @IsEnum(studentStatus)
+  status?: studentStatus;
 }
 
-export class UpdateStudentDetailsDto extends PartialType(CreateStudentDetailsDto){}
+export class UpdateStudentDetailsDto extends PartialType(
+  CreateStudentDetailsDto,
+) {}

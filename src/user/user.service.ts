@@ -1,36 +1,36 @@
 import {
-    Inject,
-    Injectable,
-    InternalServerErrorException,
+  Inject,
+  Injectable,
+  InternalServerErrorException,
 } from '@nestjs/common';
-import {InjectRepository} from '@nestjs/typeorm';
-import {UserEntity} from './user.entity';
-import {Repository, UpdateResult} from 'typeorm';
-import {v4 as uuid} from 'uuid';
-import {MailService} from '../mail/mail.service';
-import {messages} from '../config/messages';
-import {hashPwd} from '../utils/hash-pwd';
-import {isEmailValid} from '../utils/isEmailValid';
-import {isDegreeValid} from '../utils/isDegreeValid';
+import { InjectRepository } from '@nestjs/typeorm';
+import { UserEntity } from './user.entity';
+import { Repository, UpdateResult } from 'typeorm';
+import { v4 as uuid } from 'uuid';
+import { MailService } from '../mail/mail.service';
+import { messages } from '../config/messages';
+import { hashPwd } from '../utils/hash-pwd';
+import { isEmailValid } from '../utils/isEmailValid';
+import { isDegreeValid } from '../utils/isDegreeValid';
 import {
-    StudentImportFormatInterface,
-    StudentsImportResponse,
+  StudentImportFormatInterface,
+  StudentsImportResponse,
 } from '../interfaces/StudentsImportResponse';
-import {roleEnum} from '../interfaces/UserInterface';
-import {ProjectsEvaluationService} from '../projects-evaluation/projects-evaluation.service';
-import {ProjectService} from '../project/project.service';
-import {projectTypeEnum} from '../interfaces/ProjectInterface';
-import {studentCreatedEmailTemplate} from '../templates/email/studentCreated';
-import {HrProfileService} from '../hrProfile/hrProfile.service';
-import {UserAddHrDto} from './dto/user.add-hr.dto';
-import {AddHrResponse} from '../interfaces/AddHrResponse';
-import {hrCreatedEmailTemplate} from '../templates/email/hrCreated';
-import {adminCreatedEmailTemplate} from '../templates/email/adminCreated';
-import {registrationSuccessEmailTemplate} from '../templates/email/registrationSuccess';
-import {changePasswordEmailTemplate} from '../templates/email/changePassword';
-import {newPasswordEmailTemplate} from '../templates/email/newPassword';
-import {StudentService} from '../student/student.service';
-import {StudentsImportJsonInterface} from '../interfaces/StudentsImportJsonInterface';
+import { roleEnum } from '../interfaces/UserInterface';
+import { ProjectsEvaluationService } from '../projects-evaluation/projects-evaluation.service';
+import { ProjectService } from '../project/project.service';
+import { projectTypeEnum } from '../interfaces/ProjectInterface';
+import { studentCreatedEmailTemplate } from '../templates/email/studentCreated';
+import { HrProfileService } from '../hrProfile/hrProfile.service';
+import { UserAddHrDto } from './dto/user.add-hr.dto';
+import { AddHrResponse } from '../interfaces/AddHrResponse';
+import { hrCreatedEmailTemplate } from '../templates/email/hrCreated';
+import { adminCreatedEmailTemplate } from '../templates/email/adminCreated';
+import { registrationSuccessEmailTemplate } from '../templates/email/registrationSuccess';
+import { changePasswordEmailTemplate } from '../templates/email/changePassword';
+import { newPasswordEmailTemplate } from '../templates/email/newPassword';
+import { StudentService } from '../student/student.service';
+import { StudentsImportJsonInterface } from '../interfaces/StudentsImportJsonInterface';
 import { AuthService } from 'src/auth/auth.service';
 import { Response } from 'express';
 
@@ -293,20 +293,20 @@ export class UserService {
     }
   }
 
-    async updateUserEmail(id: string, email: string): Promise<UpdateResult> {
-        try {
-            if (email) {
-                return await this.userRepository.createQueryBuilder()
-                    .update('users')
-                    .set({
-                        email,
-                    },)
-                    .where('id = :id', {id})
-                    .execute()
-            }
-        } catch {
-            throw new InternalServerErrorException();
-        }
+  async updateUserEmail(id: string, email: string): Promise<UpdateResult> {
+    try {
+      if (email) {
+        return await this.userRepository
+          .createQueryBuilder()
+          .update('users')
+          .set({
+            email,
+          })
+          .where('id = :id', { id })
+          .execute();
+      }
+    } catch {
+      throw new InternalServerErrorException();
     }
-
+  }
 }
