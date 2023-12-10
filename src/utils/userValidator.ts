@@ -50,10 +50,10 @@ export class UserValidator
   @IsString({ each: true, message: 'Wszystkie dane muszą być ciągami teksu!' })
   @Contains('https://github.com', {
     each: true,
-    message: 'Projekty muszą być linkami do githuba',
+    message: messages.errors.userImport.InvalidProjectLink,
   })
   @IsUrl(
-    { require_host: true },
+    { require_host: true, host_whitelist: ['github.com'] },
     { message: messages.errors.userImport.InvalidProjectLink, each: true },
   )
   bonusProjectUrls: string[];
