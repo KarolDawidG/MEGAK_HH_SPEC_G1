@@ -92,7 +92,6 @@ export class UserController {
     }
     const emailList = await this.userService.getEmailsOfAllUsers();
 
-    console.log(body);
     return await this.userService.studentsImport(body, emailList);
   }
 
