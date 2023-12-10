@@ -124,12 +124,13 @@ export class UserService {
   }
 
   async studentsImport(
-    data: UserValidator[],
+    data: StudentImportFormatInterface[],
     emailList,
   ): Promise<StudentsImportResponse> {
     try {
       const approved: StudentImportFormatInterface[] = [];
       const rejected: StudentsImportJsonInterface[] = [];
+
       data.forEach(async (student) => {
         const obj = new UserValidator(student);
 
@@ -160,35 +161,35 @@ export class UserService {
 
         approved.push(student);
         const token = uuid();
-        // const user = await this.userRepository.save({
-        //   email: student.email,
-        //   role: roleEnum.student,
-        //   pwdHash: '',
-        //   isActive: false,
-        //   token,
-        // });
+        const user = await this.userRepository.save({
+          email: student.email,
+          role: roleEnum.student,
+          pwdHash: '',
+          isActive: false,
+          token,
+        });
 
-        // await this.projectsEvaluationService.create(
-        //   user.id,
-        //   student.courseCompletion,
-        //   student.courseEngagement,
-        //   student.projectDegree,
-        //   student.teamProjectDegree,
-        // );
+        await this.projectsEvaluationService.create(
+          user.id,
+          student.courseCompletion,
+          student.courseEngagement,
+          student.projectDegree,
+          student.teamProjectDegree,
+        );
 
-        // await student.bonusProjectUrls.forEach(async (URL) => {
-        //   await this.projectService.create(
-        //     user.id,
-        //     URL.replace(/[\[\]]/g, ''),
-        //     projectTypeEnum.portfolio,
-        //   );
-        // });
+        await student.bonusProjectUrls.forEach(async (URL) => {
+          await this.projectService.create(
+            user.id,
+            URL,
+            projectTypeEnum.portfolio,
+          );
+        });
 
-        //   await this.mailService.sendMail(
-        //     user.email,
-        //     messages.newStudentSubject,
-        //     studentCreatedEmailTemplate(user.token, user.id),
-        //   );
+        await this.mailService.sendMail(
+          user.email,
+          messages.newStudentSubject,
+          studentCreatedEmailTemplate(user.token, user.id),
+        );
       });
 
       return {
@@ -196,8 +197,7 @@ export class UserService {
         rejected,
       };
     } catch (error) {
-      console.log(error);
-      throw new InternalServerErrorException(error.messages);
+      throw new InternalServerErrorException();
     }
   }
 

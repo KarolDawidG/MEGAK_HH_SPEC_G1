@@ -1,7 +1,8 @@
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
+import { config } from './config/config';
 
 export = {
-  transport: `smtp://admin:password@localhost:2500`,
+  transport: `smtp://${config.mailerAuthUser}:${config.mailerAuthPassword}@${config.mailerHost}:${config.mailerSmptPort}`,
   defaults: {
     from: 'app@test.com',
   },

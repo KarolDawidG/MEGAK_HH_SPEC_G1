@@ -1,5 +1,5 @@
 import { Transform } from 'class-transformer';
-import { Contains, IsEmail, IsString } from 'class-validator';
+import { Contains, IsEmail, IsString, IsUrl } from 'class-validator';
 import { messages } from 'src/config/messages';
 import { StudentsImportJsonInterface } from 'src/interfaces/StudentsImportJsonInterface';
 import { IsDegreeValid } from 'src/utils/degreeValidator';
@@ -52,5 +52,9 @@ export class UserValidator
     each: true,
     message: 'Projekty muszą być linkami do githuba',
   })
+  @IsUrl(
+    { require_host: true },
+    { message: messages.errors.userImport.InvalidProjectLink, each: true },
+  )
   bonusProjectUrls: string[];
 }

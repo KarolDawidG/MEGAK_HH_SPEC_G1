@@ -44,6 +44,7 @@ export const messages = {
         'Niepoprawny format oceny zadania zaliczeniowego w kursie.',
       InvalidTeamProjectDegree:
         'Niepoprawny format oceny pracy w zespole w projekcie bonusowym.',
+      InvalidProjectLink: 'Niepoprawny adres URL projektu.',
     },
   },
 };
