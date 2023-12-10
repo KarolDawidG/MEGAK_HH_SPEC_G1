@@ -32,4 +32,18 @@ export const messages = {
   userRegisteredSubject: 'Aplikacja MegaK - Konto aktywowane',
   newPasswordMustBeDifferent: 'Nowe hasło musi różnić się od poprzedniego',
   passwordsMustBeTheSame: 'Podane hasła się różnią',
+  errors: {
+    userImport: {
+      InvalidEmail: 'Niepoprawny format adresu email.',
+      EmailAlreadyExists: 'Ten email istnieje już w bazie danych.',
+      InvalidCompletionDegree:
+        'Niepoprawny format oceny stopnia przejścia kursu.',
+      InvalidEngagementDegree:
+        'Niepoprawny format oceny stopnia aktywności i zaangażowania w kursie.',
+      InvalidProjectDegree:
+        'Niepoprawny format oceny zadania zaliczeniowego w kursie.',
+      InvalidTeamProjectDegree:
+        'Niepoprawny format oceny pracy w zespole w projekcie bonusowym.',
+    },
+  },
 };

@@ -23,7 +23,7 @@ import { UserChangeSelfPasswordDto } from './dto/user.change-self-password.dto';
 import { Response } from 'express';
 import { hashPwd } from '../utils/hash-pwd';
 import { JwtAuthGuard } from '../guards/jwt.auth.guard';
-import { UserValidator } from './dto/user.import-student.dto';
+import { UserValidator } from '../utils/userValidator';
 
 @Controller('user')
 export class UserController {

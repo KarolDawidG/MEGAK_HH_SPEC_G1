@@ -1,7 +1,8 @@
 import { Transform } from 'class-transformer';
-import { Contains, IsEmail, IsInt, IsString, Max, Min } from 'class-validator';
+import { Contains, IsEmail, IsString } from 'class-validator';
 import { messages } from 'src/config/messages';
 import { StudentsImportJsonInterface } from 'src/interfaces/StudentsImportJsonInterface';
+import { IsDegreeValid } from 'src/utils/degreeValidator';
 
 export class UserValidator
   implements Omit<StudentsImportJsonInterface, 'message'>
@@ -19,31 +20,36 @@ export class UserValidator
   email: string;
 
   @Transform((val) => Number(val))
-  @IsInt({ message: messages.csvImportCompletionDegreeValidationError })
-  @Min(1, { message: messages.csvImportCompletionDegreeValidationError })
-  @Max(5, { message: messages.csvImportCompletionDegreeValidationError })
+  @IsDegreeValid(
+    { min: 1, max: 5 },
+    { message: messages.errors.userImport.InvalidCompletionDegree },
+  )
   courseCompletion: number;
 
   @Transform((val) => Number(val))
-  @IsInt({ message: messages.csvImportEngagementDegreeValidationError })
-  @Min(1, { message: messages.csvImportEngagementDegreeValidationError })
-  @Max(5, { message: messages.csvImportEngagementDegreeValidationError })
+  @IsDegreeValid(
+    { min: 1, max: 5 },
+    { message: messages.errors.userImport.InvalidEngagementDegree },
+  )
   courseEngagement: number;
 
   @Transform((val) => Number(val))
-  @IsInt({ message: messages.csvImportProjectDegreeValidationError })
-  @Min(1, { message: messages.csvImportProjectDegreeValidationError })
-  @Max(5, { message: messages.csvImportProjectDegreeValidationError })
+  @IsDegreeValid(
+    { min: 1, max: 5 },
+    { message: messages.errors.userImport.InvalidProjectDegree },
+  )
   projectDegree: number;
 
   @Transform((val) => Number(val))
-  @IsInt({ message: messages.csvImportTeamProjectDegreeValidationError })
-  @Min(1, { message: messages.csvImportTeamProjectDegreeValidationError })
-  @Max(5, { message: messages.csvImportTeamProjectDegreeValidationError })
+  @IsDegreeValid(
+    { min: 1, max: 5 },
+    { message: messages.errors.userImport.InvalidTeamProjectDegree },
+  )
   teamProjectDegree: number;
 
   @IsString({ each: true, message: 'Wszystkie dane muszą być ciągami teksu!' })
-  @Contains('https://www.github.com', {
+  @Contains('https://github.com', {
+    each: true,
     message: 'Projekty muszą być linkami do githuba',
   })
   bonusProjectUrls: string[];

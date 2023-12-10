@@ -30,7 +30,7 @@ import { StudentsImportJsonInterface } from '../interfaces/StudentsImportJsonInt
 import { AuthService } from 'src/auth/auth.service';
 import { Response } from 'express';
 import { validate } from 'class-validator';
-import { UserValidator } from './dto/user.import-student.dto';
+import { UserValidator } from '../utils/userValidator';
 import { projectTypeEnum } from 'src/interfaces/ProjectInterface';
 import { studentCreatedEmailTemplate } from 'src/templates/email/studentCreated';
 
@@ -160,34 +160,35 @@ export class UserService {
 
         approved.push(student);
         const token = uuid();
-        const user = await this.userRepository.save({
-          email: student.email,
-          role: roleEnum.student,
-          isActive: false,
-          token,
-        });
+        // const user = await this.userRepository.save({
+        //   email: student.email,
+        //   role: roleEnum.student,
+        //   pwdHash: '',
+        //   isActive: false,
+        //   token,
+        // });
 
-        await this.projectsEvaluationService.create(
-          user.id,
-          student.courseCompletion,
-          student.courseEngagement,
-          student.projectDegree,
-          student.teamProjectDegree,
-        );
+        // await this.projectsEvaluationService.create(
+        //   user.id,
+        //   student.courseCompletion,
+        //   student.courseEngagement,
+        //   student.projectDegree,
+        //   student.teamProjectDegree,
+        // );
 
-        await student.bonusProjectUrls.forEach(async (URL) => {
-          await this.projectService.create(
-            user.id,
-            URL.replace(/[\[\]]/g, ''),
-            projectTypeEnum.portfolio,
-          );
-        });
+        // await student.bonusProjectUrls.forEach(async (URL) => {
+        //   await this.projectService.create(
+        //     user.id,
+        //     URL.replace(/[\[\]]/g, ''),
+        //     projectTypeEnum.portfolio,
+        //   );
+        // });
 
-        await this.mailService.sendMail(
-          user.email,
-          messages.newStudentSubject,
-          studentCreatedEmailTemplate(user.token, user.id),
-        );
+        //   await this.mailService.sendMail(
+        //     user.email,
+        //     messages.newStudentSubject,
+        //     studentCreatedEmailTemplate(user.token, user.id),
+        //   );
       });
 
       return {
