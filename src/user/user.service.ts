@@ -177,13 +177,15 @@ export class UserService {
           student.teamProjectDegree,
         );
 
-        await student.bonusProjectUrls.forEach(async (URL) => {
-          await this.projectService.create(
-            user.id,
-            URL,
-            projectTypeEnum.portfolio,
-          );
-        });
+        await this.projectService.createMany(
+          student.bonusProjectUrls.map((URL) => {
+            return {
+              userId: user.id,
+              url: URL,
+              type: projectTypeEnum.portfolio,
+            };
+          }),
+        );
 
         await this.mailService.sendMail(
           user.email,

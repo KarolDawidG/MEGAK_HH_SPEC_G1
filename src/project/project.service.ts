@@ -17,4 +17,10 @@ export class ProjectService {
       url,
     });
   }
+
+  async createMany(
+    projects: { userId: string; url: string; type: number }[],
+  ): Promise<ProjectEntity[]> {
+    return await this.projectRepository.save(projects);
+  }
 }
