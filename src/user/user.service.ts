@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from './user.entity';
-import { Repository } from 'typeorm';
+import { Repository, UpdateResult } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 import { MailService } from '../mail/mail.service';
 import { messages } from '../config/messages';
@@ -268,6 +268,23 @@ export class UserService {
         messages.userRegisteredSubject,
         registrationSuccessEmailTemplate(),
       );
+    } catch {
+      throw new InternalServerErrorException();
+    }
+  }
+
+  async updateUserEmail(id: string, email: string): Promise<UpdateResult> {
+    try {
+      if (email) {
+        return await this.userRepository
+          .createQueryBuilder()
+          .update('users')
+          .set({
+            email,
+          })
+          .where('id = :id', { id })
+          .execute();
+      }
     } catch {
       throw new InternalServerErrorException();
     }

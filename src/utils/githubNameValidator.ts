@@ -39,7 +39,6 @@ export class GithubNameValidator {
           }),
         ),
       );
-
       const uniqueGithubUser = await this.studentRepository.find({
         where: { githubName, id: Not(id) },
       });
