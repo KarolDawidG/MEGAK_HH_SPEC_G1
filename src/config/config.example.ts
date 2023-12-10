@@ -11,5 +11,5 @@ export const config = {
   mailerAuthUser: 'admin',
   mailerAuthPassword: 'password',
   mailerHost: 'localhost',
-  mailerSmptPort: 2500,
+  mailerSmtpPort: 2500,
 };
