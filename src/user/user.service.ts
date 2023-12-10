@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
 import {UserEntity} from './user.entity';
-import {Not, Repository, UpdateResult} from 'typeorm';
+import {Repository, UpdateResult} from 'typeorm';
 import {v4 as uuid} from 'uuid';
 import {MailService} from '../mail/mail.service';
 import {messages} from '../config/messages';
@@ -292,15 +292,6 @@ export class UserService {
       throw new InternalServerErrorException();
     }
   }
-
-    async isUserEmailUnique(id: string, email: string): Promise<boolean> {
-        try {
-            const uniqueEmail = await this.userRepository.count({where: {email, id: Not(id)}});
-            return uniqueEmail===0;
-        } catch {
-            throw new InternalServerErrorException();
-        }
-    }
 
     async updateUserEmail(id: string, email: string): Promise<UpdateResult> {
         try {

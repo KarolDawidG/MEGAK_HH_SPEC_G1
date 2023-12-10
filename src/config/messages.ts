@@ -36,4 +36,7 @@ export const messages = {
   updatedUserEmailExist: 'Użytkownik o podanym adresie email już istnieje.',
   notActiveUserError: 'Użytkownik z podanym id jest nieaktywny!',
   notAcceptableRoleError: 'Użytkownik z podanym id ma przypisaną rolę, która nie pozwala na podgląd tej strony',
+  updatedGithubNamExist: 'Użytkownik Github ze wskazanym loginem już istnieje w bazie',
+  githubUsernameNotFound: 'Użytkownik Github ze wskazanym loginem nie istnieje',
+
 };

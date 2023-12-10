@@ -1,4 +1,4 @@
-import {Injectable, NotAcceptableException, NotFoundException} from '@nestjs/common';
+import {Injectable, NotFoundException} from '@nestjs/common';
 import {catchError, lastValueFrom} from "rxjs";
 import {AxiosError} from "axios";
 import {Not, Repository} from "typeorm";
@@ -23,17 +23,13 @@ export class GithubNameValidator {
                 this.httpService.get(`https://api.github.com/users/${githubName}`).pipe(
                     catchError((error: AxiosError) => {
                         console.log(`GithubValidatorError: user [ ${githubName} ]`, error.response.statusText, error.response.status, error.code);
-                        throw new NotFoundException(`Użytkownik Github z loginem: ${githubName} nie istnieje`);
+                       throw new NotFoundException(`Użytkownik Github z loginem: ${githubName} nie istnieje`);
                     }))
             );
 
             const uniqueGithubUser = await this.studentRepository.count({
                 where: {githubName, id: Not(id)}
             });
-
-            if (uniqueGithubUser > 0) {
-                throw new NotAcceptableException(`Użytkownik Github z loginem: ${githubName} już istnieje w bazie`)
-            }
 
             return {
                 isGithubUser: !!data,

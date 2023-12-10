@@ -17,7 +17,7 @@ import {StudentService} from "./student.service";
 import {StudentListQuery} from './dto/student.list-query';
 import {StudentList} from './dto/student.list';
 import {messages} from 'src/config/messages';
-import {StudentProfileResponse, UpdatedStudentResponse, workTypeEnum} from "../interfaces/StudentInterface";
+import {StudentProfileResponse, UpdatedStudentResponse} from "../interfaces/StudentInterface";
 import {UpdateStudentDetailsDto} from "./dto/update-student-details.dto";
 import {UserService} from "../user/user.service";
 import {GithubNameValidator} from "../utils/githubNameValidator";
@@ -76,7 +76,6 @@ export class StudentController {
     }
 
 
-    //@Patch('/student-profile/:id')
     @Patch('/student-profile')
     @UseGuards(JwtAuthGuard)
     async updateStudentProfile(
@@ -105,13 +104,16 @@ export class StudentController {
         const {githubName, email} = studentProfileDetails;
         if (githubName) {
             const {isGithubUser, isGithubUserUnique} = await this.githubService.validateGithubName(student.id, githubName);
-            if (!isGithubUserUnique || !isGithubUser) {
-                throw new Error
+            if (!isGithubUserUnique) {
+                    throw new NotAcceptableException(messages.updatedGithubNamExist)
+                }
+            if (!isGithubUser){
+                throw new NotFoundException(messages.githubUsernameNotFound);
             }
         }
         if (email) {
-            const isEmailUnique = await this.userService.isUserEmailUnique(user.id, email)
-            if (!isEmailUnique) {
+            const userWithEmail = await this.userService.findByEmail(email);
+            if( !!userWithEmail && userWithEmail.id !== userStudent.id){
                 throw new NotAcceptableException(messages.updatedUserEmailExist);
             }
         }
