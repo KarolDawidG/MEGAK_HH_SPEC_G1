@@ -14,16 +14,16 @@ export const messages = {
   emptySearchResult: `Nie znaleziono rekordów o zadanych parametrach wyszukiwania`,
   registrationInvalidBody:
     'Link do rejestracji użytkownika jest już nieaktualny.',
-  csvImportEmailValidationError: 'Niepoprawny format adresu email.',
-  csvImportEmailExistError: 'Ten email istnieje już w bazie danych.',
-  csvImportCompletionDegreeValidationError:
-    'Niepoprawny format oceny stopnia przejścia kursu.',
-  csvImportEngagementDegreeValidationError:
-    'Niepoprawny format oceny stopnia aktywności i zaangażowania w kursie.',
-  csvImportProjectDegreeValidationError:
-    'Niepoprawny format oceny zadania zaliczeniowego w kursie.',
-  csvImportTeamProjectDegreeValidationError:
-    'Niepoprawny format oceny pracy w zespole w projekcie bonusowym.',
+  // csvImportEmailValidationError: 'Niepoprawny format adresu email.',
+  // csvImportEmailExistError: 'Ten email istnieje już w bazie danych.',
+  // csvImportCompletionDegreeValidationError:
+  //   'Niepoprawny format oceny stopnia przejścia kursu.',
+  // csvImportEngagementDegreeValidationError:
+  //   'Niepoprawny format oceny stopnia aktywności i zaangażowania w kursie.',
+  // csvImportProjectDegreeValidationError:
+  //   'Niepoprawny format oceny zadania zaliczeniowego w kursie.',
+  // csvImportTeamProjectDegreeValidationError:
+  //   'Niepoprawny format oceny pracy w zespole w projekcie bonusowym.',
   accessDenied: 'Nie masz uprawnień administratora.',
   newStudentSubject: 'Aplikacja MegaK - Zostałeś dodany do listy studentów',
   newHrSubject: `Aplikacja MegaK - Zostałeś dodany do listy HR'owców`,

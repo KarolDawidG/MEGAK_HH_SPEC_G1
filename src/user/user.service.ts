@@ -136,7 +136,7 @@ export class UserService {
         if (emailList.includes(student.email)) {
           rejected.push({
             ...student,
-            message: messages.csvImportEmailExistError,
+            message: messages.errors.userImport.EmailAlreadyExists,
           });
           return;
         }
@@ -195,77 +195,6 @@ export class UserService {
         approved,
         rejected,
       };
-
-      // parsedData.map((student) => {
-      //   if (!isEmailValid(student.email)) {
-      //     //student.unshift(messages.csvImportEmailValidationError);
-      //     student.message = messages.csvImportEmailValidationError;
-      //     rejected.push(student);
-      //   } else if (emailList.includes(student.email)) {
-      //     //student.unshift(messages.csvImportEmailExistError);
-      //     student.message = messages.csvImportEmailExistError;
-      //     rejected.push(student);
-      //   } else if (!isDegreeValid(Number(student.courseCompletion))) {
-      //     //student.unshift(messages.csvImportCompletionDegreeValidationError);
-      //     student.message = messages.csvImportCompletionDegreeValidationError;
-      //     rejected.push(student);
-      //   } else if (!isDegreeValid(Number(student.courseEngagement))) {
-      //     //student.unshift(messages.csvImportEngagementDegreeValidationError);
-      //     student.message = messages.csvImportEngagementDegreeValidationError;
-      //     rejected.push(student);
-      //   } else if (!isDegreeValid(Number(student.projectDegree))) {
-      //     //student.unshift(messages.csvImportProjectDegreeValidationError);
-      //     student.message = messages.csvImportProjectDegreeValidationError;
-      //     rejected.push(student);
-      //   } else if (!isDegreeValid(Number(student.teamProjectDegree))) {
-      //     //student.unshift(messages.csvImportTeamProjectDegreeValidationError);
-      //     student.message = messages.csvImportTeamProjectDegreeValidationError;
-      //     rejected.push(student);
-      //   } else {
-      //     approved.push({
-      //       email: student.email,
-      //       courseCompletion: Number(student.courseCompletion),
-      //       courseEngagement: Number(student.courseEngagement),
-      //       projectDegree: Number(student.projectDegree),
-      //       teamProjectDegree: Number(student.teamProjectDegree),
-      //       bonusProjectUrls: student.bonusProjectUrls
-      //         .replace(`/[\"\[\]]/g`, '')
-      //         .split(',')
-      //         .map((item) => item.trim()),
-      //     });
-      //   }
-      // });
-      //   for (const student of approved) {
-      //     const token = uuid();
-      //     const user = await this.userRepository.save({
-      //       email: student.email,
-      //       role: roleEnum.student,
-      //       isActive: false,
-      //       token,
-      //     });
-      //     await this.projectsEvaluationService.create(
-      //       user.id,
-      //       student.courseCompletion,
-      //       student.courseEngagement,
-      //       student.projectDegree,
-      //       student.teamProjectDegree,
-      //     );
-      //     const projectUrls = student.bonusProjectUrls;
-      //     projectUrls.map(async (url) => {
-      //       if (url.includes('github.com')) {
-      //         await this.projectService.create(
-      //           user.id,
-      //           url.replace(/[\[\]]/g, ''),
-      //           projectTypeEnum.portfolio,
-      //         );
-      //       }
-      //     });
-      //     await this.mailService.sendMail(
-      //       user.email,
-      //       messages.newStudentSubject,
-      //       studentCreatedEmailTemplate(user.token, user.id),
-      //     );
-      //   }
     } catch (error) {
       console.log(error);
       throw new InternalServerErrorException(error.messages);
