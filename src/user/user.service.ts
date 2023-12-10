@@ -31,6 +31,8 @@ import { AuthService } from 'src/auth/auth.service';
 import { Response } from 'express';
 import { validate } from 'class-validator';
 import { UserValidator } from './dto/user.import-student.dto';
+import { projectTypeEnum } from 'src/interfaces/ProjectInterface';
+import { studentCreatedEmailTemplate } from 'src/templates/email/studentCreated';
 
 @Injectable()
 export class UserService {
@@ -128,8 +130,9 @@ export class UserService {
     try {
       const approved: StudentImportFormatInterface[] = [];
       const rejected: StudentsImportJsonInterface[] = [];
-      data.forEach((student) => {
+      data.forEach(async (student) => {
         const obj = new UserValidator(student);
+
         if (emailList.includes(student.email)) {
           rejected.push({
             ...student,
@@ -138,22 +141,59 @@ export class UserService {
           return;
         }
 
-        validate(obj, {
+        const errors = await validate(obj, {
           validationError: {
             value: false,
           },
           stopAtFirstError: true,
-        }).then((errors) => {
-          if (errors.length)
-            rejected.push({
-              ...student,
-              message: errors
-                .map((val) => Object.values(val.constraints))
-                .join(' '),
-            });
-          else approved.push(student);
         });
+
+        if (errors.length) {
+          rejected.push({
+            ...student,
+            message: errors
+              .map((val) => Object.values(val.constraints))
+              .join(' '),
+          });
+          return;
+        }
+
+        approved.push(student);
+        const token = uuid();
+        const user = await this.userRepository.save({
+          email: student.email,
+          role: roleEnum.student,
+          isActive: false,
+          token,
+        });
+
+        await this.projectsEvaluationService.create(
+          user.id,
+          student.courseCompletion,
+          student.courseEngagement,
+          student.projectDegree,
+          student.teamProjectDegree,
+        );
+
+        await student.bonusProjectUrls.forEach(async (URL) => {
+          await this.projectService.create(
+            user.id,
+            URL.replace(/[\[\]]/g, ''),
+            projectTypeEnum.portfolio,
+          );
+        });
+
+        await this.mailService.sendMail(
+          user.email,
+          messages.newStudentSubject,
+          studentCreatedEmailTemplate(user.token, user.id),
+        );
       });
+
+      return {
+        approved,
+        rejected,
+      };
 
       // parsedData.map((student) => {
       //   if (!isEmailValid(student.email)) {
@@ -225,10 +265,6 @@ export class UserService {
       //       studentCreatedEmailTemplate(user.token, user.id),
       //     );
       //   }
-      return {
-        approved,
-        rejected,
-      };
     } catch (error) {
       console.log(error);
       throw new InternalServerErrorException(error.messages);

@@ -1,5 +1,5 @@
 import { Transform } from 'class-transformer';
-import { IsEmail, IsInt, IsNumber, IsString, Max, Min } from 'class-validator';
+import { Contains, IsEmail, IsInt, IsString, Max, Min } from 'class-validator';
 import { messages } from 'src/config/messages';
 import { StudentsImportJsonInterface } from 'src/interfaces/StudentsImportJsonInterface';
 
@@ -19,26 +19,32 @@ export class UserValidator
   email: string;
 
   @Transform((val) => Number(val))
-  @IsNumber({}, { message: messages.csvImportCompletionDegreeValidationError })
+  @IsInt({ message: messages.csvImportCompletionDegreeValidationError })
   @Min(1, { message: messages.csvImportCompletionDegreeValidationError })
   @Max(5, { message: messages.csvImportCompletionDegreeValidationError })
   courseCompletion: number;
 
+  @Transform((val) => Number(val))
   @IsInt({ message: messages.csvImportEngagementDegreeValidationError })
   @Min(1, { message: messages.csvImportEngagementDegreeValidationError })
   @Max(5, { message: messages.csvImportEngagementDegreeValidationError })
   courseEngagement: number;
 
-  @IsNumber({}, { message: messages.csvImportProjectDegreeValidationError })
+  @Transform((val) => Number(val))
+  @IsInt({ message: messages.csvImportProjectDegreeValidationError })
   @Min(1, { message: messages.csvImportProjectDegreeValidationError })
   @Max(5, { message: messages.csvImportProjectDegreeValidationError })
   projectDegree: number;
 
+  @Transform((val) => Number(val))
   @IsInt({ message: messages.csvImportTeamProjectDegreeValidationError })
   @Min(1, { message: messages.csvImportTeamProjectDegreeValidationError })
   @Max(5, { message: messages.csvImportTeamProjectDegreeValidationError })
   teamProjectDegree: number;
 
   @IsString({ each: true, message: 'Wszystkie dane muszą być ciągami teksu!' })
+  @Contains('https://www.github.com', {
+    message: 'Projekty muszą być linkami do githuba',
+  })
   bonusProjectUrls: string[];
 }
