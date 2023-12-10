@@ -19,6 +19,12 @@ export class ProjectService {
     });
   }
 
+  async createMany(
+    projects: { userId: string; url: string; type: number }[],
+  ): Promise<ProjectEntity[]> {
+    return await this.projectRepository.save(projects);
+  }
+
   async updateProject(userId: string, url: string[], type: projectTypeEnum) {
     try {
       if (url) {

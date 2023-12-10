@@ -8,4 +8,8 @@ export const config = {
   secretJwt: 'secureString',
   hmacKey: 'saltString',
   tokenExpirationTime: 60 * 60 * 24,
+  mailerAuthUser: 'admin',
+  mailerAuthPassword: 'password',
+  mailerHost: 'localhost',
+  mailerSmptPort: 2500,
 };

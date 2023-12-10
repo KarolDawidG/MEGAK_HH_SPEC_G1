@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotAcceptableException,
+  NotFoundException,
+} from '@nestjs/common';
 import { catchError, lastValueFrom } from 'rxjs';
 import { AxiosError } from 'axios';
 import { Not, Repository } from 'typeorm';
@@ -35,14 +39,18 @@ export class GithubNameValidator {
           }),
         ),
       );
-
-      const uniqueGithubUser = await this.studentRepository.count({
+      const uniqueGithubUser = await this.studentRepository.find({
         where: { githubName, id: Not(id) },
       });
+      if (uniqueGithubUser.length > 0) {
+        throw new NotAcceptableException(
+          `Użytkownik Github z loginem: ${githubName} już istnieje w bazie`,
+        );
+      }
 
       return {
         isGithubUser: !!data,
-        isGithubUserUnique: uniqueGithubUser === 0,
+        isGithubUserUnique: uniqueGithubUser.length < 1,
       };
     }
   }
