@@ -17,7 +17,7 @@ import {
   IsNumber,
   IsOptional,
   IsPhoneNumber,
-  IsString,
+  IsString, IsUrl,
   Min,
 } from 'class-validator';
 import { Transform } from 'class-transformer';
@@ -44,16 +44,14 @@ export class CreateStudentDetailsDto implements Partial<StudentInterface> {
   @IsString()
   githubName: string;
 
-  @Transform(({ value }) => value.split(','))
   @IsOptional()
-  @IsArray()
+  @IsUrl({}, {each: true})
+  @IsString({ each: true })
   portfolioUrl?: string[] | null;
 
-  @Transform(({ value }) => value.split(','))
-  @IsArray()
-  @ArrayNotEmpty()
   @IsString({ each: true })
-  @Contains('github.com', { each: true })
+  @IsUrl({}, {each: true})
+  @Contains('https://github.com', { each: true })
   bonusProjectUrl: string[];
 
   @IsOptional()

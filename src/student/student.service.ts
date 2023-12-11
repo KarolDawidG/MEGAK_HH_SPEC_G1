@@ -193,10 +193,8 @@ export class StudentService {
     }
   }
 
-  async updateOne(
-    student: StudentEntity,
-    studentProfileDetails: UpdateStudentDetailsDto,
-  ): Promise<UpdatedStudentResponse> {
+  async updateOne(student: StudentEntity, studentProfileDetails: UpdateStudentDetailsDto): Promise<UpdatedStudentResponse> {
+
     try {
       const {
         email,
@@ -204,54 +202,45 @@ export class StudentService {
         portfolioUrl,
         githubName,
         ...restOfDetails
-      } = studentProfileDetails;
+      } = studentProfileDetails
 
-      const updates: UpdateResult[] = [];
+      const updates = [];
 
-      if (
-        !Object.values({ ...restOfDetails, githubName }).every(
-          (detail) => detail === undefined,
-        )
-      ) {
-        const updateResults = await Promise.all([
-          this.studentRepository
-            .createQueryBuilder()
+      if (!Object.values({...restOfDetails, githubName}).every((detail) => detail === undefined,)) {
+        updates.push(this.studentRepository.createQueryBuilder()
             .update('students')
             .set({
               githubName,
               ...restOfDetails,
               updatedAt: () => 'CURRENT_TIMESTAMP',
             })
-            .where('id = :id', { id: student.id })
-            .execute(),
-          this.userService.updateUserEmail(student.userId, email),
-          this.projectService.updateProject(
-            student.userId,
-            bonusProjectUrl,
-            projectTypeEnum.bonusProject,
-          ),
-          this.projectService.updateProject(
-            student.userId,
-            portfolioUrl,
-            projectTypeEnum.portfolio,
-          ),
-        ]);
-
-        updateResults.forEach((el) => updates.push(el as UpdateResult));
+            .where('id = :id', {id: student.id})
+            .execute(),)
       }
 
-      const isSuccess = updates.some(
-        (updateResult) => updateResult.affected > 0,
-      );
+      if (email) {
+        updates.push(this.userService.updateUserEmail(student.userId, email));
+      }
+
+      if (bonusProjectUrl) {
+        updates.push(this.projectService.updateProject(student.userId, bonusProjectUrl, projectTypeEnum.bonusProject));
+      }
+
+      if (portfolioUrl) {
+        updates.push(this.projectService.updateProject(student.userId, portfolioUrl, projectTypeEnum.portfolio));
+      }
+
+      const updateResults = await Promise.all(updates);
+
+      const isSuccess = updateResults.some((el) => el.affected > 0);
 
       return {
         isSuccess,
-        message: isSuccess
-          ? 'All affected records have been successfully updated'
-          : 'No records affected',
+        message: isSuccess ? 'All affected records have been successfully updated' : 'No records affected'
       };
     } catch (e) {
       throw new InternalServerErrorException();
     }
   }
+
 }
