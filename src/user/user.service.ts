@@ -165,38 +165,38 @@ export class UserService {
         }
 
         approved.push(student);
-        //   const token = uuid();
-        //   const user = await this.userRepository.save({
-        //     email: student.email,
-        //     role: roleEnum.student,
-        //     pwdHash: '',
-        //     isActive: false,
-        //     token,
-        //   });
+        const token = uuid();
+        const user = await this.userRepository.save({
+          email: student.email,
+          role: roleEnum.student,
+          pwdHash: '',
+          isActive: false,
+          token,
+        });
 
-        //   await this.projectsEvaluationService.create(
-        //     user.id,
-        //     student.courseCompletion,
-        //     student.courseEngagement,
-        //     student.projectDegree,
-        //     student.teamProjectDegree,
-        //   );
+        await this.projectsEvaluationService.create(
+          user.id,
+          student.courseCompletion,
+          student.courseEngagement,
+          student.projectDegree,
+          student.teamProjectDegree,
+        );
 
-        //   await this.projectService.createMany(
-        //     obj.bonusProjectUrls.map((URL) => {
-        //       return {
-        //         userId: user.id,
-        //         url: URL,
-        //         type: projectTypeEnum.portfolio,
-        //       };
-        //     }),
-        //   );
+        await this.projectService.createMany(
+          obj.bonusProjectUrls.map((URL) => {
+            return {
+              userId: user.id,
+              url: URL,
+              type: projectTypeEnum.portfolio,
+            };
+          }),
+        );
 
-        //   await this.mailService.sendMail(
-        //     user.email,
-        //     messages.newStudentSubject,
-        //     studentCreatedEmailTemplate(user.token, user.id),
-        //   );
+        await this.mailService.sendMail(
+          user.email,
+          messages.newStudentSubject,
+          studentCreatedEmailTemplate(user.token, user.id),
+        );
       });
 
       console.log({
