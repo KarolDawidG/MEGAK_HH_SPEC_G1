@@ -132,7 +132,12 @@ export class UserService {
       const rejected: StudentsImportJsonInterface[] = [];
 
       data.forEach(async (student) => {
-        const obj = new UserValidator(student);
+        const obj = new UserValidator({
+          ...student,
+          bonusProjectUrls: student.bonusProjectUrls
+            .slice(1, student.bonusProjectUrls.length - 2)
+            .split(','),
+        });
 
         if (emailList.includes(student.email)) {
           rejected.push({
@@ -160,38 +165,43 @@ export class UserService {
         }
 
         approved.push(student);
-        const token = uuid();
-        const user = await this.userRepository.save({
-          email: student.email,
-          role: roleEnum.student,
-          pwdHash: '',
-          isActive: false,
-          token,
-        });
+        //   const token = uuid();
+        //   const user = await this.userRepository.save({
+        //     email: student.email,
+        //     role: roleEnum.student,
+        //     pwdHash: '',
+        //     isActive: false,
+        //     token,
+        //   });
 
-        await this.projectsEvaluationService.create(
-          user.id,
-          student.courseCompletion,
-          student.courseEngagement,
-          student.projectDegree,
-          student.teamProjectDegree,
-        );
+        //   await this.projectsEvaluationService.create(
+        //     user.id,
+        //     student.courseCompletion,
+        //     student.courseEngagement,
+        //     student.projectDegree,
+        //     student.teamProjectDegree,
+        //   );
 
-        await this.projectService.createMany(
-          student.bonusProjectUrls.map((URL) => {
-            return {
-              userId: user.id,
-              url: URL,
-              type: projectTypeEnum.portfolio,
-            };
-          }),
-        );
+        //   await this.projectService.createMany(
+        //     obj.bonusProjectUrls.map((URL) => {
+        //       return {
+        //         userId: user.id,
+        //         url: URL,
+        //         type: projectTypeEnum.portfolio,
+        //       };
+        //     }),
+        //   );
 
-        await this.mailService.sendMail(
-          user.email,
-          messages.newStudentSubject,
-          studentCreatedEmailTemplate(user.token, user.id),
-        );
+        //   await this.mailService.sendMail(
+        //     user.email,
+        //     messages.newStudentSubject,
+        //     studentCreatedEmailTemplate(user.token, user.id),
+        //   );
+      });
+
+      console.log({
+        approved,
+        rejected,
       });
 
       return {
@@ -199,6 +209,7 @@ export class UserService {
         rejected,
       };
     } catch (error) {
+      console.error(error);
       throw new InternalServerErrorException();
     }
   }

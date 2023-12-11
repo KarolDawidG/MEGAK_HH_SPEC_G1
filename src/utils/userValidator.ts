@@ -1,11 +1,15 @@
-import { Transform } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import { Contains, IsEmail, IsString, IsUrl } from 'class-validator';
 import { messages } from 'src/config/messages';
 import { StudentsImportJsonInterface } from 'src/interfaces/StudentsImportJsonInterface';
 import { IsDegreeValid } from 'src/utils/degreeValidator';
 
 export class UserValidator
-  implements Omit<StudentsImportJsonInterface, 'message'>
+  implements
+    Omit<
+      StudentsImportJsonInterface,
+      'message' | 'bonusProjectUrls' | 'teamProjectDegree'
+    >
 {
   constructor(data: UserValidator) {
     this.email = data.email;
@@ -19,33 +23,33 @@ export class UserValidator
   @IsEmail({}, { message: messages.invalidEmail })
   email: string;
 
-  @Transform((val) => Number(val))
+  @Transform(({ value }) => Number(value))
   @IsDegreeValid(
     { min: 1, max: 5 },
     { message: messages.errors.userImport.InvalidCompletionDegree },
   )
-  courseCompletion: number;
+  courseCompletion: number | string;
 
-  @Transform((val) => Number(val))
+  @Transform(({ value }) => Number(value))
   @IsDegreeValid(
     { min: 1, max: 5 },
     { message: messages.errors.userImport.InvalidEngagementDegree },
   )
-  courseEngagement: number;
+  courseEngagement: number | string;
 
-  @Transform((val) => Number(val))
+  @Transform(({ value }) => Number(value))
   @IsDegreeValid(
     { min: 1, max: 5 },
     { message: messages.errors.userImport.InvalidProjectDegree },
   )
-  projectDegree: number;
+  projectDegree: number | string;
 
-  @Transform((val) => Number(val))
+  @Transform(({ value }) => Number(value))
   @IsDegreeValid(
     { min: 1, max: 5 },
     { message: messages.errors.userImport.InvalidTeamProjectDegree },
   )
-  teamProjectDegree: number;
+  teamProjectDegree: number | string;
 
   @IsString({ each: true, message: 'Wszystkie dane muszą być ciągami teksu!' })
   @Contains('https://github.com', {
