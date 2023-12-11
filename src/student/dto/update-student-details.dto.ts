@@ -6,9 +6,7 @@ import {
 } from '../../interfaces/StudentInterface';
 
 import {
-  ArrayNotEmpty,
   Contains,
-  IsArray,
   IsBoolean,
   IsEmail,
   IsEnum,
@@ -20,7 +18,6 @@ import {
   IsString, IsUrl,
   Min,
 } from 'class-validator';
-import { Transform } from 'class-transformer';
 import { PartialType } from '@nestjs/mapped-types';
 
 export class CreateStudentDetailsDto implements Partial<StudentInterface> {

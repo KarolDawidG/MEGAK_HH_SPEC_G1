@@ -11,7 +11,7 @@ import {
   UpdatedStudentResponse,
 } from '../interfaces/StudentInterface';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, UpdateResult } from 'typeorm';
+import { Repository } from 'typeorm';
 import { ProjectEntity } from '../project/project.entity';
 import { UpdateStudentDetailsDto } from './dto/update-student-details.dto';
 import { projectTypeEnum } from '../interfaces/ProjectInterface';
