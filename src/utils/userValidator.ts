@@ -1,4 +1,4 @@
-import { Transform, Type } from 'class-transformer';
+import { Transform } from 'class-transformer';
 import { Contains, IsEmail, IsString, IsUrl } from 'class-validator';
 import { messages } from 'src/config/messages';
 import { StudentsImportJsonInterface } from 'src/interfaces/StudentsImportJsonInterface';
