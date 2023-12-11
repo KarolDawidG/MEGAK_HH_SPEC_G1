@@ -55,4 +55,9 @@ export const messages = {
   updatedGithubNamExist:
     'Użytkownik Github ze wskazanym loginem już istnieje w bazie',
   githubUsernameNotFound: 'Użytkownik Github ze wskazanym loginem nie istnieje',
+  onlyForHrUser: "Ta funkcja możliwa jest tylko dla hr'owców",
+  hrProfileNotFound: 'Nie znaleziono profilu HR',
+  studentNotAvailable: 'Wybrany student nie jest obecnie dostępny',
+  hrMaxStudentLimitExceeded:
+    'Nie możesz dodać kolejnego kursanta z powodu przekroczenia limitu maksymalnej ilości kursantów',
 };
