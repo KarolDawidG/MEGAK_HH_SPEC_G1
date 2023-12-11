@@ -1,4 +1,4 @@
-import { IsBoolean, IsNumber, IsString } from 'class-validator';
+import { IsBoolean, IsNumber, IsString, IsUUID } from 'class-validator';
 import {
   workTypeEnum,
   contractTypeEnum,
@@ -6,6 +6,10 @@ import {
 import { StudentListResponse } from 'src/interfaces/StudentListResponse';
 
 export class StudentList implements StudentListResponse {
+  @IsUUID('4')
+  @IsString()
+  userId: string;
+
   @IsString()
   firstName: string;
 
