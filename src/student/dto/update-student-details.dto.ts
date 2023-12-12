@@ -6,7 +6,7 @@ import {
 } from '../../interfaces/StudentInterface';
 
 import {
-  Contains,
+  Contains, IsArray,
   IsBoolean,
   IsEmail,
   IsEnum,
@@ -42,10 +42,12 @@ export class CreateStudentDetailsDto implements Partial<StudentInterface> {
   githubName: string;
 
   @IsOptional()
+  @IsArray()
   @IsUrl({}, {each: true})
   @IsString({ each: true })
   portfolioUrl?: string[] | null;
 
+  @IsArray()
   @IsString({ each: true })
   @IsUrl({}, {each: true})
   @Contains('https://github.com', { each: true })
