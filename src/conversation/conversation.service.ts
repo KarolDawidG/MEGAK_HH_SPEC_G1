@@ -9,6 +9,10 @@ import { ConversationEntity } from './conversation.entity';
 import { ConversationStatusEnum } from '../interfaces/ConversationInterface';
 import { StudentService } from '../student/student.service';
 import { studentStatus } from '../interfaces/StudentInterface';
+import { MailService } from '../mail/mail.service';
+import { messages } from '../config/messages';
+import { newConversationEmailTemplate } from '../templates/email/newConversation';
+import { cancelConversationEmailTemplate } from '../templates/email/cancelConversation';
 
 @Injectable()
 export class ConversationService {
@@ -17,6 +21,8 @@ export class ConversationService {
     private conversationRepository: Repository<ConversationEntity>,
     @Inject(StudentService)
     private studentService: StudentService,
+    @Inject(MailService)
+    private mailService: MailService,
   ) {}
   async hrCount(hrProfileId: string): Promise<number> {
     try {
@@ -58,11 +64,18 @@ export class ConversationService {
   async startConversation(
     hrProfileId: string,
     studentId: string,
+    studentEmail: string,
+    companyName: string,
   ): Promise<ConversationEntity> {
     try {
       await this.studentService.statusUpdate(
         studentId,
         studentStatus.duringConversation,
+      );
+      await this.mailService.sendMail(
+        studentEmail,
+        messages.newConversationSubject,
+        newConversationEmailTemplate(companyName),
       );
       return await this.conversationRepository.save({
         hrProfileId,
@@ -72,5 +85,20 @@ export class ConversationService {
     } catch {
       throw new InternalServerErrorException();
     }
+  }
+
+  async cancelConversation(
+    conversationId: string,
+    studentEmail: string,
+    companyName: string,
+    studentId: string,
+  ): Promise<void> {
+    await this.statusUpdate(conversationId, ConversationStatusEnum.canceled);
+    await this.studentService.statusUpdate(studentId, studentStatus.available);
+    await this.mailService.sendMail(
+      studentEmail,
+      messages.cancelConversationSubject,
+      cancelConversationEmailTemplate(companyName),
+    );
   }
 }

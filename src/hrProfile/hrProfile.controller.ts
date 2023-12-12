@@ -4,6 +4,7 @@ import {
   Controller,
   Inject,
   NotFoundException,
+  Param,
   Patch,
   UnauthorizedException,
   UseGuards,
@@ -68,18 +69,23 @@ export class HrProfileController {
     if (hrConversationsCount >= hrProfile.maxReservedStudents) {
       throw new BadRequestException(messages.hrMaxStudentLimitExceeded);
     }
-
+    const { email: studentEmail } = await this.userService.findById(
+      student.userId,
+    );
     return await this.conversationService.startConversation(
       hrProfile.id,
       student.id,
+      studentEmail,
+      hrProfile.companyName,
     );
   }
 
   @UseGuards(JwtAuthGuard)
-  @Patch('hire-student')
+  @Patch('student/:action')
   async hire(
     @UserObj() user: UserEntity,
     @Body() body: ChooseStudentDto,
+    @Param('action') action: 'hire' | 'cancel',
   ): Promise<void> {
     if (user.role !== roleEnum.hr) {
       throw new UnauthorizedException(messages.onlyForHrUser);
@@ -102,11 +108,24 @@ export class HrProfileController {
     ) {
       throw new BadRequestException(messages.conversationNotExist);
     }
-    await this.conversationService.statusUpdate(
-      conversation.id,
-      ConversationStatusEnum.completed,
-    );
-    await this.studentService.statusUpdate(student.id, studentStatus.engaged);
-    await this.userService.setAsHired(student.userId, hrProfile.companyName);
+    if (action === 'hire') {
+      await this.conversationService.statusUpdate(
+        conversation.id,
+        ConversationStatusEnum.completed,
+      );
+      await this.studentService.statusUpdate(student.id, studentStatus.engaged);
+      await this.userService.setAsHired(student.userId, hrProfile.companyName);
+    }
+    if (action === 'cancel') {
+      const { email: studentEmail } = await this.userService.findById(
+        student.userId,
+      );
+      await this.conversationService.cancelConversation(
+        conversation.id,
+        studentEmail,
+        hrProfile.companyName,
+        student.id,
+      );
+    }
   }
 }

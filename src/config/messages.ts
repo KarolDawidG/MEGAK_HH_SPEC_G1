@@ -63,4 +63,6 @@ export const messages = {
   conversationExist: 'Prowadziłeś już rozmowę z tym kursantem',
   conversationNotExist: 'Nie znaleziono aktywnej rozmowy z tym kursantem',
   userHiredSubject: 'Aplikacja MegaK - Zostałeś zatrudniony!',
+  newConversationSubject: 'Aplikacja MegaK - Dostępna nowa rozmowa',
+  cancelConversationSubject: 'Aplikacja MegaK - Zostałeś odrzucony :(',
 };
