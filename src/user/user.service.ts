@@ -33,6 +33,7 @@ import { validate } from 'class-validator';
 import { UserValidator } from '../utils/userValidator';
 import { projectTypeEnum } from 'src/interfaces/ProjectInterface';
 import { studentCreatedEmailTemplate } from 'src/templates/email/studentCreated';
+import { userHiredEmailTemplate } from '../templates/email/userHired';
 
 @Injectable()
 export class UserService {
@@ -285,6 +286,20 @@ export class UserService {
           .where('id = :id', { id })
           .execute();
       }
+    } catch {
+      throw new InternalServerErrorException();
+    }
+  }
+
+  async setAsHired(userId: string, companyName: string | null): Promise<void> {
+    try {
+      const user = await this.findById(userId);
+      await this.userRepository.update({ id: user.id }, { isActive: false });
+      await this.mailService.sendMail(
+        user.email,
+        messages.userHiredSubject,
+        userHiredEmailTemplate(companyName),
+      );
     } catch {
       throw new InternalServerErrorException();
     }

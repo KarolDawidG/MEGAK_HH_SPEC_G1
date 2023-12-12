@@ -59,5 +59,8 @@ export const messages = {
   hrProfileNotFound: 'Nie znaleziono profilu HR',
   studentNotAvailable: 'Wybrany student nie jest obecnie dostępny',
   hrMaxStudentLimitExceeded:
-    'Nie możesz dodać kolejnego kursanta z powodu przekroczenia limitu maksymalnej ilości kursantów',
+    'Nie możesz dodać do rozmowy kolejnego kursanta z powodu przekroczenia limitu maksymalnej ilości kursantów',
+  conversationExist: 'Prowadziłeś już rozmowę z tym kursantem',
+  conversationNotExist: 'Nie znaleziono aktywnej rozmowy z tym kursantem',
+  userHiredSubject: 'Aplikacja MegaK - Zostałeś zatrudniony!',
 };

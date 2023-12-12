@@ -28,6 +28,33 @@ export class ConversationService {
     }
   }
 
+  async find(
+    hrProfileId: string,
+    studentId: string,
+  ): Promise<ConversationEntity> {
+    try {
+      return await this.conversationRepository.findOne({
+        where: { hrProfileId, studentId },
+      });
+    } catch {
+      throw new InternalServerErrorException();
+    }
+  }
+
+  async statusUpdate(
+    id: string,
+    status: ConversationStatusEnum,
+  ): Promise<void> {
+    try {
+      await this.conversationRepository.update(
+        { id },
+        { status, updatedAt: () => 'CURRENT_TIMESTAMP' },
+      );
+    } catch {
+      throw new InternalServerErrorException();
+    }
+  }
+
   async startConversation(
     hrProfileId: string,
     studentId: string,
