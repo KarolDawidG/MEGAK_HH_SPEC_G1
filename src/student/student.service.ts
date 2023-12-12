@@ -55,6 +55,7 @@ export class StudentService {
         .leftJoinAndSelect('student.user', 'user')
         .leftJoinAndSelect('user.projectEvaluation', 'evaluation')
         .select([
+          'user.id AS userId',
           'student.firstName AS firstName',
           'student.lastName AS lastName',
           'student.expectedWorkType AS expectedWorkType',
