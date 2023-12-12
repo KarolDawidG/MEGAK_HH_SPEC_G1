@@ -93,12 +93,33 @@ export class ConversationService {
     companyName: string,
     studentId: string,
   ): Promise<void> {
-    await this.statusUpdate(conversationId, ConversationStatusEnum.canceled);
-    await this.studentService.statusUpdate(studentId, studentStatus.available);
-    await this.mailService.sendMail(
-      studentEmail,
-      messages.cancelConversationSubject,
-      cancelConversationEmailTemplate(companyName),
-    );
+    try {
+      await this.statusUpdate(conversationId, ConversationStatusEnum.canceled);
+      await this.studentService.statusUpdate(
+        studentId,
+        studentStatus.available,
+      );
+      await this.mailService.sendMail(
+        studentEmail,
+        messages.cancelConversationSubject,
+        cancelConversationEmailTemplate(companyName),
+      );
+    } catch {
+      throw new InternalServerErrorException();
+    }
+  }
+
+  async cancelScheduledConversation(studentId: string) {
+    try {
+      await this.conversationRepository.update(
+        { studentId, status: ConversationStatusEnum.scheduled },
+        {
+          status: ConversationStatusEnum.canceled,
+          updatedAt: () => 'CURRENT_TIMESTAMP',
+        },
+      );
+    } catch {
+      throw new InternalServerErrorException();
+    }
   }
 }
