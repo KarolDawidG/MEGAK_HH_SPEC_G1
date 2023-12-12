@@ -148,3 +148,34 @@ Returns:
   number - Total DB records count
 ]
 ```
+
+### PATCH /hr-profile/choose-student
+
+Add student to conversation (start new conversation). You must have an HR role to execute this endpoint. Example json:
+```
+{
+	"studentId": "b0ffc095-72b8-4972-b5d9-45df2e0a5774"
+}
+```
+
+### PATCH /hr-profile/student/hire
+
+Change student state to hired (after this action choosed student will be mark as hired, will receive an email and will be deactivated) You must have an HR role to execute this endpoint. Example json:
+```
+{
+	"studentId": "b0ffc095-72b8-4972-b5d9-45df2e0a5774"
+}
+```
+
+### PATCH /hr-profile/student/cancel
+
+Cancel conversation with chosen student. You must have an HR role to execute this endpoint. Example json:
+```
+{
+	"studentId": "b0ffc095-72b8-4972-b5d9-45df2e0a5774"
+}
+```
+
+### PATCH /student/hired
+
+If you possess a student role, accessing this endpoint will designate your profile as 'hired.' The API will subsequently send you an email and deactivate your account.

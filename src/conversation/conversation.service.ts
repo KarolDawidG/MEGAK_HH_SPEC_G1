@@ -4,7 +4,7 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { LessThan, Repository } from 'typeorm';
 import { ConversationEntity } from './conversation.entity';
 import { ConversationStatusEnum } from '../interfaces/ConversationInterface';
 import { StudentService } from '../student/student.service';
@@ -13,6 +13,8 @@ import { MailService } from '../mail/mail.service';
 import { messages } from '../config/messages';
 import { newConversationEmailTemplate } from '../templates/email/newConversation';
 import { cancelConversationEmailTemplate } from '../templates/email/cancelConversation';
+import { Cron } from '@nestjs/schedule';
+import { config } from '../config/config';
 
 @Injectable()
 export class ConversationService {
@@ -120,6 +122,33 @@ export class ConversationService {
       );
     } catch {
       throw new InternalServerErrorException();
+    }
+  }
+
+  @Cron('0 */6 * * *')
+  async conversationScan(): Promise<void> {
+    try {
+      const currentDate = new Date();
+      const expirationDate = new Date(
+        currentDate.getTime() - config.conversationExpirationTime * 1000,
+      );
+      const expiredConversation = await this.conversationRepository.find({
+        where: [
+          { createdAt: LessThan(expirationDate.toISOString()) },
+          { status: ConversationStatusEnum.scheduled },
+        ],
+      });
+      if (expiredConversation.length !== 0) {
+        expiredConversation.map(async (conversation) => {
+          await this.studentService.statusUpdate(
+            conversation.studentId,
+            studentStatus.available,
+          );
+          await this.conversationRepository.delete({ id: conversation.id });
+        });
+      }
+    } catch (e) {
+      console.log(e);
     }
   }
 }
