@@ -6,7 +6,8 @@ import {
 } from '../../interfaces/StudentInterface';
 
 import {
-  Contains, IsArray,
+  Contains,
+  IsArray,
   IsBoolean,
   IsEmail,
   IsEnum,
@@ -15,7 +16,8 @@ import {
   IsNumber,
   IsOptional,
   IsPhoneNumber,
-  IsString, IsUrl,
+  IsString,
+  IsUrl,
   Min,
 } from 'class-validator';
 import { PartialType } from '@nestjs/mapped-types';
@@ -43,13 +45,13 @@ export class CreateStudentDetailsDto implements Partial<StudentInterface> {
 
   @IsOptional()
   @IsArray()
-  @IsUrl({}, {each: true})
+  @IsUrl({}, { each: true })
   @IsString({ each: true })
   portfolioUrl?: string[] | null;
 
   @IsArray()
   @IsString({ each: true })
-  @IsUrl({}, {each: true})
+  @IsUrl({}, { each: true })
   @Contains('https://github.com', { each: true })
   bonusProjectUrl: string[];
 
