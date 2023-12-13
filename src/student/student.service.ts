@@ -74,24 +74,24 @@ export class StudentService {
         .andWhere('user.isActive = 1');
 
       if (filterParams?.pd) {
-        query.andWhere('evaluation.projectDegree IN (:val)', {
+        query.andWhere('evaluation.projectDegree >= :val', {
           val: filterParams.pd,
         });
       }
 
       if (filterParams?.cc) {
-        query.andWhere('evaluation.courseCompletion IN (:val)', {
+        query.andWhere('evaluation.courseCompletion >= :val', {
           val: filterParams.cc,
         });
       }
 
       if (filterParams?.ce)
-        query.andWhere('evaluation.courseEngagement IN (:val)', {
+        query.andWhere('evaluation.courseEngagement >= :val', {
           val: filterParams.ce,
         });
 
       if (filterParams?.tpd)
-        query.andWhere('evaluation.teamProjectDegree IN (:val)', {
+        query.andWhere('evaluation.teamProjectDegree >= :val', {
           val: filterParams.tpd,
         });
 

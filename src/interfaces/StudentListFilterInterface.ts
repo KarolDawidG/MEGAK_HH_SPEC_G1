@@ -21,13 +21,13 @@ import {
  */
 export interface StudentListQueryRequestInterface {
   // CourseCompletion
-  cc?: number[];
+  cc?: number;
   // CourseEngagement
-  ce?: number[];
+  ce?: number;
   // ProjectDegree
-  pd?: number[];
+  pd?: number;
   // TeamProjectDegree
-  tpd?: number[];
+  tpd?: number;
   // ExpectedWorkType
   ewt?: workTypeEnum[];
   // ExpectedContractType

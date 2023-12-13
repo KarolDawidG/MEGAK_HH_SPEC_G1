@@ -16,24 +16,20 @@ import { transformToArray } from 'src/utils/transformToArray';
 
 export class StudentListQuery implements StudentListQueryRequestInterface {
   @IsOptional()
-  @Transform(transformToArray)
-  @IsArray()
-  cc?: number[];
+  @IsNumber()
+  cc?: number;
 
   @IsOptional()
-  @Transform(transformToArray)
-  @IsArray()
-  ce?: number[];
+  @IsNumber()
+  ce?: number;
 
   @IsOptional()
-  @Transform(transformToArray)
-  @IsArray()
-  pd?: number[];
+  @IsNumber()
+  pd?: number;
 
   @IsOptional()
-  @Transform(transformToArray)
-  @IsArray()
-  tpd?: number[];
+  @IsNumber()
+  tpd?: number;
 
   @IsOptional()
   @Transform(transformToArray)
