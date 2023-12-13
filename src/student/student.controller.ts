@@ -11,6 +11,7 @@ import {
   BadRequestException,
   NotAcceptableException,
   Inject,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { StudentService } from './student.service';
 import { StudentListQuery } from './dto/student.list-query';
@@ -43,6 +44,29 @@ export class StudentController {
     @Query() filterOptions: StudentListQuery,
   ): Promise<[StudentList[], number]> {
     const searchResult = await this.studentService.findAll(filterOptions);
+
+    if (!searchResult[0].length) {
+      throw new NotFoundException(messages.emptySearchResult);
+    }
+
+    return searchResult;
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('conversation-list')
+  async getConverstationList(
+    @Query() filterOptions: StudentListQuery,
+    @UserObj() user: UserEntity,
+  ): Promise<[StudentList[], number]> {
+    if (user.role < 1) {
+      throw new UnauthorizedException(messages.accessDenied);
+    }
+
+    const searchResult = await this.studentService.findAll(
+      filterOptions,
+      true,
+      user.id,
+    );
 
     if (!searchResult[0].length) {
       throw new NotFoundException(messages.emptySearchResult);

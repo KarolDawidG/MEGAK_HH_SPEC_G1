@@ -45,6 +45,8 @@ export class StudentService {
 
   async findAll(
     filterParams: StudentListQueryRequestInterface,
+    conversationOnly: boolean = false,
+    userId?: string,
   ): Promise<[StudentListResponse[], number]> {
     try {
       const limit = (filterParams.pitems <= 90 && filterParams.pitems) || 15;
@@ -54,6 +56,7 @@ export class StudentService {
         .createQueryBuilder('student')
         .leftJoinAndSelect('student.user', 'user')
         .leftJoinAndSelect('user.projectEvaluation', 'evaluation')
+        .leftJoinAndSelect('student.conversation', 'conversation')
         .select([
           'user.id AS userId',
           'student.firstName AS firstName',
@@ -72,6 +75,12 @@ export class StudentService {
         ])
         .where(`user.role = ${roleEnum.student}`)
         .andWhere('user.isActive = 1');
+
+      if (conversationOnly) {
+        query.andWhere('conversation.hrProfileId = :val', { val: userId });
+      } else {
+        query.andWhere('conversation.hrProfileId IS NULL');
+      }
 
       if (filterParams?.pd) {
         query.andWhere('evaluation.projectDegree >= :val', {
@@ -133,7 +142,8 @@ export class StudentService {
         await query.limit(limit).offset(offset).getRawMany(),
         await query.getCount(),
       ];
-    } catch {
+    } catch (e) {
+      console.log(e);
       throw new InternalServerErrorException();
     }
   }
