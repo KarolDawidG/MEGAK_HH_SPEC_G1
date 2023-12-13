@@ -78,9 +78,17 @@ export class StudentService {
         .andWhere('user.isActive = 1');
 
       if (conversationOnly) {
-        query.andWhere('conversation.hrProfileId = :val', { val: userId });
+        query
+          .andWhere('conversation.hrProfileId = :userId', {
+            userId: userId,
+          })
+          .andWhere('student.status = :status', {
+            status: studentStatus.duringConversation,
+          });
       } else {
-        query.andWhere('conversation.hrProfileId IS NULL');
+        query.andWhere('student.status = :val', {
+          val: studentStatus.available,
+        });
       }
 
       if (filterParams?.pd) {
