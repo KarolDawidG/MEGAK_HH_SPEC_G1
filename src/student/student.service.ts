@@ -11,7 +11,7 @@ import {
   UpdatedStudentResponse,
 } from '../interfaces/StudentInterface';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, UpdateResult } from 'typeorm';
+import { Repository } from 'typeorm';
 import { ProjectEntity } from '../project/project.entity';
 import { UpdateStudentDetailsDto } from './dto/update-student-details.dto';
 import { projectTypeEnum } from '../interfaces/ProjectInterface';
@@ -143,17 +143,18 @@ export class StudentService {
       const student = await this.studentRepository
         .createQueryBuilder('student')
         .leftJoin('student.user', 'user')
-        .leftJoin(
+        .leftJoinAndMapMany(
+          'student.bonusProjects',
           ProjectEntity,
           'bonusProject',
-          'bonusProject.user_id = :userId AND bonusProject.type =' + ' :typeB',
+          'bonusProject.user_id = :userId AND bonusProject.type = :typeB',
           { typeB: projectTypeEnum.bonusProject },
         )
-        .leftJoin(
+        .leftJoinAndMapMany(
+          'student.portfolioProjects',
           ProjectEntity,
           'portfolioProject',
-          'portfolioProject.user_id = :userId AND' +
-            ' portfolioProject.type = :typeP',
+          'portfolioProject.user_id = :userId AND portfolioProject.type = :typeP',
           { typeP: projectTypeEnum.portfolio },
         )
         .select([
@@ -172,16 +173,19 @@ export class StudentService {
           'student.education',
           'student.workExperience',
           'student.courses',
-          'bonusProject.url AS bonusProjectUrl',
-          'portfolioProject.url AS portfolioUrl',
+          'GROUP_CONCAT(DISTINCT bonusProject.url) AS bonusProjectUrls',
+          'GROUP_CONCAT(DISTINCT portfolioProject.url) AS portfolioUrls',
         ])
         .where('student.user_id = :userId', { userId })
+        .groupBy('user.id')
         .getRawOne();
       console.log(student);
+
       return {
         studentDetails: student,
       };
-    } catch {
+    } catch (e) {
+      console.log(e);
       throw new InternalServerErrorException();
     }
   }
@@ -207,14 +211,14 @@ export class StudentService {
         ...restOfDetails
       } = studentProfileDetails;
 
-      const updates: UpdateResult[] = [];
+      const updates = [];
 
       if (
         !Object.values({ ...restOfDetails, githubName }).every(
           (detail) => detail === undefined,
         )
       ) {
-        const updateResults = await Promise.all([
+        updates.push(
           this.studentRepository
             .createQueryBuilder()
             .update('students')
@@ -225,25 +229,36 @@ export class StudentService {
             })
             .where('id = :id', { id: student.id })
             .execute(),
-          this.userService.updateUserEmail(student.userId, email),
+        );
+      }
+
+      if (email) {
+        updates.push(this.userService.updateUserEmail(student.userId, email));
+      }
+
+      if (bonusProjectUrl) {
+        updates.push(
           this.projectService.updateProject(
             student.userId,
             bonusProjectUrl,
             projectTypeEnum.bonusProject,
           ),
+        );
+      }
+
+      if (portfolioUrl) {
+        updates.push(
           this.projectService.updateProject(
             student.userId,
             portfolioUrl,
             projectTypeEnum.portfolio,
           ),
-        ]);
-
-        updateResults.forEach((el) => updates.push(el as UpdateResult));
+        );
       }
 
-      const isSuccess = updates.some(
-        (updateResult) => updateResult.affected > 0,
-      );
+      const updateResults = await Promise.all(updates);
+
+      const isSuccess = updateResults.some((el) => el.affected > 0);
 
       return {
         isSuccess,
@@ -252,6 +267,7 @@ export class StudentService {
           : 'No records affected',
       };
     } catch (e) {
+      console.log(e);
       throw new InternalServerErrorException();
     }
   }

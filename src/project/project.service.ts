@@ -25,22 +25,29 @@ export class ProjectService {
     return await this.projectRepository.save(projects);
   }
 
-  async updateProject(userId: string, url: string[], type: projectTypeEnum) {
+  async updateProject(userId: string, urls: string[], type: projectTypeEnum) {
     try {
-      if (url) {
-        return await this.projectRepository
-          .createQueryBuilder()
-          .update('projects')
-          .set({
-            url: JSON.stringify(url),
-            type,
-            updatedAt: () => 'CURRENT_TIMESTAMP',
-          })
-          .where('projects.type = :type', { type })
-          .andWhere('projects.user_id = :userId', { userId })
-          .execute();
-      }
-    } catch {
+      await this.projectRepository
+        .createQueryBuilder()
+        .delete()
+        .from(ProjectEntity)
+        .where('userId = :userId', { userId })
+        .andWhere('type = :type', { type })
+        .execute();
+
+      const newProjects = urls.map((url) => {
+        const project = new ProjectEntity();
+        project.userId = userId;
+        project.url = url;
+        project.type = type;
+        return project;
+      });
+
+      await this.projectRepository.save(newProjects);
+
+      return { affected: newProjects.length };
+    } catch (error) {
+      console.error(error);
       throw new InternalServerErrorException();
     }
   }
