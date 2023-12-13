@@ -132,7 +132,12 @@ export class UserService {
       const rejected: StudentsImportJsonInterface[] = [];
 
       data.forEach(async (student) => {
-        const obj = new UserValidator(student);
+        const obj = new UserValidator({
+          ...student,
+          bonusProjectUrls: student.bonusProjectUrls
+            .slice(1, student.bonusProjectUrls.length - 2)
+            .split(','),
+        });
 
         if (emailList.includes(student.email)) {
           rejected.push({
@@ -178,7 +183,7 @@ export class UserService {
         );
 
         await this.projectService.createMany(
-          student.bonusProjectUrls.map((URL) => {
+          obj.bonusProjectUrls.map((URL) => {
             return {
               userId: user.id,
               url: URL,
@@ -194,11 +199,17 @@ export class UserService {
         );
       });
 
+      console.log({
+        approved,
+        rejected,
+      });
+
       return {
         approved,
         rejected,
       };
     } catch (error) {
+      console.error(error);
       throw new InternalServerErrorException();
     }
   }

@@ -1,9 +1,9 @@
 export interface StudentsImportJsonInterface {
   email: string;
-  courseCompletion: number;
-  courseEngagement: number;
-  projectDegree: number;
-  teamProjectDegree: number;
-  bonusProjectUrls: string[];
+  courseCompletion: string | number;
+  courseEngagement: string | number;
+  projectDegree: string | number;
+  teamProjectDegree: string | number;
+  bonusProjectUrls: string;
   message?: string;
 }

@@ -18,7 +18,9 @@ export function IsDegreeValid(
       validator: {
         validate(value: number, args: ValidationArguments) {
           const { min, max } = args.constraints[0];
-          return typeof value === 'number' && value >= min && value <= max;
+          return (
+            typeof Number(value) === 'number' && value >= min && value <= max
+          );
         },
       },
     });
