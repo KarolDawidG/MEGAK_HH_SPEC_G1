@@ -20,6 +20,7 @@ import { roleEnum } from 'src/interfaces/UserInterface';
 import { StudentListResponse } from 'src/interfaces/StudentListResponse';
 import { ProjectService } from '../project/project.service';
 import { UserService } from '../user/user.service';
+import { listSortDispatchColumn } from 'src/utils/columnDispatcher';
 
 @Injectable()
 export class StudentService {
@@ -137,6 +138,11 @@ export class StudentService {
         query.andWhere('student.targetWorkCity LIKE :val', {
           val: `%${filterParams.srch}%`,
         });
+
+      query.orderBy(
+        listSortDispatchColumn(filterParams.ord),
+        filterParams.asc ? 'ASC' : 'DESC',
+      );
 
       return [
         await query.limit(limit).offset(offset).getRawMany(),

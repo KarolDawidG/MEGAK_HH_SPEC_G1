@@ -3,6 +3,22 @@ import {
   workTypeEnum,
 } from 'src/interfaces/StudentInterface';
 
+export enum ListSortEnum {
+  userId = 0,
+  firstName = 1,
+  lastName = 2,
+  expectedWorkType = 3,
+  targetWorkCity = 4,
+  expectedContractType = 5,
+  expectedSalary = 6,
+  canTakeApprenticeship = 7,
+  monthsOfCommercialExperience = 8,
+  projectDegree = 9,
+  teamProjectDegree = 10,
+  courseCompletion = 11,
+  courseEngagement = 12,
+}
+
 /**
  * @interface StudentListFilter Interface for student list filter.
  * Any value set to null equals any.
@@ -44,4 +60,8 @@ export interface StudentListQueryRequestInterface {
   page?: number;
   // ElementsPerPage
   pitems?: number;
+  // Sort
+  ord?: ListSortEnum;
+  // Ascending
+  asc?: boolean;
 }

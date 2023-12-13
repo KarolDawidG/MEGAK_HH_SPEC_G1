@@ -11,7 +11,10 @@ import {
   workTypeEnum,
   contractTypeEnum,
 } from 'src/interfaces/StudentInterface';
-import { StudentListQueryRequestInterface } from 'src/interfaces/StudentListFilterInterface';
+import {
+  ListSortEnum,
+  StudentListQueryRequestInterface,
+} from 'src/interfaces/StudentListFilterInterface';
 import { transformToArray } from 'src/utils/transformToArray';
 
 export class StudentListQuery implements StudentListQueryRequestInterface {
@@ -67,4 +70,12 @@ export class StudentListQuery implements StudentListQueryRequestInterface {
   @IsOptional()
   @IsNumber()
   pitems?: number;
+
+  @IsOptional()
+  @IsNumber()
+  ord?: ListSortEnum;
+
+  @IsOptional()
+  @IsBoolean()
+  asc?: boolean;
 }
