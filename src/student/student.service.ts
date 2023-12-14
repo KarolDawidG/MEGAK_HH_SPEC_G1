@@ -55,6 +55,7 @@ export class StudentService {
       .leftJoin('student.user', 'user')
       .leftJoin('student.conversation', 'conversation')
       .select([
+        'user.id AS userId',
         'CONCAT(student.firstName, " ", student.lastName) AS fullName',
         'DATE_SUB(conversation.createdAt, INTERVAL 10 DAY) AS expireIn',
         'student.githubName AS GithubUserName',
