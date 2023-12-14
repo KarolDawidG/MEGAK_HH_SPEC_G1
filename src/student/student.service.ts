@@ -21,6 +21,8 @@ import { StudentListResponse } from 'src/interfaces/StudentListResponse';
 import { ProjectService } from '../project/project.service';
 import { UserService } from '../user/user.service';
 import { listSortDispatchColumn } from 'src/utils/columnDispatcher';
+import { StudentListConversationResponse } from 'src/interfaces/StudentListConversationResponse';
+import { ConversationListRequestInterface } from 'src/interfaces/ConversationListRequestInterface';
 
 @Injectable()
 export class StudentService {
@@ -44,10 +46,29 @@ export class StudentService {
     }
   }
 
+  async findConversationOnly(
+    filterParams: ConversationListRequestInterface,
+    UserHrID: string,
+  ): Promise<[StudentListConversationResponse[], number]> {
+    const query = await this.studentRepository
+      .createQueryBuilder('student')
+      .leftJoin('student.user', 'user')
+      .leftJoin('student.conversation', 'conversation')
+      .select([
+        'CONCAT(student.firstName, " ", student.lastName) AS fullName',
+        'DATE_SUB(conversation.createdAt, INTERVAL 10 DAY) AS expireIn',
+        'student.githubName AS GithubUserName',
+      ])
+      .where('conversation.hrProfile = :val', { val: UserHrID })
+      .where('"fullName" LIKE :val', { val: `%${filterParams.srch || ''}%` });
+
+    const result = await query.getRawMany();
+    const count = await query.getCount();
+    return [result, count];
+  }
+
   async findAll(
     filterParams: StudentListQueryRequestInterface,
-    conversationOnly: boolean = false,
-    userId?: string,
   ): Promise<[StudentListResponse[], number]> {
     try {
       const limit = (filterParams.pitems <= 90 && filterParams.pitems) || 15;
@@ -57,7 +78,6 @@ export class StudentService {
         .createQueryBuilder('student')
         .leftJoinAndSelect('student.user', 'user')
         .leftJoinAndSelect('user.projectEvaluation', 'evaluation')
-        .leftJoinAndSelect('student.conversation', 'conversation')
         .select([
           'user.id AS userId',
           'student.firstName AS firstName',
@@ -77,19 +97,19 @@ export class StudentService {
         .where(`user.role = ${roleEnum.student}`)
         .andWhere('user.isActive = 1');
 
-      if (conversationOnly) {
-        query
-          .andWhere('conversation.hrProfileId = :userId', {
-            userId: userId,
-          })
-          .andWhere('student.status = :status', {
-            status: studentStatus.duringConversation,
-          });
-      } else {
-        query.andWhere('student.status = :val', {
-          val: studentStatus.available,
-        });
-      }
+      // if (conversationOnly) {
+      //   query
+      //     .andWhere('conversation.hrProfileId = :userId', {
+      //       userId: userId,
+      //     })
+      //     .andWhere('student.status = :status', {
+      //       status: studentStatus.duringConversation,
+      //     });
+      // } else {
+      //   query.andWhere('student.status = :val', {
+      //     val: studentStatus.available,
+      //   });
+      // }
 
       if (filterParams?.pd) {
         query.andWhere('evaluation.projectDegree >= :val', {

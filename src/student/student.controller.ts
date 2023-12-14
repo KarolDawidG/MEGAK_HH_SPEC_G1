@@ -28,6 +28,7 @@ import { roleEnum } from '../interfaces/UserInterface';
 import { UserObj } from '../decorators/user-obj.decorator';
 import { UserEntity } from '../user/user.entity';
 import { JwtAuthGuard } from '../guards/jwt.auth.guard';
+import { ConversationListQuery } from './dto/student.conversation-list-query.dto';
 
 @Controller('student')
 export class StudentController {
@@ -55,16 +56,15 @@ export class StudentController {
   @UseGuards(JwtAuthGuard)
   @Get('conversation-list')
   async getConverstationList(
-    @Query() filterOptions: StudentListQuery,
+    @Query() filterOptions: ConversationListQuery,
     @UserObj() user: UserEntity,
-  ): Promise<[StudentList[], number]> {
+  ): Promise<[any[], number]> {
     if (user.role < 1) {
       throw new UnauthorizedException(messages.accessDenied);
     }
 
-    const searchResult = await this.studentService.findAll(
+    const searchResult = await this.studentService.findConversationOnly(
       filterOptions,
-      true,
       user.id,
     );
 
