@@ -1,3 +1,4 @@
-export interface ConversationListRequestInterface {
-  srch: string;
-}
+import { StudentListQueryRequestInterface } from './StudentListFilterInterface';
+
+export interface ConversationListRequestInterface
+  extends StudentListQueryRequestInterface {}

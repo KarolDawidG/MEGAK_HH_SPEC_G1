@@ -1,7 +1,3 @@
-import { IsOptional, IsString } from 'class-validator';
+import { StudentListQuery } from './student.list-query';
 
-export class ConversationListQuery {
-  @IsOptional()
-  @IsString()
-  srch: string;
-}
+export class ConversationListQuery extends StudentListQuery {}
