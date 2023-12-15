@@ -23,6 +23,7 @@ import { UserService } from '../user/user.service';
 import { listSortDispatchColumn } from 'src/utils/columnDispatcher';
 import { StudentListConversationResponse } from 'src/interfaces/StudentListConversationResponse';
 import { listFilterDispatcher } from 'src/utils/listFilterDispatcher';
+import { HrProfileService } from 'src/hrProfile/hrProfile.service';
 
 @Injectable()
 export class StudentService {
@@ -33,6 +34,8 @@ export class StudentService {
     private projectService: ProjectService,
     @Inject(forwardRef(() => UserService))
     private userService: UserService,
+    @Inject(forwardRef(() => HrProfileService))
+    private hrProfileService: HrProfileService,
   ) {}
 
   async create(userId): Promise<StudentEntity> {
@@ -75,7 +78,10 @@ export class StudentService {
           'DATE_ADD(conversation.createdAt, INTERVAL 10 DAY) AS reservedTo',
           'student.githubName AS githubUserName',
         ])
-        .where('conversation.hrProfile = :hrProfile', { hrProfile: UserHrID })
+        .where('conversation.hrProfile = :hrProfile', {
+          hrProfile: (await this.hrProfileService.find(UserHrID)).id,
+        })
+        .andWhere('user.isActive = 1')
         .andWhere('student.status = :val', {
           val: `${studentStatus.duringConversation}`,
         });
