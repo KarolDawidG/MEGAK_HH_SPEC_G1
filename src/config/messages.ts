@@ -55,4 +55,14 @@ export const messages = {
   updatedGithubNamExist:
     'Użytkownik Github ze wskazanym loginem już istnieje w bazie',
   githubUsernameNotFound: 'Użytkownik Github ze wskazanym loginem nie istnieje',
+  onlyForHrUser: "Ta funkcja możliwa jest tylko dla hr'owców",
+  hrProfileNotFound: 'Nie znaleziono profilu HR',
+  studentNotAvailable: 'Wybrany student nie jest obecnie dostępny',
+  hrMaxStudentLimitExceeded:
+    'Nie możesz dodać do rozmowy kolejnego kursanta z powodu przekroczenia limitu maksymalnej ilości kursantów',
+  conversationExist: 'Prowadziłeś już rozmowę z tym kursantem',
+  conversationNotExist: 'Nie znaleziono aktywnej rozmowy z tym kursantem',
+  userHiredSubject: 'Aplikacja MegaK - Zostałeś zatrudniony!',
+  newConversationSubject: 'Aplikacja MegaK - Dostępna nowa rozmowa',
+  cancelConversationSubject: 'Aplikacja MegaK - Zostałeś odrzucony :(',
 };

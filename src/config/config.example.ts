@@ -12,4 +12,5 @@ export const config = {
   mailerAuthPassword: 'password',
   mailerHost: 'localhost',
   mailerSmtpPort: 2500,
+  conversationExpirationTime: 60 * 60 * 24 * 10,
 };
