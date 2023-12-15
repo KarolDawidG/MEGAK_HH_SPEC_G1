@@ -52,9 +52,10 @@ export const messages = {
   notActiveUserError: 'Użytkownik z podanym id jest nieaktywny!',
   notAcceptableRoleError:
     'Użytkownik z podanym id ma przypisaną rolę, która nie pozwala na podgląd tej strony',
-  updatedGithubNamExist:
+  updatedGithubNameExist:
     'Użytkownik Github ze wskazanym loginem już istnieje w bazie',
   githubUsernameNotFound: 'Użytkownik Github ze wskazanym loginem nie istnieje',
+  studentUserIsNotActive: 'Konto użytkownika jest nieaktywne',
   onlyForHrUser: "Ta funkcja możliwa jest tylko dla hr'owców",
   hrProfileNotFound: 'Nie znaleziono profilu HR',
   studentNotAvailable: 'Wybrany student nie jest obecnie dostępny',
