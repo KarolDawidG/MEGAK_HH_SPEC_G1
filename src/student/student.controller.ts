@@ -30,6 +30,7 @@ import { UserObj } from '../decorators/user-obj.decorator';
 import { UserEntity } from '../user/user.entity';
 import { ConversationListQuery } from './dto/student.conversation-list-query.dto';
 import { ConversationService } from '../conversation/conversation.service';
+import { JwtAuthGuard } from '../guards/jwt.auth.guard';
 
 @Controller('student')
 export class StudentController {
