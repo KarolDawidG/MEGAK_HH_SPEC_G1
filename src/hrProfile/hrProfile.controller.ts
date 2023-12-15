@@ -42,44 +42,42 @@ export class HrProfileController {
     @UserObj() user: UserEntity,
     @Body() body: ChooseStudentDto, // | ChooseStudentDto,
   ): Promise<ConversationEntity> {
-    try {
-      if (user.role !== roleEnum.admin) {
-        throw new UnauthorizedException(messages.onlyForHrUser);
-      }
-      const student = await this.studentService.findStudentById(body.studentId);
-      if (!student) {
-        throw new NotFoundException(messages.studentIdNotFound);
-      }
-      if (student.status !== studentStatus.available) {
-        throw new BadRequestException(messages.studentNotAvailable);
-      }
-      const hrProfile = await this.hrProfileService.find(user.id);
-      if (!hrProfile) {
-        throw new NotFoundException(messages.hrProfileNotFound);
-      }
-      const conversation = await this.conversationService.find(
-        hrProfile.id,
-        student.id,
-      );
-      if (conversation) {
-        throw new BadRequestException(messages.conversationExist);
-      }
-      const hrConversationsCount = await this.conversationService.hrCount(
-        hrProfile.id,
-      );
-      if (hrConversationsCount >= hrProfile.maxReservedStudents) {
-        throw new BadRequestException(messages.hrMaxStudentLimitExceeded);
-      }
-      const { email: studentEmail } = await this.userService.findById(
-        student.userId,
-      );
-      return await this.conversationService.startConversation(
-        hrProfile.id,
-        student.id,
-        studentEmail,
-        hrProfile.companyName,
-      );
-    } catch (e) {}
+    if (user.role !== roleEnum.admin) {
+      throw new UnauthorizedException(messages.onlyForHrUser);
+    }
+    const student = await this.studentService.findStudentById(body.studentId);
+    if (!student) {
+      throw new NotFoundException(messages.studentIdNotFound);
+    }
+    if (student.status !== studentStatus.available) {
+      throw new BadRequestException(messages.studentNotAvailable);
+    }
+    const hrProfile = await this.hrProfileService.find(user.id);
+    if (!hrProfile) {
+      throw new NotFoundException(messages.hrProfileNotFound);
+    }
+    const conversation = await this.conversationService.find(
+      hrProfile.id,
+      student.id,
+    );
+    if (conversation) {
+      throw new BadRequestException(messages.conversationExist);
+    }
+    const hrConversationsCount = await this.conversationService.hrCount(
+      hrProfile.id,
+    );
+    if (hrConversationsCount >= hrProfile.maxReservedStudents) {
+      throw new BadRequestException(messages.hrMaxStudentLimitExceeded);
+    }
+    const { email: studentEmail } = await this.userService.findById(
+      student.userId,
+    );
+    return await this.conversationService.startConversation(
+      hrProfile.id,
+      student.id,
+      studentEmail,
+      hrProfile.companyName,
+    );
   }
 
   @UseGuards(JwtAuthGuard)
