@@ -23,7 +23,10 @@ import { UserService } from '../user/user.service';
 import { listSortDispatchColumn } from 'src/utils/columnDispatcher';
 import { StudentListConversationResponse } from 'src/interfaces/StudentListConversationResponse';
 import { listFilterDispatcher } from 'src/utils/listFilterDispatcher';
+
 import { HrProfileService } from 'src/hrProfile/hrProfile.service';
+import { ProjectsEvaluationEntity } from "../projects-evaluation/projects-evaluation.entity";
+
 
 @Injectable()
 export class StudentService {
@@ -149,57 +152,67 @@ export class StudentService {
     }
   }
 
-  async findOne(userId: string): Promise<StudentProfileResponse> {
-    try {
-      const student = await this.studentRepository
-        .createQueryBuilder('student')
-        .leftJoin('student.user', 'user')
-        .leftJoinAndMapMany(
-          'student.bonusProjects',
-          ProjectEntity,
-          'bonusProject',
-          'bonusProject.user_id = :userId AND bonusProject.type = :typeB',
-          { typeB: projectTypeEnum.bonusProject },
-        )
-        .leftJoinAndMapMany(
-          'student.portfolioProjects',
-          ProjectEntity,
-          'portfolioProject',
-          'portfolioProject.user_id = :userId AND portfolioProject.type = :typeP',
-          { typeP: projectTypeEnum.portfolio },
-        )
-        .select([
-          'user.email',
-          'student.phoneNumber',
-          'student.firstName',
-          'student.lastName',
-          'student.githubName',
-          'student.bio',
-          'student.expectedWorkType',
-          'student.targetWorkCity',
-          'student.expectedContractType',
-          'student.expectedSalary',
-          'student.canTakeApprenticeship',
-          'student.monthsOfCommercialExperience',
-          'student.education',
-          'student.workExperience',
-          'student.courses',
-          'GROUP_CONCAT(DISTINCT bonusProject.url) AS bonusProjectUrls',
-          'GROUP_CONCAT(DISTINCT portfolioProject.url) AS portfolioUrls',
-        ])
-        .where('student.user_id = :userId', { userId })
-        .groupBy('user.id')
-        .getRawOne();
-      console.log(student);
+    async findOne(userId: string): Promise<StudentProfileResponse> {
+        try {
+            const student = await this.studentRepository
+                .createQueryBuilder('student')
+                .leftJoin('student.user', 'user')
+                .leftJoinAndMapOne(
+                    'student.projectsEvaluation',
+                    ProjectsEvaluationEntity,
+                    'projectsEvaluation',
+                    'projectsEvaluation.user_id = :userId',
+                )
+                .leftJoinAndMapMany(
+                    'student.bonusProjects',
+                    ProjectEntity,
+                    'bonusProject',
+                    'bonusProject.user_id = :userId AND bonusProject.type = :typeB',
+                    {typeB: projectTypeEnum.bonusProject},
+                )
+                .leftJoinAndMapMany(
+                    'student.portfolioProjects',
+                    ProjectEntity,
+                    'portfolioProject',
+                    'portfolioProject.user_id = :userId AND portfolioProject.type = :typeP',
+                    {typeP: projectTypeEnum.portfolio},
+                )
+                .select([
+                    'user.email',
+                    'student.phoneNumber',
+                    'student.firstName',
+                    'student.lastName',
+                    'student.githubName',
+                    'student.bio',
+                    'student.expectedWorkType',
+                    'student.targetWorkCity',
+                    'student.expectedContractType',
+                    'student.expectedSalary',
+                    'student.canTakeApprenticeship',
+                    'student.monthsOfCommercialExperience',
+                    'student.education',
+                    'student.workExperience',
+                    'student.courses',
+                    'GROUP_CONCAT(DISTINCT bonusProject.url) AS bonusProjectUrls',
+                    'GROUP_CONCAT(DISTINCT portfolioProject.url) AS portfolioUrls',
+                    'projectsEvaluation.courseCompletion AS courseCompletion',
+                    'projectsEvaluation.courseEngagement AS courseEngagement',
+                    'projectsEvaluation.projectDegree AS projectDegree',
+                    'projectsEvaluation.teamProjectDegree AS teamProjectDegree',
 
-      return {
-        studentDetails: student,
-      };
-    } catch (e) {
-      console.log(e);
-      throw new InternalServerErrorException();
+                ])
+                .where('student.user_id = :userId', {userId})
+                .groupBy('user.id')
+                .getRawOne();
+            //console.log(student);
+            return {
+                studentDetails: student,
+            };
+        } catch (e) {
+            console.log(e);
+            throw new InternalServerErrorException();
+        }
     }
-  }
 
   async findStudentByUserId(id: string): Promise<StudentEntity> {
     try {
@@ -209,13 +222,13 @@ export class StudentService {
     }
   }
 
-  async findStudentById(id: string): Promise<StudentEntity> {
-    try {
-      return await this.studentRepository.findOne({ where: { id } });
-    } catch {
-      throw new InternalServerErrorException();
+    async findStudentById(id: string): Promise<StudentEntity> {
+        try {
+            return await this.studentRepository.findOne({ where: { id } });
+        } catch {
+            throw new InternalServerErrorException();
+        }
     }
-  }
 
   async updateOne(
     student: StudentEntity,
@@ -265,15 +278,15 @@ export class StudentService {
         );
       }
 
-      if (portfolioUrl) {
-        updates.push(
-          this.projectService.updateProject(
-            student.userId,
-            portfolioUrl,
-            projectTypeEnum.portfolio,
-          ),
-        );
-      }
+            if (portfolioUrl) {
+                updates.push(
+                    this.projectService.updateProject(
+                        student.userId,
+                        portfolioUrl,
+                        projectTypeEnum.portfolio,
+                    ),
+                );
+            }
 
       const updateResults = await Promise.all(updates);
 

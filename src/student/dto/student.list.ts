@@ -6,7 +6,7 @@ import {
 import { StudentListResponse } from 'src/interfaces/StudentListResponse';
 
 export class StudentList implements StudentListResponse {
-  @IsUUID('4')
+  @IsUUID()
   @IsString()
   userId: string;
 
