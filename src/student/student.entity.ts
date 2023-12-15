@@ -4,6 +4,7 @@ import {
   Column,
   OneToOne,
   JoinColumn,
+  OneToMany,
 } from 'typeorm';
 import {
   StudentInterface,
@@ -12,6 +13,7 @@ import {
   workTypeEnum,
 } from 'src/interfaces/StudentInterface';
 import { UserEntity } from 'src/user/user.entity';
+import { ConversationEntity } from 'src/conversation/conversation.entity';
 
 @Entity({
   name: 'students',
@@ -27,7 +29,12 @@ export class StudentEntity implements StudentInterface {
   @Column({ name: 'USER_ID', length: 36, type: 'varchar', unique: true })
   userId: string;
 
-  @Column({ name: 'STATUS', type: "enum", enum: studentStatus, default: studentStatus.available })
+  @Column({
+    name: 'STATUS',
+    type: 'enum',
+    enum: studentStatus,
+    default: studentStatus.available,
+  })
   status: studentStatus;
 
   @Column({ name: 'FIRST_NAME', type: 'varchar', length: 50 })
@@ -51,13 +58,23 @@ export class StudentEntity implements StudentInterface {
   @Column({ name: 'BIO', type: 'varchar', length: 5000 })
   bio: string;
 
-  @Column({ name: 'EXPECTED_WORK_TYPE', type: "enum", enum: workTypeEnum, default: workTypeEnum.noPreferences })
+  @Column({
+    name: 'EXPECTED_WORK_TYPE',
+    type: 'enum',
+    enum: workTypeEnum,
+    default: workTypeEnum.noPreferences,
+  })
   expectedWorkType: workTypeEnum;
 
   @Column({ name: 'TARGET_WORK_CITY', type: 'varchar', length: 100 })
   targetWorkCity: string;
 
-  @Column({ name: 'CONTRACT_TYPE', type: "enum", enum: contractTypeEnum, default: contractTypeEnum.noPreferences })
+  @Column({
+    name: 'CONTRACT_TYPE',
+    type: 'enum',
+    enum: contractTypeEnum,
+    default: contractTypeEnum.noPreferences,
+  })
   expectedContractType: contractTypeEnum;
 
   @Column({
@@ -101,4 +118,7 @@ export class StudentEntity implements StudentInterface {
     default: () => 'CURRENT_TIMESTAMP',
   })
   updatedAt: () => string;
+
+  @OneToMany(() => ConversationEntity, (conversation) => conversation.student)
+  conversation: ConversationEntity;
 }

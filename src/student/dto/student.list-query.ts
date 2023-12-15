@@ -11,29 +11,28 @@ import {
   workTypeEnum,
   contractTypeEnum,
 } from 'src/interfaces/StudentInterface';
-import { StudentListQueryRequestInterface } from 'src/interfaces/StudentListFilterInterface';
+import {
+  ListSortEnum,
+  StudentListQueryRequestInterface,
+} from 'src/interfaces/StudentListFilterInterface';
 import { transformToArray } from 'src/utils/transformToArray';
 
 export class StudentListQuery implements StudentListQueryRequestInterface {
   @IsOptional()
-  @Transform(transformToArray)
-  @IsArray()
-  cc?: number[];
+  @IsNumber()
+  cc?: number;
 
   @IsOptional()
-  @Transform(transformToArray)
-  @IsArray()
-  ce?: number[];
+  @IsNumber()
+  ce?: number;
 
   @IsOptional()
-  @Transform(transformToArray)
-  @IsArray()
-  pd?: number[];
+  @IsNumber()
+  pd?: number;
 
   @IsOptional()
-  @Transform(transformToArray)
-  @IsArray()
-  tpd?: number[];
+  @IsNumber()
+  tpd?: number;
 
   @IsOptional()
   @Transform(transformToArray)
@@ -71,4 +70,12 @@ export class StudentListQuery implements StudentListQueryRequestInterface {
   @IsOptional()
   @IsNumber()
   pitems?: number;
+
+  @IsOptional()
+  @IsNumber()
+  ord?: ListSortEnum;
+
+  @IsOptional()
+  @IsBoolean()
+  asc?: boolean;
 }

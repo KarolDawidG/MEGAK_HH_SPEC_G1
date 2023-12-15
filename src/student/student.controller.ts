@@ -11,6 +11,7 @@ import {
   BadRequestException,
   NotAcceptableException,
   Inject,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { StudentService } from './student.service';
 import { StudentListQuery } from './dto/student.list-query';
@@ -27,7 +28,7 @@ import { GithubNameValidator } from '../utils/githubNameValidator';
 import { roleEnum } from '../interfaces/UserInterface';
 import { UserObj } from '../decorators/user-obj.decorator';
 import { UserEntity } from '../user/user.entity';
-import { JwtAuthGuard } from '../guards/jwt.auth.guard';
+import { ConversationListQuery } from './dto/student.conversation-list-query.dto';
 import { ConversationService } from '../conversation/conversation.service';
 
 @Controller('student')
@@ -48,6 +49,28 @@ export class StudentController {
     @Query() filterOptions: StudentListQuery,
   ): Promise<[StudentList[], number]> {
     const searchResult = await this.studentService.findAll(filterOptions);
+
+    if (!searchResult[0].length) {
+      throw new NotFoundException(messages.emptySearchResult);
+    }
+
+    return searchResult;
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('conversation-list')
+  async getConverstationList(
+    @Query() filterOptions: ConversationListQuery,
+    @UserObj() user: UserEntity,
+  ): Promise<[any[], number]> {
+    if (user.role < 1) {
+      throw new UnauthorizedException(messages.accessDenied);
+    }
+
+    const searchResult = await this.studentService.findConversationOnly(
+      filterOptions,
+      user.id,
+    );
 
     if (!searchResult[0].length) {
       throw new NotFoundException(messages.emptySearchResult);

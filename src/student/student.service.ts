@@ -20,6 +20,9 @@ import { roleEnum } from 'src/interfaces/UserInterface';
 import { StudentListResponse } from 'src/interfaces/StudentListResponse';
 import { ProjectService } from '../project/project.service';
 import { UserService } from '../user/user.service';
+import { listSortDispatchColumn } from 'src/utils/columnDispatcher';
+import { StudentListConversationResponse } from 'src/interfaces/StudentListConversationResponse';
+import { listFilterDispatcher } from 'src/utils/listFilterDispatcher';
 
 @Injectable()
 export class StudentService {
@@ -43,6 +46,56 @@ export class StudentService {
     }
   }
 
+  async findConversationOnly(
+    filterParams: StudentListQueryRequestInterface,
+    UserHrID: string,
+  ): Promise<[StudentListConversationResponse[], number]> {
+    try {
+      const limit = (filterParams.pitems <= 90 && filterParams.pitems) || 15;
+      const offset = (filterParams.page ?? 1) * limit - limit ?? 1;
+      const query = await this.studentRepository
+        .createQueryBuilder('student')
+        .leftJoin('student.user', 'user')
+        .leftJoin('student.conversation', 'conversation')
+        .leftJoin('user.projectEvaluation', 'evaluation')
+        .select([
+          'user.id AS userId',
+          'student.firstName AS firstName',
+          'student.lastName AS lastName',
+          'student.expectedWorkType AS expectedWorkType',
+          'student.targetWorkCity AS targetWorkCity',
+          'student.expectedContractType AS expectedContractType',
+          'student.expectedSalary AS expectedSalary',
+          'student.canTakeApprenticeship AS canTakeApprenticeship',
+          'student.monthsOfCommercialExperience AS monthsOfCommercialExperience',
+          'evaluation.projectDegree AS projectDegree',
+          'evaluation.teamProjectDegree AS teamProjectDegree',
+          'evaluation.courseCompletion AS courseCompletion',
+          'evaluation.courseEngagement AS courseEngagemnet',
+          'DATE_ADD(conversation.createdAt, INTERVAL 10 DAY) AS reservedTo',
+          'student.githubName AS githubUserName',
+        ])
+        .where('conversation.hrProfile = :hrProfile', { hrProfile: UserHrID })
+        .andWhere('student.status = :val', {
+          val: `${studentStatus.duringConversation}`,
+        });
+
+      await listFilterDispatcher(query, filterParams);
+
+      query.orderBy(
+        await listSortDispatchColumn(filterParams.ord),
+        filterParams.asc ? 'ASC' : 'DESC',
+      );
+      return [
+        await query.limit(limit).offset(offset).getRawMany(),
+        await query.getCount(),
+      ];
+    } catch (e) {
+      console.log(e);
+      throw new InternalServerErrorException();
+    }
+  }
+
   async findAll(
     filterParams: StudentListQueryRequestInterface,
   ): Promise<[StudentListResponse[], number]> {
@@ -57,7 +110,7 @@ export class StudentService {
         .select([
           'user.id AS userId',
           'student.firstName AS firstName',
-          'student.lastName AS lastName',
+          'LEFT(student.lastName, 1) AS lastName',
           'student.expectedWorkType AS expectedWorkType',
           'student.targetWorkCity AS targetWorkCity',
           'student.expectedContractType AS expectedContractType',
@@ -71,69 +124,21 @@ export class StudentService {
           'evaluation.courseEngagement AS courseEngagemnet',
         ])
         .where(`user.role = ${roleEnum.student}`)
-        .andWhere('user.isActive = 1');
+        .andWhere('user.isActive = 1')
+        .andWhere("student.status = ':val'", { val: studentStatus.available });
 
-      if (filterParams?.pd) {
-        query.andWhere('evaluation.projectDegree IN (:val)', {
-          val: filterParams.pd,
-        });
-      }
-
-      if (filterParams?.cc) {
-        query.andWhere('evaluation.courseCompletion IN (:val)', {
-          val: filterParams.cc,
-        });
-      }
-
-      if (filterParams?.ce)
-        query.andWhere('evaluation.courseEngagement IN (:val)', {
-          val: filterParams.ce,
-        });
-
-      if (filterParams?.tpd)
-        query.andWhere('evaluation.teamProjectDegree IN (:val)', {
-          val: filterParams.tpd,
-        });
-
-      if (filterParams?.es)
-        query.andWhere(
-          'student.expectedSalary BETWEEN :lowerMargin AND :upperMargin',
-          {
-            lowerMargin: filterParams.es[0] || 0,
-            upperMargin: filterParams.es[1] || 100000000,
-          },
-        );
-
-      if (filterParams?.cta)
-        query.andWhere('student.canTakeApprenticeship = :val', {
-          val: filterParams.cta,
-        });
-
-      if (filterParams?.ect)
-        query.andWhere('student.expectedContractType IN (:val)', {
-          val: filterParams.ect,
-        });
-
-      if (filterParams?.ewt)
-        query.andWhere('student.expectedContractType IN (:val)', {
-          val: filterParams.ewt,
-        });
-
-      if (filterParams?.moce)
-        query.andWhere('student.monthsOfCommercialExperience >= :val', {
-          val: filterParams.moce,
-        });
-
-      if (filterParams?.srch)
-        query.andWhere('student.targetWorkCity LIKE :val', {
-          val: `%${filterParams.srch}%`,
-        });
+      await listFilterDispatcher<StudentEntity>(query, filterParams);
+      query.orderBy(
+        await listSortDispatchColumn(filterParams.ord),
+        filterParams.asc ? 'ASC' : 'DESC',
+      );
 
       return [
         await query.limit(limit).offset(offset).getRawMany(),
         await query.getCount(),
       ];
-    } catch {
+    } catch (e) {
+      console.log(e);
       throw new InternalServerErrorException();
     }
   }
