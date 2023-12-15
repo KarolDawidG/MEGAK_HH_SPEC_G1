@@ -3,6 +3,9 @@ import {
   Body,
   Controller,
   ForbiddenException,
+  Get,
+  InternalServerErrorException,
+  NotFoundException,
   Patch,
   Post,
   Res,
@@ -26,10 +29,18 @@ import {
   StudentImportFormatInterface,
   StudentsImportResponse,
 } from 'src/interfaces/StudentsImportResponse';
+import { StudentService } from 'src/student/student.service';
+import { HrProfileService } from 'src/hrProfile/hrProfile.service';
+import { HrProfileEntity } from 'src/hrProfile/hrProfile.entity';
+import { StudentEntity } from 'src/student/student.entity';
 
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly studentService: StudentService,
+    private readonly hrProfileService: HrProfileService,
+  ) {}
 
   @Post('change-password')
   async changePassword(@Body() body: UserChangePasswordDto): Promise<void> {
@@ -140,5 +151,25 @@ export class UserController {
       throw new BadRequestException(messages.registrationInvalidBody);
     }
     return await this.userService.register(user, body.password);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('profile')
+  async getProfile(
+    @UserObj() user: UserEntity,
+  ): Promise<StudentEntity | HrProfileEntity> {
+    try {
+      switch (user.role) {
+        case roleEnum.student:
+          return await this.studentService.findStudentByUserId(user.id);
+        case roleEnum.hr:
+          return await this.hrProfileService.find(user.id);
+        default:
+          throw new NotFoundException(messages.userIdNotFound);
+      }
+    } catch (e) {
+      console.log(e);
+      throw new InternalServerErrorException();
+    }
   }
 }

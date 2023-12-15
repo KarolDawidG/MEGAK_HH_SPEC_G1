@@ -45,7 +45,13 @@ export class HrProfileController {
     if (user.role !== roleEnum.hr) {
       throw new UnauthorizedException(messages.onlyForHrUser);
     }
-    const student = await this.studentService.findStudentById(body.studentId);
+    const userStudent = await this.userService.findById(body.studentId);
+    if (!userStudent) {
+      throw new NotFoundException(messages.userIdNotFound);
+    }
+    const student = await this.studentService.findStudentByUserId(
+      userStudent.id,
+    );
     if (!student) {
       throw new NotFoundException(messages.studentIdNotFound);
     }
@@ -90,7 +96,13 @@ export class HrProfileController {
     if (user.role !== roleEnum.hr) {
       throw new UnauthorizedException(messages.onlyForHrUser);
     }
-    const student = await this.studentService.findStudentById(body.studentId);
+    const userStudent = await this.userService.findById(body.studentId);
+    if (!userStudent) {
+      throw new NotFoundException(messages.userIdNotFound);
+    }
+    const student = await this.studentService.findStudentByUserId(
+      userStudent.id,
+    );
     if (!student) {
       throw new NotFoundException(messages.studentIdNotFound);
     }
