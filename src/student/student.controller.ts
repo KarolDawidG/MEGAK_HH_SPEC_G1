@@ -30,6 +30,7 @@ import { UserObj } from '../decorators/user-obj.decorator';
 import { UserEntity } from '../user/user.entity';
 import { ConversationListQuery } from './dto/student.conversation-list-query.dto';
 import { ConversationService } from '../conversation/conversation.service';
+import {JwtAuthGuard} from "../guards/jwt.auth.guard";
 
 @Controller('student')
 export class StudentController {
@@ -88,12 +89,12 @@ export class StudentController {
     if (!user) {
       throw new NotFoundException(messages.userIdNotFound);
     }
-    if (!user.isActive) {
-      throw new NotAcceptableException(messages.userIsNotActive);
-    }
-    if (!(user.role === roleEnum.student)) {
-      throw new NotAcceptableException(messages.notAcceptableRoleError);
-    }
+    // if (!user.isActive) {
+    //   throw new NotAcceptableException(messages.studentUserIsNotActive);
+    // }
+    // if (!(user.role === roleEnum.student)) {
+    //   throw new NotAcceptableException(messages.notAcceptableRoleError);
+    // }
 
     const userProfile = await this.studentService.findOne(user.id);
     if (!userProfile.studentDetails) {
@@ -116,7 +117,7 @@ export class StudentController {
       throw new BadRequestException(messages.emailNotFound);
     }
     if (!user.isActive) {
-      throw new NotAcceptableException(messages.notActiveUserError);
+      throw new NotAcceptableException(messages.studentUserIsNotActive);
     }
     if (!(user.role === roleEnum.student)) {
       throw new NotAcceptableException(messages.notAcceptableRoleError);
@@ -132,7 +133,7 @@ export class StudentController {
       const { isGithubUser, isGithubUserUnique } =
         await this.githubService.validateGithubName(student.id, githubName);
       if (!isGithubUserUnique) {
-        throw new NotAcceptableException(messages.updatedGithubNamExist);
+        throw new NotAcceptableException(messages.updatedGithubNameExist);
       }
       if (!isGithubUser) {
         throw new NotFoundException(messages.githubUsernameNotFound);
