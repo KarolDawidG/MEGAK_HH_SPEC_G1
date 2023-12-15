@@ -203,6 +203,14 @@ export class StudentService {
     }
   }
 
+  async findStudentById(id: string): Promise<StudentEntity> {
+    try {
+      return await this.studentRepository.findOne({ where: { id } });
+    } catch {
+      throw new InternalServerErrorException();
+    }
+  }
+
   async updateOne(
     student: StudentEntity,
     studentProfileDetails: UpdateStudentDetailsDto,
@@ -273,6 +281,17 @@ export class StudentService {
       };
     } catch (e) {
       console.log(e);
+      throw new InternalServerErrorException();
+    }
+  }
+
+  async statusUpdate(studentId: string, status: studentStatus): Promise<void> {
+    try {
+      await this.studentRepository.update(
+        { id: studentId },
+        { status, updatedAt: () => 'CURRENT_TIMESTAMP' },
+      );
+    } catch {
       throw new InternalServerErrorException();
     }
   }

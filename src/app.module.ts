@@ -12,6 +12,7 @@ import { ProjectModule } from './project/project.module';
 import { ProjectsEvaluationModule } from './projects-evaluation/projects-evaluation.module';
 import { ConversationModule } from './conversation/conversation.module';
 import { HttpModule } from '@nestjs/axios';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { HttpModule } from '@nestjs/axios';
     ProjectsEvaluationModule,
     ConversationModule,
     HttpModule,
+    ScheduleModule.forRoot(),
   ],
   controllers: [AppController],
   providers: [AppService],

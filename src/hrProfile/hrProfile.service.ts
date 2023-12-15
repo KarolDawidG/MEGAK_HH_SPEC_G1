@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { HrProfileEntity } from './hrProfile.entity';
@@ -11,16 +11,28 @@ export class HrProfileService {
   ) {}
 
   async create(
-    userId,
-    companyName,
-    fullName,
-    maxReservedStudents,
+    userId: string,
+    companyName: string,
+    fullName: string,
+    maxReservedStudents: number,
   ): Promise<HrProfileEntity> {
-    return await this.hrProfileRepository.save({
-      userId,
-      companyName,
-      fullName,
-      maxReservedStudents,
-    });
+    try {
+      return await this.hrProfileRepository.save({
+        userId,
+        companyName,
+        fullName,
+        maxReservedStudents,
+      });
+    } catch {
+      throw new InternalServerErrorException();
+    }
+  }
+
+  async find(userId: string): Promise<HrProfileEntity> {
+    try {
+      return await this.hrProfileRepository.findOne({ where: { userId } });
+    } catch {
+      throw new InternalServerErrorException();
+    }
   }
 }

@@ -19,6 +19,7 @@ import { StudentList } from './dto/student.list';
 import { messages } from 'src/config/messages';
 import {
   StudentProfileResponse,
+  studentStatus,
   UpdatedStudentResponse,
 } from '../interfaces/StudentInterface';
 import { UpdateStudentDetailsDto } from './dto/update-student-details.dto';
@@ -27,15 +28,18 @@ import { GithubNameValidator } from '../utils/githubNameValidator';
 import { roleEnum } from '../interfaces/UserInterface';
 import { UserObj } from '../decorators/user-obj.decorator';
 import { UserEntity } from '../user/user.entity';
-import { JwtAuthGuard } from '../guards/jwt.auth.guard';
 import { ConversationListQuery } from './dto/student.conversation-list-query.dto';
+import { ConversationService } from '../conversation/conversation.service';
 
 @Controller('student')
 export class StudentController {
   constructor(
     @Inject(StudentService)
     private readonly studentService: StudentService,
+    @Inject(UserService)
     private readonly userService: UserService,
+    @Inject(ConversationService)
+    private readonly conversationService: ConversationService,
     private githubService: GithubNameValidator,
   ) {}
 
@@ -140,7 +144,21 @@ export class StudentController {
         throw new NotAcceptableException(messages.updatedUserEmailExist);
       }
     }
-
     return this.studentService.updateOne(student, studentProfileDetails);
+  }
+
+  @Patch('hired')
+  @UseGuards(JwtAuthGuard)
+  async hired(@UserObj() user: UserEntity): Promise<void> {
+    const student = await this.studentService.findStudentByUserId(user.id);
+    if (!student) {
+      throw new NotFoundException(messages.studentIdNotFound);
+    }
+    if (user.role !== roleEnum.student) {
+      throw new NotAcceptableException(messages.notAcceptableRoleError);
+    }
+    await this.conversationService.cancelScheduledConversation(student.id);
+    await this.studentService.statusUpdate(student.id, studentStatus.engaged);
+    await this.userService.setAsHired(student.userId, null);
   }
 }
