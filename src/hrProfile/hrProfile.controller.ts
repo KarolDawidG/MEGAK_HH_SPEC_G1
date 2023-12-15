@@ -40,9 +40,9 @@ export class HrProfileController {
   @Patch('choose-student')
   async choose(
     @UserObj() user: UserEntity,
-    @Body() body: ChooseStudentDto, // | ChooseStudentDto,
+    @Body() body: ChooseStudentDto,
   ): Promise<ConversationEntity> {
-    if (user.role !== roleEnum.admin) {
+    if (user.role !== roleEnum.hr) {
       throw new UnauthorizedException(messages.onlyForHrUser);
     }
     const student = await this.studentService.findStudentById(body.studentId);
