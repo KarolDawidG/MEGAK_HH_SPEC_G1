@@ -40,7 +40,7 @@ export class HrProfileController {
   @Patch('choose-student')
   async choose(
     @UserObj() user: UserEntity,
-    @Body() body: any, // | ChooseStudentDto,
+    @Body() body: ChooseStudentDto, // | ChooseStudentDto,
   ): Promise<ConversationEntity> {
     try {
       if (user.role !== roleEnum.admin) {

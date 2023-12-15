@@ -84,8 +84,7 @@ export class ConversationService {
         studentId,
         status: ConversationStatusEnum.scheduled,
       });
-    } catch (e) {
-      console.log(e);
+    } catch {
       throw new InternalServerErrorException();
     }
   }
