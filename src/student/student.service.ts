@@ -24,6 +24,7 @@ import { listSortDispatchColumn } from 'src/utils/columnDispatcher';
 import { StudentListConversationResponse } from 'src/interfaces/StudentListConversationResponse';
 import { listFilterDispatcher } from 'src/utils/listFilterDispatcher';
 import { HrProfileService } from 'src/hrProfile/hrProfile.service';
+import { config } from 'src/config/config';
 
 @Injectable()
 export class StudentService {
@@ -62,7 +63,7 @@ export class StudentService {
         .leftJoin('student.conversation', 'conversation')
         .leftJoin('user.projectEvaluation', 'evaluation')
         .select([
-          'user.id AS userId',
+          'student.id AS studentId',
           'student.firstName AS firstName',
           'student.lastName AS lastName',
           'student.expectedWorkType AS expectedWorkType',
@@ -75,14 +76,14 @@ export class StudentService {
           'evaluation.teamProjectDegree AS teamProjectDegree',
           'evaluation.courseCompletion AS courseCompletion',
           'evaluation.courseEngagement AS courseEngagemnet',
-          'DATE_ADD(conversation.createdAt, INTERVAL 10 DAY) AS reservedTo',
+          `DATE_ADD(conversation.createdAt, INTERVAL ${config.conversationExpirationTime} SECOND) AS reservedTo`,
           'student.githubName AS githubUserName',
         ])
         .where('conversation.hrProfile = :hrProfile', {
           hrProfile: (await this.hrProfileService.find(UserHrID)).id,
         })
         .andWhere('user.isActive = 1')
-        .andWhere('student.status = :val', {
+        .andWhere("student.status = ':val'", {
           val: studentStatus.duringConversation,
         });
 
@@ -114,7 +115,7 @@ export class StudentService {
         .leftJoinAndSelect('student.user', 'user')
         .leftJoinAndSelect('user.projectEvaluation', 'evaluation')
         .select([
-          'user.id AS userId',
+          'student.id AS studentId',
           'student.firstName AS firstName',
           'LEFT(student.lastName, 1) AS lastName',
           'student.expectedWorkType AS expectedWorkType',
@@ -131,7 +132,9 @@ export class StudentService {
         ])
         .where(`user.role = ${roleEnum.student}`)
         .andWhere('user.isActive = 1')
-        .andWhere("student.status = ':val'", { val: studentStatus.available });
+        .andWhere("student.status = ':val'", {
+          val: studentStatus.available,
+        });
 
       await listFilterDispatcher<StudentEntity>(query, filterParams);
       query.orderBy(
