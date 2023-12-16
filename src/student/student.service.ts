@@ -23,7 +23,10 @@ import { UserService } from '../user/user.service';
 import { listSortDispatchColumn } from 'src/utils/columnDispatcher';
 import { StudentListConversationResponse } from 'src/interfaces/StudentListConversationResponse';
 import { listFilterDispatcher } from 'src/utils/listFilterDispatcher';
+
 import { HrProfileService } from 'src/hrProfile/hrProfile.service';
+import { ProjectsEvaluationEntity } from '../projects-evaluation/projects-evaluation.entity';
+
 import { config } from 'src/config/config';
 
 @Injectable()
@@ -157,6 +160,12 @@ export class StudentService {
       const student = await this.studentRepository
         .createQueryBuilder('student')
         .leftJoin('student.user', 'user')
+        .leftJoinAndMapOne(
+          'student.projectsEvaluation',
+          ProjectsEvaluationEntity,
+          'projectsEvaluation',
+          'projectsEvaluation.user_id = :userId',
+        )
         .leftJoinAndMapMany(
           'student.bonusProjects',
           ProjectEntity,
@@ -189,12 +198,15 @@ export class StudentService {
           'student.courses',
           'GROUP_CONCAT(DISTINCT bonusProject.url) AS bonusProjectUrls',
           'GROUP_CONCAT(DISTINCT portfolioProject.url) AS portfolioUrls',
+          'projectsEvaluation.courseCompletion AS courseCompletion',
+          'projectsEvaluation.courseEngagement AS courseEngagement',
+          'projectsEvaluation.projectDegree AS projectDegree',
+          'projectsEvaluation.teamProjectDegree AS teamProjectDegree',
         ])
         .where('student.user_id = :userId', { userId })
         .groupBy('user.id')
         .getRawOne();
-      console.log(student);
-
+      //console.log(student);
       return {
         studentDetails: student,
       };
