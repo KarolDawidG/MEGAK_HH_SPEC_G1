@@ -29,6 +29,7 @@ import { HrProfileService } from 'src/hrProfile/hrProfile.service';
 import { ProjectsEvaluationEntity } from '../projects-evaluation/projects-evaluation.entity';
 
 import { config } from 'src/config/config';
+import { ConversationStatusEnum } from 'src/interfaces/ConversationInterface';
 
 @Injectable()
 export class StudentService {
@@ -69,7 +70,7 @@ export class StudentService {
         .leftJoin('student.conversation', 'conversation')
         .leftJoin('user.projectEvaluation', 'evaluation')
         .select([
-          'student.id AS studentId',
+          'user.id AS userId',
           'student.firstName AS firstName',
           'student.lastName AS lastName',
           'student.expectedWorkType AS expectedWorkType',
@@ -89,8 +90,11 @@ export class StudentService {
           hrProfile: (await this.hrProfileService.find(UserHrID)).id,
         })
         .andWhere('user.isActive = 1')
-        .andWhere("student.status = ':val'", {
-          val: studentStatus.duringConversation,
+        .andWhere("student.status = ':studentStatus'", {
+          studentStatus: studentStatus.duringConversation,
+        })
+        .andWhere('conversation.status = :conversationStatus', {
+          conversationStatus: ConversationStatusEnum.scheduled,
         });
 
       await listFilterDispatcher(query, filterParams);
@@ -121,7 +125,7 @@ export class StudentService {
         .leftJoinAndSelect('student.user', 'user')
         .leftJoinAndSelect('user.projectEvaluation', 'evaluation')
         .select([
-          'student.id AS studentId',
+          'user.id AS userId',
           'student.firstName AS firstName',
           'LEFT(student.lastName, 1) AS lastName',
           'student.expectedWorkType AS expectedWorkType',
