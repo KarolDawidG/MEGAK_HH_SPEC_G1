@@ -8,6 +8,7 @@ import { HttpModule } from '@nestjs/axios';
 import { GithubNameValidator } from '../utils/githubNameValidator';
 import { ProjectModule } from '../project/project.module';
 import { ConversationModule } from '../conversation/conversation.module';
+import { HrProfileModule } from 'src/hrProfile/hrProfile.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { ConversationModule } from '../conversation/conversation.module';
     forwardRef(() => HttpModule),
     forwardRef(() => ProjectModule),
     forwardRef(() => ConversationModule),
+    forwardRef(() => HrProfileModule),
   ],
   controllers: [StudentController],
   providers: [StudentService, GithubNameValidator],

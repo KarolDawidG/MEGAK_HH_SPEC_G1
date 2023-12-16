@@ -83,7 +83,7 @@ export class StudentService {
         })
         .andWhere('user.isActive = 1')
         .andWhere('student.status = :val', {
-          val: `${studentStatus.duringConversation}`,
+          val: studentStatus.duringConversation,
         });
 
       await listFilterDispatcher(query, filterParams);
