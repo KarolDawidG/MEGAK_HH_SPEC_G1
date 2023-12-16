@@ -5,7 +5,9 @@ import { ValidationPipe } from '@nestjs/common';
 import * as cookieParser from 'cookie-parser';
 
 const bootstrap = async (): Promise<void> => {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    logger: ['log', 'error'],
+  });
   app.useGlobalPipes(
     new ValidationPipe({
       //disableErrorMessages: true,

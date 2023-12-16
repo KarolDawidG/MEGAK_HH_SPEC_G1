@@ -3,6 +3,7 @@ import {
   Inject,
   Injectable,
   InternalServerErrorException,
+  Logger,
 } from '@nestjs/common';
 import { StudentEntity } from './student.entity';
 import {
@@ -31,6 +32,8 @@ import { config } from 'src/config/config';
 
 @Injectable()
 export class StudentService {
+  private logger: Logger = new Logger(StudentService.name);
+
   constructor(
     @InjectRepository(StudentEntity)
     private studentRepository: Repository<StudentEntity>,
@@ -101,7 +104,7 @@ export class StudentService {
         await query.getCount(),
       ];
     } catch (e) {
-      console.log(e);
+      this.logger.error(e);
       throw new InternalServerErrorException();
     }
   }
@@ -150,7 +153,7 @@ export class StudentService {
         await query.getCount(),
       ];
     } catch (e) {
-      console.log(e);
+      this.logger.error(e);
       throw new InternalServerErrorException();
     }
   }
