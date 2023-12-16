@@ -12,6 +12,7 @@ import {
   NotAcceptableException,
   Inject,
   UnauthorizedException,
+  Logger,
 } from '@nestjs/common';
 import { StudentService } from './student.service';
 import { StudentListQuery } from './dto/student.list-query';
@@ -34,6 +35,8 @@ import { JwtAuthGuard } from '../guards/jwt.auth.guard';
 
 @Controller('student')
 export class StudentController {
+  private logger: Logger = new Logger(StudentController.name);
+
   constructor(
     @Inject(StudentService)
     private readonly studentService: StudentService,
@@ -49,6 +52,7 @@ export class StudentController {
   async getList(
     @Query() filterOptions: StudentListQuery,
   ): Promise<[StudentList[], number]> {
+    this.logger.log(`Request - Getting list of students ...`);
     const searchResult = await this.studentService.findAll(filterOptions);
 
     if (!searchResult[0].length) {
@@ -64,7 +68,10 @@ export class StudentController {
     @Query() filterOptions: ConversationListQuery,
     @UserObj() user: UserEntity,
   ): Promise<[any[], number]> {
-    if (user.role < 1) {
+    this.logger.log(
+      `Request from HR user ${user.id} - Getting list of students to conversation ...`,
+    );
+    if (user.role !== roleEnum.hr && user.role !== roleEnum.admin) {
       throw new UnauthorizedException(messages.accessDenied);
     }
 
@@ -72,11 +79,12 @@ export class StudentController {
       filterOptions,
       user.id,
     );
+    this.logger.debug('List of student search result: ', [searchResult]);
 
     if (!searchResult[0].length) {
       throw new NotFoundException(messages.emptySearchResult);
     }
-
+    this.logger.log('Request fulfiled succesfull');
     return searchResult;
   }
 

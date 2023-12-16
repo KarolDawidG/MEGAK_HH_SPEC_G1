@@ -1,7 +1,7 @@
 import { contractTypeEnum, workTypeEnum } from './StudentInterface';
 
 export interface StudentListResponse {
-  userId: string;
+  studentId: string;
   firstName: string;
   lastName: string;
   expectedWorkType: workTypeEnum;

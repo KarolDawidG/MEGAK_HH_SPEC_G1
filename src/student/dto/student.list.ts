@@ -8,7 +8,7 @@ import { StudentListResponse } from 'src/interfaces/StudentListResponse';
 export class StudentList implements StudentListResponse {
   @IsUUID()
   @IsString()
-  userId: string;
+  studentId: string;
 
   @IsString()
   firstName: string;
